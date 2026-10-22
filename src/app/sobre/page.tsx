@@ -22,7 +22,7 @@ export default function SobreMetodologiaPage() {
       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-5">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">
           <ShieldCheck className="w-4 h-4" />
-          Transparência Editorial & Metodologia Técnica (E-E-A-T)
+          Transparência Editorial & Metodologia Técnica
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
