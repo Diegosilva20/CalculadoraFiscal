@@ -57,7 +57,7 @@ export default function Footer() {
 
           <div>
             <h4 className="text-white font-semibold text-sm mb-3 uppercase tracking-wider">
-              Simulações por Salário (SEO)
+              Simulações por Salário
             </h4>
             <div className="flex flex-wrap gap-1.5">
               {FAIXAS_SALARIAIS_SEO.slice(0, 12).map((sal) => (
@@ -107,9 +107,6 @@ export default function Footer() {
             </Link>
             <Link href="/contato" className="hover:text-slate-300">
               Contato
-            </Link>
-            <Link href="/sitemap.xml" className="hover:text-slate-300">
-              Sitemap XML
             </Link>
           </div>
         </div>
