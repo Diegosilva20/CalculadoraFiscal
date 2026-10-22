@@ -22,12 +22,12 @@ export async function generateMetadata({
   const salario = Number(valor) || 8000;
   const sim = calculateCLTvsPJ({
     salarioBrutoCLT: salario,
-    faturamentoBrutoPJ: Math.round(salario * 1.4),
+    faturamentoBrutoPJ: Math.round(salario * 1.45),
   });
 
   return {
     title: `Salário de R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto PJ em 2026?`,
-    description: `Ganhar R$ ${salario.toLocaleString("pt-BR")} CLT deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos na conta. Para valer a pena como PJ em 2026, sua nota fiscal deve ser de pelo menos ${formatBRL(sim.faturamentoPJEquivalente)}. Simule aqui!`,
+    description: `Ganhar R$ ${salario.toLocaleString("pt-BR")} CLT deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos na conta. Para compensar como PJ no Simples Nacional em 2026, sua nota fiscal deve partir de ${formatBRL(sim.faturamentoPJEquivalente)}.`,
   };
 }
 
@@ -46,17 +46,16 @@ export default async function SalarioProgrammaticPage({
     beneficiosCLT: 900,
   });
 
-  // Dados Estruturados JSON-LD (FAQPage) para Rich Snippets no Google
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
       {
         "@type": "Question",
-        name: `Quanto é o salário líquido de R$ ${salario.toLocaleString("pt-BR")} CLT em 2026?`,
+        name: `Quanto sobra líquido de um salário de R$ ${salario.toLocaleString("pt-BR")} CLT em 2026?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Em 2026, um salário bruto de ${formatBRL(salario)} na CLT sofre desconto de ${formatBRL(sim.clt.inss)} de INSS e ${formatBRL(sim.clt.irpf)} de Imposto de Renda (IRRF), resultando em um salário líquido mensal de ${formatBRL(sim.clt.salarioLiquidoMensal)}.`,
+          text: `Em 2026, um salário bruto de ${formatBRL(salario)} na carteira assinada tem desconto de ${formatBRL(sim.clt.inss)} de INSS e ${formatBRL(sim.clt.irpf)} de Imposto de Renda Retido na Fonte (IRRF), deixando ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos por mês.`,
         },
       },
       {
@@ -64,7 +63,7 @@ export default async function SalarioProgrammaticPage({
         name: `R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto como PJ em 2026?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Considerando o salário líquido (${formatBRL(sim.clt.salarioLiquidoMensal)}), FGTS (${formatBRL(sim.clt.fgtsMensal)}/mês), 13º salário, 1/3 de férias e benefícios médios, o pacote real CLT vale ${formatBRL(sim.clt.pacoteTotalMensalReal)}/mês. Para empatar 100% atuando como PJ no Simples Nacional (Anexo III - 6%), você deve cobrar no mínimo ${formatBRL(sim.faturamentoPJEquivalente)} por mês.`,
+          text: `Somando salário líquido (${formatBRL(sim.clt.salarioLiquidoMensal)}), depósito mensal de FGTS (${formatBRL(sim.clt.fgtsMensal)}), 13º proporcional, férias + 1/3 e benefícios, o pacote CLT entrega ${formatBRL(sim.clt.pacoteTotalMensalReal)}/mês. Para empatar atuando com CNPJ no Simples Nacional (Anexo III com 6% de imposto inicial), você precisa emitir nota fiscal de no mínimo ${formatBRL(sim.faturamentoPJEquivalente)} mensais.`,
         },
       },
     ],
@@ -92,23 +91,24 @@ export default async function SalarioProgrammaticPage({
         </span>
       </nav>
 
-      {/* Cabeçalho Direto ao Ponto (Resposta Imediata + Retenção) */}
+      {/* Cabeçalho Direto ao Ponto */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4">
         <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-blue-100 text-blue-800">
-          Estudo de Equivalência Salarial 2026
+          Comparativo Real de Bolso • Tabelas 2026
         </span>
         <h1 className="text-2xl sm:text-4xl font-black text-slate-900">
           Salário de R$ {salario.toLocaleString("pt-BR")} CLT equivale a quanto PJ em 2026?
         </h1>
         <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
-          Quem ganha <strong>{formatBRL(salario)} brutos na CLT</strong> em 2026 recebe{" "}
+          Um salário bruto de <strong>{formatBRL(salario)} na CLT</strong> coloca{" "}
           <strong className="text-blue-700">
-            {formatBRL(sim.clt.salarioLiquidoMensal)} líquidos por mês
+            {formatBRL(sim.clt.salarioLiquidoMensal)} líquidos na sua conta
           </strong>{" "}
-          na conta bancária. Porém, somando FGTS ({formatBRL(sim.clt.fgtsMensal)}), 13º proporcional ({formatBRL(sim.clt.provisao13LiquidoMensal)}), férias + 1/3 e benefícios, seu pacote CLT vale{" "}
-          <strong>{formatBRL(sim.clt.pacoteTotalMensalReal)}/mês</strong>. Por isso, para uma troca para PJ valer a pena no Simples Nacional, a proposta ideal deve partir de{" "}
+          todo mês. Mas o erro mais comum ao negociar uma vaga PJ é esquecer do que fica oculto no holerite: a empresa deposita{" "}
+          <strong>{formatBRL(sim.clt.fgtsMensal)}/mês de FGTS</strong>, além de pagar seu 13º salário ({formatBRL(sim.clt.provisao13LiquidoMensal)}/mês diluído), 1/3 de férias e vale-refeição/plano de saúde. Colocando tudo na ponta do lápis, sua vaga CLT vale{" "}
+          <strong>{formatBRL(sim.clt.pacoteTotalMensalReal)} por mês</strong>. Para não perder dinheiro ao abrir um CNPJ no Simples Nacional, peça a partir de{" "}
           <strong className="text-emerald-700 underline">
-            {formatBRL(sim.faturamentoPJEquivalente)}/mês
+            {formatBRL(sim.faturamentoPJEquivalente)}/mês na Nota Fiscal
           </strong>.
         </p>
       </div>
@@ -116,47 +116,75 @@ export default async function SalarioProgrammaticPage({
       <AdSlot
         slotId="salario-seo-top"
         format="leaderboard"
-        label={`Recebeu proposta PJ acima de ${formatBRL(sim.faturamentoPJEquivalente)}? Abra seu CNPJ grátis no Anexo III (6%)`}
+        label={`Vai emitir nota de ${formatBRL(sim.faturamentoPJEquivalente)}? Abra seu CNPJ grátis em Contabilidade Digital com Conta PJ inclusa`}
       />
 
-      {/* Calculadora pré-carregada exatamente com o salário da URL */}
+      {/* Calculadora pré-carregada com o salário da URL */}
       <CLTvsPJCalculator
         initialSalarioCLT={salario}
         initialFaturamentoPJ={pjSugerido}
       />
 
-      {/* Perguntas Frequentes (SEO Semântico) */}
+      {/* Guia Prático Humanizado + Palavras-Chave de Alto CPC Bancário/Contábil */}
       <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
         <h2 className="text-xl font-extrabold text-slate-900">
-          Perguntas Frequentes sobre Salário de R$ {salario.toLocaleString("pt-BR")} em 2026
+          Análise de Contador: O que muda no seu bolso ao trocar R$ {salario.toLocaleString("pt-BR")} CLT por CNPJ?
         </h2>
 
-        <div className="space-y-4 text-sm text-slate-700">
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-            <h3 className="font-bold text-slate-900 mb-1">
-              1. Qual o desconto de INSS e IRRF para R$ {salario.toLocaleString("pt-BR")} na CLT em 2026?
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <h3 className="font-bold text-slate-900 text-base">
+              1. Contabilidade Digital e Fator R (6%)
             </h3>
             <p>
-              Pela tabela progressiva de 2026, o desconto de INSS é de{" "}
-              <strong>{formatBRL(sim.clt.inss)}</strong> e o Imposto de Renda Retido na Fonte (IRRF) é de{" "}
-              <strong>{formatBRL(sim.clt.irpf)}</strong> (utilizando o desconto{" "}
-              {sim.clt.metodoIR}, que é o mais vantajoso para você). Sobra líquido no contracheque{" "}
-              <strong>{formatBRL(sim.clt.salarioLiquidoMensal)}</strong>.
+              Se a sua atividade entra no Anexo V do Simples Nacional (como TI, engenharia, medicina ou consultoria), nunca pague os 15,5% cheios. Usando uma <strong>contabilidade digital online</strong> para configurar seu pró-labore em 28% do faturamento (Fator R), sua guia DAS cai para <strong>6% no Anexo III</strong>, gerando uma economia de{" "}
+              <strong className="text-emerald-700">
+                {formatBRL(sim.pj.economiaMensalComFatorR * 12)} por ano
+              </strong>.
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-            <h3 className="font-bold text-slate-900 mb-1">
-              2. Quanto pago de imposto como PJ faturando {formatBRL(pjSugerido)} por mês?
+          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <h3 className="font-bold text-slate-900 text-base">
+              2. Plano de Saúde Empresarial pelo CNPJ
             </h3>
             <p>
-              No Simples Nacional (Anexo III ou usando o Fator R de 28%), a guia DAS fica em{" "}
-              <strong>{formatBRL(sim.pj.valorDAS)}</strong> ({formatPercent(sim.pj.aliquotaEfetivaDAS)}), mais{" "}
-              <strong>{formatBRL(sim.pj.inssProLabore + sim.pj.irpfProLabore)}</strong> de encargos sobre o pró-labore. Assim, sobram{" "}
-              <strong className="text-emerald-700">
-                {formatBRL(sim.pj.lucroLiquidoIsento)} líquidos e isentos de IR
-              </strong>{" "}
-              no seu bolso todos os meses.
+              Quem sai da CLT costuma se assustar com o preço de um plano de saúde individual. O segredo é contratar um <strong>plano de saúde empresarial por CNPJ (PME)</strong> (a partir de 2 vidas, incluindo um dependente ou sócio): as tabelas empresariais de operadoras como Bradesco Saúde, SulAmérica e Amil custam de <strong>30% a 40% menos</strong> que na pessoa física e podem ser pagas pela conta da empresa.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <h3 className="font-bold text-slate-900 text-base">
+              3. Conta Digital PJ Isenta e Reserva CDI
+            </h3>
+            <p>
+              Pela regra contábil, você não deve misturar gastos pessoais com o dinheiro da empresa. Abra uma <strong>conta digital PJ gratuita sem tarifa de manutenção</strong> (como BTG Empresas, Cora, Inter PJ ou Itaú Empresas), pague a guia DAS e o pró-labore no dia 20, e transfira o lucro líquido isento de Imposto de Renda ({formatBRL(sim.pj.lucroLiquidoIsento)}) para a sua pessoa física, separando 10% em um <strong>CDB de liquidez diária 100% CDI</strong> para substituir o antigo FGTS.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4 text-sm text-slate-700 pt-2">
+          <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-100">
+            <h3 className="font-bold text-slate-900 mb-1">
+              Qual o desconto exato de INSS e Imposto de Renda para R$ {salario.toLocaleString("pt-BR")} CLT em 2026?
+            </h3>
+            <p>
+              No contracheque de 2026, o INSS progressivo retém{" "}
+              <strong>{formatBRL(sim.clt.inss)}</strong> e o Imposto de Renda (IRRF) retém{" "}
+              <strong>{formatBRL(sim.clt.irpf)}</strong> (aplicando automaticamente o desconto{" "}
+              {sim.clt.metodoIR}). Se você possui gastos altos com plano de saúde, escola de filhos ou aplica até 12% da renda bruta em <strong>Previdência Privada PGBL</strong>, pode restituir boa parte desse IRRF na Declaração Anual.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
+            <h3 className="font-bold text-slate-900 mb-1">
+              Faturando {formatBRL(pjSugerido)} como PJ, preciso de Microempresa (ME) ou posso ser MEI?
+            </h3>
+            <p>
+              Com faturamento mensal de {formatBRL(pjSugerido)} ({formatBRL(pjSugerido * 12)}/ano),{" "}
+              {pjSugerido * 12 <= 81000
+                ? "você ainda está dentro do teto anual de R$ 81.000 do MEI caso a sua profissão seja permitida na lista de atividades do Microempreendedor Individual."
+                : "você ultrapassa o limite anual de R$ 81.000 do MEI, sendo necessário abrir uma Sociedade Limitada Unipessoal (SLU) enquadrada como Microempresa (ME) no Simples Nacional, emitindo nota com Certificado Digital e-CNPJ."}
             </p>
           </div>
         </div>

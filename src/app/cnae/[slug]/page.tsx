@@ -7,7 +7,7 @@ import { fetchCNAEFromIBGE } from "@/lib/gov-apis";
 import CNAECalculator from "@/components/CNAECalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
-import { CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2, Info, Building2 } from "lucide-react";
 
 export async function generateStaticParams() {
   return CNAES_DATA.map((c) => ({
@@ -26,10 +26,12 @@ export async function generateMetadata({
 
   return {
     title: `CNAE ${cnae.codigo} (${cnae.nomePopular}): Anexo, Fator R, pode ser MEI e Imposto 2026`,
-    description: `Tudo sobre o CNAE ${cnae.codigo} — ${cnae.titulo} em 2026: ${
+    description: `Consulta completa do CNAE ${cnae.codigo} — ${cnae.titulo} em 2026: ${
       cnae.permiteMEI ? "Permite ser MEI" : "Não pode ser MEI"
     }, tributado no Anexo ${cnae.anexo} (${
-      cnae.fatorR ? "cai para 6% com Fator R" : `inicia em ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
+      cnae.fatorR
+        ? "cai para 6% com Fator R"
+        : `inicia em ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
     }). Simule sua guia DAS agora!`,
   };
 }
@@ -55,8 +57,8 @@ export default async function CNAEDetailPage({
         acceptedAnswer: {
           "@type": "Answer",
           text: cnae.permiteMEI
-            ? `Sim! O CNAE ${cnae.codigo} (${cnae.titulo}) é permitido no MEI em 2026, respeitando o limite de faturamento anual.`
-            : `Não. O CNAE ${cnae.codigo} (${cnae.titulo}) não é permitido no MEI por se tratar de atividade intelectual/regulamentada, devendo ser aberto como Microempresa (ME) no Simples Nacional.`,
+            ? `Sim! O CNAE ${cnae.codigo} (${cnae.titulo}) é permitido no MEI em 2026, respeitando o limite de faturamento anual de R$ 81.000.`
+            : `Não. O CNAE ${cnae.codigo} (${cnae.titulo}) não é permitido no MEI por se tratar de atividade intelectual ou regulamentada, devendo ser aberto como Microempresa (ME / SLU) no Simples Nacional.`,
         },
       },
       {
@@ -97,7 +99,7 @@ export default async function CNAEDetailPage({
           <span className="text-xs font-bold px-2.5 py-1 rounded bg-blue-100 text-blue-800">
             {cnae.categoria}
           </span>
-          <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-800">
+          <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-800 font-mono">
             Anexo {cnae.anexo} • Inicial {(cnae.aliquotaInicialNominal * 100).toFixed(1)}%
           </span>
           <span
@@ -124,7 +126,7 @@ export default async function CNAEDetailPage({
           <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
           <div>
             <strong className="block text-blue-950 mb-0.5">
-              Dica do Contador para 2026:
+              Recomendação Prática de Contabilidade (2026):
             </strong>
             {cnae.dicaTributaria2026}
           </div>
@@ -141,11 +143,11 @@ export default async function CNAEDetailPage({
         reducaoIVA2026={cnae.reducaoIVA2026}
       />
 
-      {/* O que este CNAE compreende + FAQ */}
+      {/* O que este CNAE compreende + Resumo Tributário */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
           <h2 className="text-lg font-extrabold text-slate-900 mb-4">
-            Atividades Permitidas na Nota Fiscal ({cnae.codigo})
+            O que você pode faturar na Nota Fiscal com o CNAE {cnae.codigo}
           </h2>
           <ul className="space-y-3 text-sm text-slate-700">
             {cnae.atividadesCompreendidas.map((ativ, idx) => (
@@ -159,7 +161,7 @@ export default async function CNAEDetailPage({
 
         <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
           <h2 className="text-lg font-extrabold text-slate-900">
-            Resumo Tributário {cnae.codigo} em 2026
+            Ficha Tributária {cnae.codigo} em 2026
           </h2>
           <div className="text-xs sm:text-sm space-y-2.5 text-slate-700">
             <div className="flex justify-between py-2 border-b border-slate-100">
@@ -197,6 +199,47 @@ export default async function CNAEDetailPage({
           </div>
         </section>
       </div>
+
+      {/* Checklist Prático de Abertura de CNPJ (Humanizado + Alto CPC Bancário/Contábil) */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
+        <div className="flex items-center gap-2 text-blue-700 font-bold text-xs uppercase tracking-wider">
+          <Building2 className="w-4 h-4" />
+          Guia de Abertura de Empresa & Emissão de Nota Fiscal (2026)
+        </div>
+        <h2 className="text-xl font-extrabold text-slate-900">
+          Como abrir um CNPJ com o CNAE {cnae.codigo} pagando o menor imposto legal
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong className="text-slate-900 block">
+              1. Natureza Jurídica (SLU) e Contabilidade Digital
+            </strong>
+            <p>
+              {cnae.permiteMEI
+                ? "Se você fatura até R$ 6.750/mês e não tem sócio, pode abrir um MEI gratuitamente no Portal do Empreendedor em 5 minutos. Passando desse teto, migre para uma SLU (Sociedade Limitada Unipessoal) com auxílio de uma contabilidade digital."
+                : "Como este CNAE não aceita MEI, a melhor estrutura jurídica para atuar sozinho é a SLU (Sociedade Limitada Unipessoal): ela separa o seu CPF do patrimônio do CNPJ e pode ser aberta sem custo de honorários em escritórios de contabilidade online."}
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong className="text-slate-900 block">
+              2. Certificado Digital e-CNPJ A1 e Emissor NFS-e
+            </strong>
+            <p>
+              Para emitir a Nota Fiscal de Serviços Eletrônica (NFS-e Padrão Nacional 2026) e assinar declarações no e-CAC da Receita Federal, adquira um <strong>Certificado Digital e-CNPJ arquivo A1</strong> (válido por 12 meses) e vincule-o ao sistema emissor da sua contabilidade ou ERP.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong className="text-slate-900 block">
+              3. Conta Digital PJ Gratuita e Cartão Empresarial
+            </strong>
+            <p>
+              Assim que o cartão CNPJ sair, abra uma <strong>conta digital PJ isenta de tarifas</strong> (Pix PJ ilimitado, emissão de boletos e pagamento automático da guia DAS). Isso comprova a separação contábil e garante que todo o lucro distribuído vá para a sua conta pessoal <strong>100% isento de Imposto de Renda</strong>.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <AdSlot
         slotId="cnae-bottom-banner"
