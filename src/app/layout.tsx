@@ -5,8 +5,14 @@ import Footer from "@/components/Footer";
 import IndicadoresOficiaisBar from "@/components/IndicadoresOficiaisBar";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://calculafiscal.vercel.app");
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://calculafiscal.com.br"),
+  metadataBase: new URL(siteUrl),
   title: {
     default:
       "CalculaFiscal 2026 — Calculadora CLT vs PJ, Tabela CNAE, Fator R e Salário Líquido",

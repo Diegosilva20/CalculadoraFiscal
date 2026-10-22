@@ -3,7 +3,11 @@ import { CNAES_DATA } from "@/data/cnaes";
 import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://calculafiscal.com.br";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "https://calculafiscal.vercel.app");
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
