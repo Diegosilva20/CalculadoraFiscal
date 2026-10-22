@@ -3,17 +3,48 @@ import type { Metadata } from "next";
 import SalarioLiquidoCalculator from "@/components/SalarioLiquidoCalculator";
 import SnowballLinks from "@/components/SnowballLinks";
 import AdSlot from "@/components/AdSlot";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
   title:
     "Calculadora de Salário Líquido 2026 — Com Nova Isenção de IRPF até R$ 5.000 e INSS",
   description:
     "Calcule seu Salário Líquido CLT em 2026 com a nova tabela de isenção de Imposto de Renda até R$ 5.000, desconto progressivo para salários até R$ 7.000 e INSS atualizado.",
+  alternates: {
+    canonical: "/calculadora-salario-liquido",
+  },
 };
 
 export default function SalarioLiquidoPage() {
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: "Calculadora de Salário Líquido CLT 2026 (Isenção IRPF até R$ 5.000)",
+    description:
+      "Simulador de Salário Líquido CLT 2026 com cálculo de INSS progressivo, nova faixa de isenção de IRPF até R$ 5.000, desconto simplificado (R$ 607,20) e dedução por dependentes.",
+    path: "/calculadora-salario-liquido",
+    breadcrumbs: [
+      { name: "Início", path: "/" },
+      { name: "Calculadora de Salário Líquido 2026", path: "/calculadora-salario-liquido" },
+    ],
+    faqs: [
+      {
+        question: "Quem está isento de Imposto de Renda no salário CLT em 2026?",
+        answer:
+          "Em 2026, trabalhadores com remuneração bruta mensal de até R$ 5.000,00 contam com isenção total de Imposto de Renda Retido na Fonte (IRRF = R$ 0,00). Para salários entre R$ 5.000,01 e R$ 7.000,00 há um redutor gradual, e acima de R$ 7.000,00 aplica-se a tabela progressiva tradicional comparando automaticamente o desconto simplificado (R$ 607,20) com as deduções legais.",
+      },
+      {
+        question: "Como funciona o desconto progressivo do INSS em 2026?",
+        answer:
+          "O INSS incide de forma fatiada por faixas salariais (7,5%, 9%, 12% e 14%) até o teto previdenciário de R$ 8.475,55 em 2026, cujo desconto máximo trava em R$ 988,09.",
+      },
+    ],
+  });
+
   return (
     <div className="space-y-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+      />
       <div className="space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-indigo-600">
           Tabela Oficial INSS & IRRF 2026

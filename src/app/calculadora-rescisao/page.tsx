@@ -3,17 +3,48 @@ import type { Metadata } from "next";
 import RescisaoFeriasCalculator from "@/components/RescisaoFeriasCalculator";
 import SnowballLinks from "@/components/SnowballLinks";
 import AdSlot from "@/components/AdSlot";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
   title:
     "Calculadora de Rescisão Trabalhista e Férias CLT 2026 — Acerto, Multa 40% FGTS e Aviso",
   description:
     "Simule o valor exato da sua Rescisão de Contrato de Trabalho CLT e Férias em 2026: demissão sem justa causa, acordo trabalhista (80% FGTS), pedido de demissão e venda de 10 dias de férias.",
+  alternates: {
+    canonical: "/calculadora-rescisao",
+  },
 };
 
 export default function RescisaoPage() {
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: "Calculadora de Rescisão Trabalhista e Férias CLT 2026",
+    description:
+      "Simulador de acerto rescisório CLT e férias 2026 com aviso prévio proporcional (Lei 12.506/2011), saldo de salário, 13º proporcional, férias + 1/3, abono pecuniário e multa de 40% do FGTS.",
+    path: "/calculadora-rescisao",
+    breadcrumbs: [
+      { name: "Início", path: "/" },
+      { name: "Calculadora de Rescisão e Férias 2026", path: "/calculadora-rescisao" },
+    ],
+    faqs: [
+      {
+        question: "Qual o prazo legal para pagamento da rescisão CLT em 2026?",
+        answer:
+          "Pelo Art. 477, § 6º da CLT, o empregador tem até 10 dias corridos após o término do contrato para quitar todas as verbas rescisórias e entregar os documentos de saque do FGTS e Seguro-Desemprego, sob pena de multa equivalente a um salário bruto do empregado.",
+      },
+      {
+        question: "Como funciona a demissão por acordo trabalhista (Art. 484-A da CLT)?",
+        answer:
+          "No acordo de demissão consensual, o trabalhador recebe metade do aviso prévio indenizado, 100% do saldo de salário, férias + 1/3 e 13º proporcional, multa rescisória de 20% sobre o FGTS e pode sacar até 80% do saldo total da conta do FGTS, mas não tem direito ao Seguro-Desemprego.",
+      },
+    ],
+  });
+
   return (
     <div className="space-y-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+      />
       <div className="space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-amber-600">
           Direitos Trabalhistas CLT 2026

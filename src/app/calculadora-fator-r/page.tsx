@@ -6,45 +6,49 @@ import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { CNAES_DATA } from "@/data/cnaes";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
   title:
     "Calculadora de Fator R Simples Nacional 2026 — Como Cair do Anexo V (15,5%) para o Anexo III (6%)",
   description:
     "Simule o Fator R (28%) da sua empresa no Simples Nacional em 2026: descubra o valor exato do pró-labore mensal para sair do Anexo V (15,5%) e pagar apenas 6% no Anexo III.",
+  alternates: {
+    canonical: "/calculadora-fator-r",
+  },
 };
 
 export default function CalculadoraFatorRPage() {
   const cnaesComFatorR = CNAES_DATA.filter((c) => c.fatorR).slice(0, 12);
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: "Calculadora de Fator R Simples Nacional 2026 (Anexo III vs Anexo V)",
+    description:
+      "Simulador do Fator R 28% (LC 123/2006) no Simples Nacional 2026 com cálculo de pró-labore ótimo, INSS, IRPF isento até R$ 5.000 e auditoria de 12 meses (RBT12 x FS12).",
+    path: "/calculadora-fator-r",
+    breadcrumbs: [
+      { name: "Início", path: "/" },
+      { name: "Calculadora de Fator R 2026", path: "/calculadora-fator-r" },
+    ],
+    faqs: [
       {
-        "@type": "Question",
-        name: "Como calcular o Fator R do Simples Nacional em 2026?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "O Fator R é calculado dividindo a soma da Folha de Salários dos últimos 12 meses (incluindo pró-labore dos sócios, salários de funcionários, 13º, INSS patronal e FGTS) pela Receita Bruta acumulada dos últimos 12 meses (RBT12). Se o resultado for igual ou superior a 28% (0,28), a empresa é tributada no Anexo III (a partir de 6%) em vez do Anexo V (a partir de 15,5%).",
-        },
+        question: "Como calcular o Fator R do Simples Nacional em 2026?",
+        answer:
+          "O Fator R é calculado dividindo a soma da Folha de Salários dos últimos 12 meses (incluindo pró-labore dos sócios, salários de funcionários, 13º, INSS patronal e FGTS) pela Receita Bruta acumulada dos últimos 12 meses (RBT12). Se o resultado for igual ou superior a 28% (0,28), a empresa é tributada no Anexo III (a partir de 6%) em vez do Anexo V (a partir de 15,5%).",
       },
       {
-        "@type": "Question",
-        name: "Por que o Fator R ficou ainda mais vantajoso em 2026?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Com a nova regra de isenção do Imposto de Renda Pessoa Física (IRPF) para rendimentos de até R$ 5.000 mensais em 2026, sócios de empresas que faturam até R$ 17.850 por mês conseguem definir um pró-labore de 28% (até R$ 5.000) pagando R$ 0,00 de IRPF sobre o pró-labore, recolhendo apenas 11% de INSS e derrubando o DAS de 15,5% para 6%.",
-        },
+        question: "Por que o Fator R ficou ainda mais vantajoso em 2026?",
+        answer:
+          "Com a nova regra de isenção do Imposto de Renda Pessoa Física (IRPF) para rendimentos de até R$ 5.000 mensais em 2026, sócios de empresas que faturam até R$ 17.850 por mês conseguem definir um pró-labore de 28% (até R$ 5.000) pagando R$ 0,00 de IRPF sobre o pró-labore, recolhendo apenas 11% de INSS e derrubando o DAS de 15,5% para 6%.",
       },
     ],
-  };
+  });
 
   return (
     <div className="space-y-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
       <div className="space-y-3">

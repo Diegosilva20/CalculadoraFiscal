@@ -5,7 +5,8 @@ import CLTvsPJCalculator from "@/components/CLTvsPJCalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { FAIXAS_SALARIAIS_SEO } from "@/data/profissoes";
-import { calculateCLTvsPJ, formatBRL, formatPercent } from "@/lib/calculators";
+import { calculateCLTvsPJ, formatBRL } from "@/lib/calculators";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export async function generateStaticParams() {
   return FAIXAS_SALARIAIS_SEO.map((valor) => ({
@@ -28,6 +29,9 @@ export async function generateMetadata({
   return {
     title: `Salário de R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto PJ em 2026?`,
     description: `Ganhar R$ ${salario.toLocaleString("pt-BR")} CLT deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos na conta. Para compensar como PJ no Simples Nacional em 2026, sua nota fiscal deve partir de ${formatBRL(sim.faturamentoPJEquivalente)}.`,
+    alternates: {
+      canonical: `/clt-vs-pj/salario/${salario}`,
+    },
   };
 }
 
@@ -46,34 +50,32 @@ export default async function SalarioProgrammaticPage({
     beneficiosCLT: 900,
   });
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: `Salário de R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto PJ em 2026?`,
+    description: `Comparativo CLT vs PJ para salário de ${formatBRL(salario)}: desconto de INSS (${formatBRL(sim.clt.inss)}), IRRF (${formatBRL(sim.clt.irpf)}), pacote real (${formatBRL(sim.clt.pacoteTotalMensalReal)}) e faturamento PJ de equilíbrio (${formatBRL(sim.faturamentoPJEquivalente)}).`,
+    path: `/clt-vs-pj/salario/${salario}`,
+    breadcrumbs: [
+      { name: "Início", path: "/" },
+      { name: "CLT vs PJ 2026", path: "/clt-vs-pj" },
+      { name: `R$ ${salario.toLocaleString("pt-BR")} CLT vs PJ`, path: `/clt-vs-pj/salario/${salario}` },
+    ],
+    faqs: [
       {
-        "@type": "Question",
-        name: `Quanto sobra líquido de um salário de R$ ${salario.toLocaleString("pt-BR")} CLT em 2026?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Em 2026, um salário bruto de ${formatBRL(salario)} na carteira assinada tem desconto de ${formatBRL(sim.clt.inss)} de INSS e ${formatBRL(sim.clt.irpf)} de Imposto de Renda Retido na Fonte (IRRF), deixando ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos por mês.`,
-        },
+        question: `Quanto sobra líquido de um salário de R$ ${salario.toLocaleString("pt-BR")} CLT em 2026?`,
+        answer: `Em 2026, um salário bruto de ${formatBRL(salario)} na carteira assinada tem desconto de ${formatBRL(sim.clt.inss)} de INSS e ${formatBRL(sim.clt.irpf)} de Imposto de Renda Retido na Fonte (IRRF), deixando ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos por mês.`,
       },
       {
-        "@type": "Question",
-        name: `R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto como PJ em 2026?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Somando salário líquido (${formatBRL(sim.clt.salarioLiquidoMensal)}), depósito mensal de FGTS (${formatBRL(sim.clt.fgtsMensal)}), 13º proporcional, férias + 1/3 e benefícios, o pacote CLT entrega ${formatBRL(sim.clt.pacoteTotalMensalReal)}/mês. Para empatar atuando com CNPJ no Simples Nacional (Anexo III com 6% de imposto inicial), você precisa emitir nota fiscal de no mínimo ${formatBRL(sim.faturamentoPJEquivalente)} mensais.`,
-        },
+        question: `R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto como PJ em 2026?`,
+        answer: `Somando salário líquido (${formatBRL(sim.clt.salarioLiquidoMensal)}), depósito mensal de FGTS (${formatBRL(sim.clt.fgtsMensal)}), 13º proporcional, férias + 1/3 e benefícios, o pacote CLT entrega ${formatBRL(sim.clt.pacoteTotalMensalReal)}/mês. Para empatar atuando com CNPJ no Simples Nacional (Anexo III com 6% de imposto inicial), você precisa emitir nota fiscal de no mínimo ${formatBRL(sim.faturamentoPJEquivalente)} mensais.`,
       },
     ],
-  };
+  });
 
   return (
     <div className="space-y-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
       {/* Breadcrumb */}

@@ -8,6 +8,7 @@ import CNAECalculator from "@/components/CNAECalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { CheckCircle2, Info, Building2 } from "lucide-react";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export async function generateStaticParams() {
   return CNAES_DATA.map((c) => ({
@@ -33,6 +34,9 @@ export async function generateMetadata({
         ? "cai para 6% com Fator R"
         : `inicia em ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
     }). Simule sua guia DAS agora!`,
+    alternates: {
+      canonical: `/cnae/${cnae.slug}`,
+    },
   };
 }
 
@@ -47,38 +51,36 @@ export default async function CNAEDetailPage({
 
   const dadosIBGE = await fetchCNAEFromIBGE(cnae.codigoLimpo);
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: `Calculadora e Consulta CNAE ${cnae.codigo} (${cnae.nomePopular}) — Simples Nacional 2026`,
+    description: `Simulador de imposto DAS, Fator R e enquadramento MEI para o CNAE ${cnae.codigo} (${cnae.titulo}) no Simples Nacional 2026.`,
+    path: `/cnae/${cnae.slug}`,
+    breadcrumbs: [
+      { name: "Início", path: "/" },
+      { name: "Tabela CNAE 2026", path: "/cnae" },
+      { name: `CNAE ${cnae.codigo}`, path: `/cnae/${cnae.slug}` },
+    ],
+    faqs: [
       {
-        "@type": "Question",
-        name: `O CNAE ${cnae.codigo} pode ser MEI em 2026?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: cnae.permiteMEI
-            ? `Sim! O CNAE ${cnae.codigo} (${cnae.titulo}) é permitido no MEI em 2026, respeitando o limite de faturamento anual de R$ 81.000.`
-            : `Não. O CNAE ${cnae.codigo} (${cnae.titulo}) não é permitido no MEI por se tratar de atividade intelectual ou regulamentada, devendo ser aberto como Microempresa (ME / SLU) no Simples Nacional.`,
-        },
+        question: `O CNAE ${cnae.codigo} pode ser MEI em 2026?`,
+        answer: cnae.permiteMEI
+          ? `Sim! O CNAE ${cnae.codigo} (${cnae.titulo}) é permitido no MEI em 2026, respeitando o limite de faturamento anual de R$ 81.000.`
+          : `Não. O CNAE ${cnae.codigo} (${cnae.titulo}) não é permitido no MEI por se tratar de atividade intelectual ou regulamentada, devendo ser aberto como Microempresa (ME / SLU) no Simples Nacional.`,
       },
       {
-        "@type": "Question",
-        name: `Qual o Anexo do Simples Nacional e alíquota do CNAE ${cnae.codigo}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: cnae.fatorR
-            ? `O CNAE ${cnae.codigo} pertence originalmente ao Anexo V (15,5%), mas está sujeito ao Fator R. Mantendo 28% de folha/pró-labore, ele é tributado pelo Anexo III com alíquota inicial de apenas 6%.`
-            : `O CNAE ${cnae.codigo} é tributado diretamente no Anexo ${cnae.anexo} do Simples Nacional, com alíquota nominal inicial de ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}% sem exigir Fator R.`,
-        },
+        question: `Qual o Anexo do Simples Nacional e alíquota do CNAE ${cnae.codigo}?`,
+        answer: cnae.fatorR
+          ? `O CNAE ${cnae.codigo} pertence originalmente ao Anexo V (15,5%), mas está sujeito ao Fator R. Mantendo 28% de folha/pró-labore, ele é tributado pelo Anexo III com alíquota inicial de apenas 6%.`
+          : `O CNAE ${cnae.codigo} é tributado diretamente no Anexo ${cnae.anexo} do Simples Nacional, com alíquota nominal inicial de ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}% sem exigir Fator R.`,
       },
     ],
-  };
+  });
 
   return (
     <div className="space-y-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
       <nav className="text-xs text-slate-500 flex items-center gap-2">

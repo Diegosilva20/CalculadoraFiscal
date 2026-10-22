@@ -3,43 +3,47 @@ import type { Metadata } from "next";
 import CustoFuncionarioCalculator from "@/components/CustoFuncionarioCalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
   title:
     "Calculadora de Custo de Funcionário CLT para Empresa 2026 — Simples Nacional vs Lucro Presumido",
   description:
     "Calcule quanto custa um funcionário CLT para a empresa em 2026 no Simples Nacional, MEI e Lucro Presumido/Real: FGTS, INSS Patronal, provisão de 13º, férias + 1/3 e benefícios.",
+  alternates: {
+    canonical: "/custo-funcionario-clt",
+  },
 };
 
 export default function CustoFuncionarioPage() {
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: "Calculadora de Custo de Funcionário CLT para Empresa 2026",
+    description:
+      "Simulador empresarial de folha de pagamento 2026 comparando encargos trabalhistas e provisões (FGTS, 13º, Férias + 1/3, INSS Patronal) no Simples Nacional, MEI e Lucro Presumido/Real.",
+    path: "/custo-funcionario-clt",
+    breadcrumbs: [
+      { name: "Início", path: "/" },
+      { name: "Custo de Funcionário CLT 2026", path: "/custo-funcionario-clt" },
+    ],
+    faqs: [
       {
-        "@type": "Question",
-        name: "Quanto custa um funcionário CLT para uma empresa no Simples Nacional em 2026?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "No Simples Nacional (Anexos I, II, III e V), a empresa é isenta da cota patronal de 20% do INSS e do Sistema S. Somando FGTS (8%), provisão mensal de 13º salário (8,33%), férias + 1/3 (11,11%), FGTS sobre provisões e reserva para multa rescisória, os encargos trabalhistas representam cerca de 33,7% sobre o salário bruto, além dos benefícios (VR e VT).",
-        },
+        question: "Quanto custa um funcionário CLT para uma empresa no Simples Nacional em 2026?",
+        answer:
+          "No Simples Nacional (Anexos I, II, III e V), a empresa é isenta da cota patronal de 20% do INSS e do Sistema S. Somando FGTS (8%), provisão mensal de 13º salário (8,33%), férias + 1/3 (11,11%), FGTS sobre provisões e reserva para multa rescisória, os encargos trabalhistas representam cerca de 33,7% sobre o salário bruto, além dos benefícios (VR e VT).",
       },
       {
-        "@type": "Question",
-        name: "Quanto custa um funcionário no Lucro Presumido ou Lucro Real?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "No Lucro Presumido, Lucro Real ou Anexo IV do Simples Nacional, além de FGTS, 13º e férias, a empresa recolhe 20% de INSS Patronal, 1% a 3% de RAT e 5,8% de Terceiros (Sistema S) sobre a folha. Isso eleva os encargos para cerca de 68% a 75% acima do salário bruto na carteira.",
-        },
+        question: "Quanto custa um funcionário no Lucro Presumido ou Lucro Real?",
+        answer:
+          "No Lucro Presumido, Lucro Real ou Anexo IV do Simples Nacional, além de FGTS, 13º e férias, a empresa recolhe 20% de INSS Patronal, 1% a 3% de RAT e 5,8% de Terceiros (Sistema S) sobre a folha. Isso eleva os encargos para cerca de 68% a 75% acima do salário bruto na carteira.",
       },
     ],
-  };
+  });
 
   return (
     <div className="space-y-10">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
       <div className="space-y-3">
