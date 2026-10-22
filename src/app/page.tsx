@@ -20,8 +20,8 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Banner */}
-      <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-white/10">
-        <div className="max-w-3xl space-y-4">
+      <section className="bg-slate-950 bg-fintech-grid text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-slate-800 relative overflow-hidden">
+        <div className="max-w-3xl space-y-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             Atualizado com a Isenção IRPF R$ 5.000 e Reforma Tributária (CBS/IBS 2026)

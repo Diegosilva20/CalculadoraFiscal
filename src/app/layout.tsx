@@ -1,9 +1,24 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import IndicadoresOficiaisBar from "@/components/IndicadoresOficiaisBar";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -38,7 +53,7 @@ export default function RootLayout({
   const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
 
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`${jakarta.variable} ${jetbrains.variable}`}>
       <head>
         {adsenseClientId && (
           <script
@@ -48,7 +63,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="min-h-screen flex flex-col antialiased">
+      <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
         <IndicadoresOficiaisBar />
         <Header />
         <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">

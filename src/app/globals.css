@@ -3,7 +3,23 @@
 @tailwind utilities;
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #f4f6fb;
+  color: #0b1120;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Padrão arquitetônico sutil estilo Fintech (Stripe / BTG) */
+.bg-fintech-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Estilização refinada para sliders interativos */
+input[type="range"] {
+  height: 6px;
+  border-radius: 999px;
 }

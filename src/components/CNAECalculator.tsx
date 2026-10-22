@@ -9,7 +9,7 @@ import {
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
-import { CheckCircle2, Sparkles, ShieldAlert } from "lucide-react";
+import { CheckCircle2, Sparkles, ShieldAlert, Zap } from "lucide-react";
 
 interface CNAECalculatorProps {
   codigoCNAE: string;
@@ -19,6 +19,13 @@ interface CNAECalculatorProps {
   permiteMEI: boolean;
   reducaoIVA2026: number;
 }
+
+const FATURAMENTO_PRESETS = [
+  { label: "Até Teto MEI", valor: 6500 },
+  { label: "PJ Inicial", valor: 10000 },
+  { label: "PJ Pleno / Sênior", valor: 18000 },
+  { label: "Consultoria / Clínica", valor: 35000 },
+];
 
 export default function CNAECalculator({
   codigoCNAE,
@@ -43,16 +50,41 @@ export default function CNAECalculator({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-blue-100 text-blue-800">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-mono">
             Simulador Oficial Simples Nacional + Reforma 2026 • CNAE {codigoCNAE}
           </span>
           {sujeitoFatorR && (
-            <span className="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-100 text-emerald-800">
-               elegível ao Fator R (Redução para 6% no Anexo III)
+            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800">
+              ⚡ Elegível ao Fator R (Redução para 6% no Anexo III)
             </span>
           )}
+        </div>
+
+        {/* Botões Rápidos de Faturamento */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 mr-1">
+            <Zap className="w-3.5 h-3.5 text-amber-500" />
+            Testar Faturamento:
+          </span>
+          {FATURAMENTO_PRESETS.map((p) => (
+            <button
+              key={p.valor}
+              type="button"
+              onClick={() => setFaturamentoMensal(p.valor)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                faturamentoMensal === p.valor
+                  ? "bg-slate-900 text-white border-slate-900"
+                  : "bg-slate-50 hover:bg-blue-50 text-slate-700 border-slate-200"
+              }`}
+            >
+              {p.label}:{" "}
+              <span className="font-mono">
+                R$ {p.valor.toLocaleString("pt-BR")}
+              </span>
+            </button>
+          ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
@@ -66,7 +98,7 @@ export default function CNAECalculator({
               min={1000}
               value={faturamentoMensal}
               onChange={(e) => setFaturamentoMensal(Number(e.target.value) || 0)}
-              className="w-full px-4 py-3 text-xl font-extrabold text-slate-900 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              className="w-full px-4 py-3 text-xl font-mono font-extrabold tabular-nums text-slate-900 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none shadow-inner"
             />
             <input
               type="range"
@@ -75,7 +107,7 @@ export default function CNAECalculator({
               step={500}
               value={Math.min(60000, faturamentoMensal)}
               onChange={(e) => setFaturamentoMensal(Number(e.target.value))}
-              className="w-full mt-2 accent-blue-600 cursor-pointer"
+              className="w-full mt-3 accent-blue-600 cursor-pointer"
             />
           </div>
 
@@ -119,16 +151,18 @@ export default function CNAECalculator({
 
       {/* Resultados do Cálculo do CNAE */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-900 text-white rounded-2xl p-5 shadow">
+        <div className="bg-slate-950 bg-fintech-grid text-white rounded-2xl p-5 shadow-md border border-slate-800">
           <span className="text-xs text-slate-400 uppercase font-semibold">
             Guia DAS (Simples Nacional)
           </span>
-          <p className="text-2xl font-black text-emerald-400 mt-1">
+          <p className="text-2xl font-mono font-bold tabular-nums text-emerald-400 mt-1">
             {formatBRL(resultado.valorDAS)}/mês
           </p>
           <p className="text-xs text-slate-300 mt-1">
             Anexo {resultado.anexoEfetivo} • Alíquota Efetiva:{" "}
-            <strong>{formatPercent(resultado.aliquotaEfetivaDAS)}</strong>
+            <strong className="font-mono">
+              {formatPercent(resultado.aliquotaEfetivaDAS)}
+            </strong>
           </p>
         </div>
 
@@ -136,11 +170,14 @@ export default function CNAECalculator({
           <span className="text-xs text-slate-500 uppercase font-semibold">
             Pró-Labore + INSS + IRPF (2026)
           </span>
-          <p className="text-2xl font-black text-slate-900 mt-1">
+          <p className="text-2xl font-mono font-bold tabular-nums text-slate-900 mt-1">
             {formatBRL(resultado.inssProLabore + resultado.irpfProLabore)}/mês
           </p>
           <p className="text-xs text-slate-500 mt-1">
-            Sobre pró-labore de {formatBRL(resultado.proLaboreSugerido)}
+            Sobre pró-labore de{" "}
+            <span className="font-mono">
+              {formatBRL(resultado.proLaboreSugerido)}
+            </span>
           </p>
         </div>
 
@@ -148,11 +185,14 @@ export default function CNAECalculator({
           <span className="text-xs text-emerald-800 uppercase font-bold">
             Lucro Líquido Livre (Isento de IR)
           </span>
-          <p className="text-2xl font-black text-emerald-700 mt-1">
+          <p className="text-2xl font-mono font-bold tabular-nums text-emerald-700 mt-1">
             {formatBRL(resultado.lucroLiquidoIsento)}/mês
           </p>
           <p className="text-xs text-emerald-800 mt-1">
-            Carga total: {formatPercent(resultado.cargaTributariaTotalPercentual)}
+            Carga total:{" "}
+            <strong className="font-mono">
+              {formatPercent(resultado.cargaTributariaTotalPercentual)}
+            </strong>
           </p>
         </div>
       </div>
@@ -184,7 +224,10 @@ export default function CNAECalculator({
           {sujeitoFatorR && resultado.economiaMensalComFatorR > 0 && (
             <p className="text-emerald-700 font-semibold pt-1">
               💰 Economia com Fator R ativado: você economiza{" "}
-              <strong>{formatBRL(resultado.economiaMensalComFatorR)}/mês</strong> ({formatBRL(resultado.economiaMensalComFatorR * 12)}/ano) em relação ao Anexo V!
+              <strong className="font-mono">
+                {formatBRL(resultado.economiaMensalComFatorR)}/mês
+              </strong>{" "}
+              (<span className="font-mono">{formatBRL(resultado.economiaMensalComFatorR * 12)}/ano</span>) em relação ao Anexo V!
             </p>
           )}
         </div>
@@ -199,7 +242,7 @@ export default function CNAECalculator({
           </p>
           <p className="text-slate-700 font-medium">
             • Redução setorial aprovada na Lei Complementar para este CNAE:{" "}
-            <strong className="text-blue-700">
+            <strong className="text-blue-700 font-mono">
               {formatPercent(reducaoIVA2026, 0)} de desconto na alíquota padrão do IVA
             </strong>{" "}
             (Alíquota estimada fora do Simples: {formatPercent(resultado.reformaTributaria.aliquotaEstimadaIVADual2027)}).
