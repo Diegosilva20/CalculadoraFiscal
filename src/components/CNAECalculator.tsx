@@ -8,6 +8,7 @@ import {
   formatPercent,
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
+import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import { CheckCircle2, Sparkles, ShieldAlert } from "lucide-react";
 
 interface CNAECalculatorProps {
@@ -205,6 +206,8 @@ export default function CNAECalculator({
           </p>
         </div>
       </div>
+
+      <LegalDisclaimerBox />
     </div>
   );
 }

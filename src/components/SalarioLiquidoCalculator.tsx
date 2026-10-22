@@ -8,6 +8,7 @@ import {
   formatPercent,
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
+import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
@@ -181,6 +182,8 @@ export default function SalarioLiquidoCalculator({
           </div>
         </div>
       </div>
+
+      <LegalDisclaimerBox />
     </div>
   );
 }

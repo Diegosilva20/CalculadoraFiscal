@@ -8,6 +8,7 @@ import {
   formatBRL,
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
+import LegalDisclaimerBox from "./LegalDisclaimerBox";
 
 export default function RescisaoFeriasCalculator() {
   const [abaAtiva, setAbaAtiva] = useState<"rescisao" | "ferias">("rescisao");
@@ -284,6 +285,8 @@ export default function RescisaoFeriasCalculator() {
           </div>
         </div>
       )}
+
+      <LegalDisclaimerBox />
     </div>
   );
 }

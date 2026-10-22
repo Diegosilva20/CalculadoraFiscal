@@ -8,6 +8,7 @@ import {
   formatPercent,
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
+import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import { CheckCircle2, AlertTriangle, HelpCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -448,6 +449,8 @@ export default function CLTvsPJCalculator({
           </dl>
         </div>
       </div>
+
+      <LegalDisclaimerBox />
     </div>
   );
 }
