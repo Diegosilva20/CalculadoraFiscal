@@ -14,10 +14,26 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     : normalizeSiteUrl();
 
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+      {
+        userAgent: [
+          "Googlebot",
+          "Bingbot",
+          "OAI-SearchBot",
+          "ChatGPT-User",
+          "GPTBot",
+          "PerplexityBot",
+          "Perplexity-User",
+          "ClaudeBot",
+          "Google-Extended",
+        ],
+        allow: "/",
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
