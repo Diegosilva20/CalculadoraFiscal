@@ -8,9 +8,11 @@ import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
 import {
   ArrowRight,
   Briefcase,
+  Building2,
   Calculator,
   CheckCircle2,
   FileSpreadsheet,
+  Gauge,
   ShieldCheck,
   Sparkles,
   TrendingUp,
@@ -96,7 +98,7 @@ export default function HomePage() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <Link
             href="/clt-vs-pj"
             className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
@@ -126,14 +128,34 @@ export default function HomePage() {
                 <FileSpreadsheet className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-base text-slate-900 group-hover:text-emerald-600">
-                Tabela CNAE & Fator R
+                Tabela CNAE & Reforma 2026
               </h3>
               <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Consulte se o seu CNAE pode ser MEI, qual o Anexo do Simples (III, IV ou V) e simule o desconto da Reforma Tributária.
+                Consulte se o seu CNAE pode ser MEI, qual o Anexo do Simples (I, III, IV ou V) e simule o desconto do IVA Dual.
               </p>
             </div>
             <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-emerald-600">
               Consultar CNAEs <ArrowRight className="w-3.5 h-3.5" />
+            </span>
+          </Link>
+
+          <Link
+            href="/calculadora-fator-r"
+            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-teal-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mb-4 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                <Gauge className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-teal-600">
+                Calculadora de Fator R (28%)
+              </h3>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                Descubra o pró-labore exato para tirar sua empresa do Anexo V (15,5%) e pagar apenas 6% no Anexo III sem IRPF até R$ 5 mil.
+              </p>
+            </div>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-teal-600">
+              Calcular Fator R <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 
@@ -154,6 +176,26 @@ export default function HomePage() {
             </div>
             <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-indigo-600">
               Calcular Líquido <ArrowRight className="w-3.5 h-3.5" />
+            </span>
+          </Link>
+
+          <Link
+            href="/custo-funcionario-clt"
+            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-purple-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-purple-600">
+                Custo de Funcionário CLT
+              </h3>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                Simulador para empresas (Simples Nacional, MEI e Lucro Presumido): veja o custo real com FGTS, 13º, férias e INSS Patronal.
+              </p>
+            </div>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-purple-600">
+              Simular Contratação <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 

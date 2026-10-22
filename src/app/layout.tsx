@@ -42,7 +42,11 @@ export const metadata: Metadata = {
     "salario liquido 2026 isencao 5000",
     "reforma tributaria cbs ibs calculadora pj",
     "calculadora rescisao clt 2026",
+    "custo funcionario clt 2026",
   ],
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
+  },
 };
 
 export default function RootLayout({
@@ -51,6 +55,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
     <html lang="pt-BR" className={`${jakarta.variable} ${jetbrains.variable}`}>
@@ -61,6 +66,19 @@ export default function RootLayout({
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
             crossOrigin="anonymous"
           />
+        )}
+        {gaId && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`,
+              }}
+            />
+          </>
         )}
       </head>
       <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">

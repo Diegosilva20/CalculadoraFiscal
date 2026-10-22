@@ -33,8 +33,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/calculadora-fator-r" className="hover:text-white transition-colors">
+                  Calculadora de Fator R (28% • Anexo III)
+                </Link>
+              </li>
+              <li>
                 <Link href="/calculadora-salario-liquido" className="hover:text-white transition-colors">
                   Calculadora de Salário Líquido 2026
+                </Link>
+              </li>
+              <li>
+                <Link href="/custo-funcionario-clt" className="hover:text-white transition-colors">
+                  Calculadora Custo de Funcionário CLT
                 </Link>
               </li>
               <li>

@@ -14,6 +14,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
     { url: `${baseUrl}/clt-vs-pj`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${baseUrl}/cnae`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${baseUrl}/calculadora-fator-r`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${baseUrl}/custo-funcionario-clt`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/calculadora-salario-liquido`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/calculadora-rescisao`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/sobre`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
