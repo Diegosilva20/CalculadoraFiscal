@@ -28,8 +28,8 @@ export async function generateMetadata({
     salarioBrutoCLT: prof.salarioMedioCLT,
     faturamentoBrutoPJ: prof.propostaMediaPJ,
     beneficiosCLT: prof.beneficiosMediosCLT,
-    anexoSimples: prof.sujeitoFatorR ? "III" : prof.anexoPadrao,
-    usarFatorR28: prof.sujeitoFatorR,
+    anexoPJ: prof.anexoPadrao,
+    sujeitoFatorR: prof.sujeitoFatorR,
   });
 
   return {
@@ -54,9 +54,14 @@ export default async function ProfissaoProgrammaticPage({
     salarioBrutoCLT: prof.salarioMedioCLT,
     faturamentoBrutoPJ: prof.propostaMediaPJ,
     beneficiosCLT: prof.beneficiosMediosCLT,
-    anexoSimples: prof.sujeitoFatorR ? "III" : prof.anexoPadrao,
-    usarFatorR28: prof.sujeitoFatorR,
+    anexoPJ: prof.anexoPadrao,
+    sujeitoFatorR: prof.sujeitoFatorR,
   });
+
+  const aliquotaEfetivaCLT =
+    prof.salarioMedioCLT > 0
+      ? (sim.clt.inss + sim.clt.irpf) / prof.salarioMedioCLT
+      : 0;
 
   const schemaGraph = buildCalculatorSchemaGraph({
     title: prof.tituloSEO,
@@ -138,10 +143,10 @@ export default async function ProfissaoProgrammaticPage({
           <strong>{formatBRL(sim.clt.pacoteTotalMensalReal)}/mês</strong> (contando FGTS, 13º, férias e {formatBRL(prof.beneficiosMediosCLT)} de benefícios). Já uma proposta PJ de{" "}
           <strong>{formatBRL(prof.propostaMediaPJ)}</strong> gera{" "}
           <strong className="text-emerald-700">
-            {formatBRL(sim.pj.liquidoTotalMensal)} livres por mês
+            {formatBRL(sim.pj.lucroLiquidoIsento)} livres por mês
           </strong>{" "}
           — um ganho líquido extra de{" "}
-          <strong>{formatBRL(sim.diferencaMensalNoBolso * 12)} por ano</strong>.
+          <strong>{formatBRL(sim.diferencaNoBolsoMensal * 12)} por ano</strong>.
         </p>
       </div>
 
@@ -195,12 +200,12 @@ export default async function ProfissaoProgrammaticPage({
                 </td>
               </tr>
               <tr>
-                <td className="p-3.5 font-medium">Impostos e Retenções Mensais (INSS + IRPF + DAS)</td>
+                <td className="p-3.5 font-medium">Impostos, Retenções e Contabilidade (INSS + IRPF + DAS)</td>
                 <td className="p-3.5 text-right font-mono text-rose-700">
-                  - {formatBRL(sim.clt.inss + sim.clt.irpf)} ({formatPercent(sim.clt.aliquotaEfetivaTotal)})
+                  - {formatBRL(sim.clt.inss + sim.clt.irpf)} ({formatPercent(aliquotaEfetivaCLT)})
                 </td>
                 <td className="p-3.5 text-right font-mono text-rose-700 bg-emerald-50/40">
-                  - {formatBRL(sim.pj.impostoTotalMensal)} ({formatPercent(sim.pj.aliquotaEfetivaTotal)})
+                  - {formatBRL(sim.pj.totalImpostosECustos)} ({formatPercent(sim.pj.cargaTributariaTotalPercentual)})
                 </td>
               </tr>
               <tr>
@@ -209,7 +214,7 @@ export default async function ProfissaoProgrammaticPage({
                   {formatBRL(sim.clt.salarioLiquidoMensal)}
                 </td>
                 <td className="p-3.5 text-right font-mono font-bold text-emerald-800 bg-emerald-50/40">
-                  {formatBRL(sim.pj.liquidoTotalMensal)}
+                  {formatBRL(sim.pj.lucroLiquidoIsento)}
                 </td>
               </tr>
               <tr>
@@ -225,7 +230,7 @@ export default async function ProfissaoProgrammaticPage({
                 <td className="p-3.5">Patrimônio Mensal Efetivo (Líquido + Provisões)</td>
                 <td className="p-3.5 text-right font-mono">{formatBRL(sim.clt.pacoteTotalMensalReal)}</td>
                 <td className="p-3.5 text-right font-mono text-emerald-700 bg-emerald-100/60">
-                  {formatBRL(sim.pj.liquidoTotalMensal)}
+                  {formatBRL(sim.pj.lucroLiquidoIsento)}
                 </td>
               </tr>
             </tbody>
@@ -267,7 +272,7 @@ export default async function ProfissaoProgrammaticPage({
               3. Plano de Saúde PME e Reserva de Férias
             </h3>
             <p>
-              Substitua os {formatBRL(prof.beneficiosMediosCLT)} de benefícios da CLT contratando um <strong>plano de saúde empresarial pelo CNPJ</strong> (até 35% mais barato que planos individuais PF) e alocando mensalmente {formatBRL(sim.clt.fgtsMensal + sim.clt.provisaoFeriasLiquidaMensal)} em um CDB 100% CDI de liquidez diária para cobrir suas férias remuneradas.
+              Substitua os {formatBRL(prof.beneficiosMediosCLT)} de benefícios da CLT contratando um <strong>plano de saúde empresarial pelo CNPJ</strong> (até 35% mais barato que planos individuais PF) e alocando mensalmente {formatBRL(sim.clt.fgtsMensal + sim.clt.provisaoFeriasLiquidoMensal)} em um CDB 100% CDI de liquidez diária para cobrir suas férias remuneradas.
             </p>
           </div>
         </div>
