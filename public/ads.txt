@@ -1,0 +1,3 @@
+# Arquivo Oficial de Autorização de Vendedores Digitais (Authorized Digital Sellers — IAB Tech Lab / Google AdSense)
+# Quando sua conta Google AdSense for aprovada, substitua pub-0000000000000000 pelo seu ID de Editor oficial:
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

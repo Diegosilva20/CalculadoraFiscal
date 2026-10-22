@@ -1,0 +1,85 @@
+{
+  "anoVigencia": 2026,
+  "ultimaAtualizacao": "2026-10-21",
+  "fontesOficiais": [
+    "Receita Federal do Brasil (Tabelas IRPF e Simples Nacional LC 123/2006)",
+    "Ministério da Previdência Social / INSS (Portaria Interministerial 2026)",
+    "Lei Complementar da Reforma Tributária (CBS e IBS - Ano-Teste 2026)"
+  ],
+  "trabalhista": {
+    "salarioMinimo": 1621.00,
+    "tetoINSS": 8475.55,
+    "aliquotaFGTS": 0.08,
+    "faixasINSS": [
+      { "ate": 1621.00, "aliquota": 0.075 },
+      { "ate": 2902.84, "aliquota": 0.09 },
+      { "ate": 4354.27, "aliquota": 0.12 },
+      { "ate": 8475.55, "aliquota": 0.14 }
+    ]
+  },
+  "irpf": {
+    "limiteIsencaoEfetivaMensal": 5000.00,
+    "limiteTransicaoRedutorMensal": 7000.00,
+    "deducaoPorDependente": 189.59,
+    "descontoSimplificadoMensal": 607.20,
+    "faixasBaseCalculo": [
+      { "ate": 2428.80, "aliquota": 0.0, "deducao": 0.0 },
+      { "ate": 3200.00, "aliquota": 0.075, "deducao": 182.16 },
+      { "ate": 4150.00, "aliquota": 0.15, "deducao": 422.16 },
+      { "ate": 5100.00, "aliquota": 0.225, "deducao": 733.41 },
+      { "ate": 999999999, "aliquota": 0.275, "deducao": 988.41 }
+    ]
+  },
+  "pj": {
+    "tetoAnualMEI": 81000.00,
+    "fatorRMinimoFolha": 0.28,
+    "aliquotaINSSProLaboreSimples": 0.11,
+    "reformaTributaria": {
+      "aliquotaTesteCBS2026": 0.009,
+      "aliquotaTesteIBS2026": 0.001,
+      "aliquotaPadraoEstimadaIVADual": 0.28
+    },
+    "anexosSimplesNacional": {
+      "I": [
+        { "limiteSuperior": 180000, "aliquotaNominal": 0.04, "parcelaDeduzir": 0 },
+        { "limiteSuperior": 360000, "aliquotaNominal": 0.073, "parcelaDeduzir": 5940 },
+        { "limiteSuperior": 720000, "aliquotaNominal": 0.095, "parcelaDeduzir": 13860 },
+        { "limiteSuperior": 1800000, "aliquotaNominal": 0.107, "parcelaDeduzir": 22500 },
+        { "limiteSuperior": 3600000, "aliquotaNominal": 0.143, "parcelaDeduzir": 87300 },
+        { "limiteSuperior": 4800000, "aliquotaNominal": 0.19, "parcelaDeduzir": 378000 }
+      ],
+      "II": [
+        { "limiteSuperior": 180000, "aliquotaNominal": 0.045, "parcelaDeduzir": 0 },
+        { "limiteSuperior": 360000, "aliquotaNominal": 0.078, "parcelaDeduzir": 5940 },
+        { "limiteSuperior": 720000, "aliquotaNominal": 0.10, "parcelaDeduzir": 13860 },
+        { "limiteSuperior": 1800000, "aliquotaNominal": 0.112, "parcelaDeduzir": 22500 },
+        { "limiteSuperior": 3600000, "aliquotaNominal": 0.147, "parcelaDeduzir": 85500 },
+        { "limiteSuperior": 4800000, "aliquotaNominal": 0.30, "parcelaDeduzir": 720000 }
+      ],
+      "III": [
+        { "limiteSuperior": 180000, "aliquotaNominal": 0.06, "parcelaDeduzir": 0 },
+        { "limiteSuperior": 360000, "aliquotaNominal": 0.112, "parcelaDeduzir": 9360 },
+        { "limiteSuperior": 720000, "aliquotaNominal": 0.135, "parcelaDeduzir": 17640 },
+        { "limiteSuperior": 1800000, "aliquotaNominal": 0.16, "parcelaDeduzir": 35640 },
+        { "limiteSuperior": 3600000, "aliquotaNominal": 0.21, "parcelaDeduzir": 125640 },
+        { "limiteSuperior": 4800000, "aliquotaNominal": 0.33, "parcelaDeduzir": 648000 }
+      ],
+      "IV": [
+        { "limiteSuperior": 180000, "aliquotaNominal": 0.045, "parcelaDeduzir": 0 },
+        { "limiteSuperior": 360000, "aliquotaNominal": 0.09, "parcelaDeduzir": 8100 },
+        { "limiteSuperior": 720000, "aliquotaNominal": 0.102, "parcelaDeduzir": 12420 },
+        { "limiteSuperior": 1800000, "aliquotaNominal": 0.14, "parcelaDeduzir": 39780 },
+        { "limiteSuperior": 3600000, "aliquotaNominal": 0.22, "parcelaDeduzir": 183780 },
+        { "limiteSuperior": 4800000, "aliquotaNominal": 0.33, "parcelaDeduzir": 828000 }
+      ],
+      "V": [
+        { "limiteSuperior": 180000, "aliquotaNominal": 0.155, "parcelaDeduzir": 0 },
+        { "limiteSuperior": 360000, "aliquotaNominal": 0.18, "parcelaDeduzir": 4500 },
+        { "limiteSuperior": 720000, "aliquotaNominal": 0.195, "parcelaDeduzir": 9900 },
+        { "limiteSuperior": 1800000, "aliquotaNominal": 0.205, "parcelaDeduzir": 17100 },
+        { "limiteSuperior": 3600000, "aliquotaNominal": 0.23, "parcelaDeduzir": 62100 },
+        { "limiteSuperior": 4800000, "aliquotaNominal": 0.305, "parcelaDeduzir": 540000 }
+      ]
+    }
+  }
+}
