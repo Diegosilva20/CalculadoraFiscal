@@ -3,11 +3,25 @@
 // Combina SoftwareApplication (Rich Result Ativo) + BreadcrumbList + FAQPage (GEO)
 // ============================================================================
 
-export const SITE_BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "https://calculafiscal.vercel.app");
+export function normalizeSiteUrl(rawUrl?: string): string {
+  const candidate = (
+    rawUrl ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+    process.env.VERCEL_URL ||
+    "https://calculafiscal.vercel.app"
+  ).trim();
+
+  const withProtocol =
+    candidate.startsWith("http://") || candidate.startsWith("https://")
+      ? candidate
+      : `https://${candidate}`;
+
+  // Remove barras finais duplicadas para nunca gerar "https://dominio.com//rota"
+  return withProtocol.replace(/\/+$/, "");
+}
+
+export const SITE_BASE_URL = normalizeSiteUrl();
 
 export interface BreadcrumbItem {
   name: string;
@@ -28,7 +42,8 @@ export interface PageSchemaOptions {
 }
 
 export function buildCalculatorSchemaGraph(options: PageSchemaOptions) {
-  const fullUrl = `${SITE_BASE_URL}${options.path}`;
+  const cleanPath = options.path.startsWith("/") ? options.path : `/${options.path}`;
+  const fullUrl = `${SITE_BASE_URL}${cleanPath}`;
 
   const graph: Record<string, unknown>[] = [
     {
@@ -55,12 +70,15 @@ export function buildCalculatorSchemaGraph(options: PageSchemaOptions) {
     {
       "@type": "BreadcrumbList",
       "@id": `${fullUrl}#breadcrumb`,
-      itemListElement: options.breadcrumbs.map((item, idx) => ({
-        "@type": "ListItem",
-        position: idx + 1,
-        name: item.name,
-        item: `${SITE_BASE_URL}${item.path}`,
-      })),
+      itemListElement: options.breadcrumbs.map((item, idx) => {
+        const itemPath = item.path === "/" ? "" : item.path.startsWith("/") ? item.path : `/${item.path}`;
+        return {
+          "@type": "ListItem",
+          position: idx + 1,
+          name: item.name,
+          item: `${SITE_BASE_URL}${itemPath}`,
+        };
+      }),
     },
   ];
 

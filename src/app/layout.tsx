@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import IndicadoresOficiaisBar from "@/components/IndicadoresOficiaisBar";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
+import { normalizeSiteUrl } from "@/lib/seo-schema";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,11 +21,7 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "https://calculafiscal.vercel.app");
+const siteUrl = normalizeSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

@@ -1,17 +1,24 @@
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 import { CNAES_DATA } from "@/data/cnaes";
 import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
+import { normalizeSiteUrl } from "@/lib/seo-schema";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : "https://calculafiscal.vercel.app");
+export const dynamic = "force-dynamic";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const headersList = await headers();
+  const host = headersList.get("x-forwarded-host") || headersList.get("host");
+  const proto = headersList.get("x-forwarded-proto") || "https";
+
+  const baseUrl = host
+    ? normalizeSiteUrl(`${proto}://${host}`)
+    : normalizeSiteUrl();
+
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${baseUrl}`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
     { url: `${baseUrl}/clt-vs-pj`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${baseUrl}/cnae`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${baseUrl}/calculadora-fator-r`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
