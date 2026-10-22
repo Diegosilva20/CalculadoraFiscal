@@ -22,9 +22,9 @@ interface CNAECalculatorProps {
 
 const FATURAMENTO_PRESETS = [
   { label: "Até Teto MEI", valor: 6500 },
-  { label: "PJ Inicial", valor: 10000 },
-  { label: "PJ Pleno / Sênior", valor: 18000 },
-  { label: "Consultoria / Clínica", valor: 35000 },
+  { label: "NF R$ 10.000", valor: 10000 },
+  { label: "NF R$ 20.000", valor: 20000 },
+  { label: "NF R$ 35.000", valor: 35000 },
 ];
 
 export default function CNAECalculator({

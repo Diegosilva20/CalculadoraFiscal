@@ -31,11 +31,12 @@ interface Props {
 }
 
 const PRESETS_CENARIOS = [
-  { label: "Júnior / Técnico", clt: 3500, pj: 5200, ben: 650 },
-  { label: "Faixa Isenção IR 2026", clt: 5000, pj: 7300, ben: 800 },
-  { label: "Pleno / Especialista", clt: 8500, pj: 12500, ben: 1000 },
-  { label: "Sênior / Engenheiro", clt: 14000, pj: 20500, ben: 1300 },
-  { label: "Médico / Executivo", clt: 22000, pj: 32000, ben: 1500 },
+  { label: "Salário R$ 3.500", clt: 3500, pj: 5100, ben: 650 },
+  { label: "Salário R$ 5.000 (Isento IR)", clt: 5000, pj: 7300, ben: 800 },
+  { label: "Salário R$ 8.000", clt: 8000, pj: 11600, ben: 950 },
+  { label: "Salário R$ 12.000", clt: 12000, pj: 17400, ben: 1100 },
+  { label: "Salário R$ 18.000", clt: 18000, pj: 26000, ben: 1300 },
+  { label: "Salário R$ 25.000", clt: 25000, pj: 36000, ben: 1500 },
 ];
 
 export default function CLTvsPJCalculator({
@@ -115,10 +116,10 @@ export default function CLTvsPJCalculator({
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
             <Zap className="w-3.5 h-3.5 text-amber-500" />
-            Simulação Rápida por Perfil Salarial (1 Toque):
+            Atalhos Rápidos por Faixa Salarial (Para Qualquer Profissão):
           </span>
           <span className="text-[11px] text-slate-400">
-            Clique para preencher ou digite abaixo
+            Escolha um atalho ou digite qualquer valor abaixo
           </span>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -139,16 +140,7 @@ export default function CLTvsPJCalculator({
                     : "bg-slate-50 hover:bg-blue-50/70 text-slate-700 border-slate-200 hover:border-blue-300"
                 }`}
               >
-                <span>{preset.label}</span>
-                <span
-                  className={`font-mono text-[11px] px-1.5 py-0.5 rounded ${
-                    ativo
-                      ? "bg-emerald-500/20 text-emerald-300"
-                      : "bg-white text-slate-600 border border-slate-200"
-                  }`}
-                >
-                  R$ {preset.clt.toLocaleString("pt-BR")}
-                </span>
+                <span className="font-mono">{preset.label}</span>
               </button>
             );
           })}
