@@ -94,10 +94,10 @@ export default async function SalarioProgrammaticPage({
           titulo: "Efeito da isenção de IRRF até R$ 5.000 e avaliação de MEI",
           texto: `Nesta faixa de ${formatBRL(salario)} na CLT, o Imposto de Renda Retido na Fonte (IRRF) é zerado em 2026, restando apenas o desconto progressivo do INSS (${formatBRL(simAnexoIII.clt.inss)}). Como a carga tributária na carteira já é baixa, propostas PJ próximas a ${formatBRL(pjSugerido)}/mês só compensam em Microempresa se houver expectativa de crescimento de faturamento; caso a atividade aceite MEI e a receita anual fique abaixo de ${formatBRL(TETO_ANUAL_MEI_2026)}, o DAS fixo mensal de serviços fica em ${formatBRL(DAS_MEI_SERVICOS_2026)}.`,
         }
-      : salario <= 7000
+      : salario <= 7350
       ? {
-          titulo: "Faixa de transição do IRPF (entre R$ 5.000,01 e R$ 7.000,00)",
-          texto: `Para quem recebe ${formatBRL(salario)} CLT em 2026, aplica-se o redutor gradual de IRRF antes da entrada plena na tabela progressiva, resultando em ${formatBRL(simAnexoIII.clt.irpf)} de Imposto de Renda e ${formatBRL(simAnexoIII.clt.inss)} de INSS. No CNPJ equivalente (${formatBRL(pjSugerido)}/mês), 28% de pró-labore equivale a ${formatBRL(simAnexoIII.pj.proLaboreSugerido)} — valor que também permanece abaixo do teto de isenção de IRRF até R$ 5.000.`,
+          titulo: "Faixa de transição do IRPF — Lei nº 15.270/2025 (R$ 5.000,01 a R$ 7.350,00)",
+          texto: `Para quem recebe ${formatBRL(salario)} CLT em 2026, aplica-se o redutor oficial da Lei nº 15.270/2025 (R$ 978,62 − 0,133145 × rendimento), resultando em ${formatBRL(simAnexoIII.clt.irpf)} de Imposto de Renda e ${formatBRL(simAnexoIII.clt.inss)} de INSS. No CNPJ equivalente (${formatBRL(pjSugerido)}/mês), 28% de pró-labore equivale a ${formatBRL(simAnexoIII.pj.proLaboreSugerido)} — valor que também permanece abaixo do teto de isenção de IRRF até R$ 5.000.`,
         }
       : salario <= 12500
       ? {

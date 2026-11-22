@@ -37,7 +37,7 @@ const HOME_FAQS = [
   {
     question: "Qual a regra de isenção de Imposto de Renda no salário em 2026?",
     answer:
-      "Rendimentos brutos mensais até R$ 5.000,00 possuem isenção de IRRF na simulação de 2026, com transição linear gradual até R$ 7.000,00 e aplicação da tabela progressiva padrão acima dessa faixa.",
+      "Pela Lei nº 15.270/2025 vigente em 2026, rendimentos tributáveis mensais até R$ 5.000,00 possuem isenção total de IRRF, com redutor gradual decrescente até R$ 7.350,00 (978,62 − 0,133145 × rendimento) e aplicação da tabela progressiva padrão acima dessa faixa.",
   },
 ];
 
@@ -187,7 +187,7 @@ export default function HomePage() {
                 Salário Líquido 2026
               </h3>
               <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                Cálculo com INSS progressivo, nova isenção de IRPF até R$ 5.000 e redutor gradual até R$ 7.000.
+                Cálculo com INSS progressivo, isenção de IRPF até R$ 5.000 e redutor da Lei nº 15.270/2025 até R$ 7.350.
               </p>
             </div>
             <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">

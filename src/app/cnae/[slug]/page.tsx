@@ -27,14 +27,18 @@ export async function generateMetadata({
   if (!cnae) return {};
 
   return {
-    title: `CNAE ${cnae.codigo} (${cnae.nomePopular}): Anexo, Fator R, MEI e Imposto 2026`,
-    description: `Consulta do CNAE ${cnae.codigo} (${cnae.titulo}) em 2026: ${
-      cnae.permiteMEI ? "permite MEI" : "não permite MEI"
-    }, tributação no Anexo ${cnae.anexo} (${
+    title: `CNAE ${cnae.codigo} (${cnae.nomePopular}): Anexo ${cnae.anexo}, ${
       cnae.fatorR
-        ? "reduz para 6% com Fator R"
+        ? "6% no Fator R"
+        : `${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
+    } e MEI 2026`,
+    description: `CNAE ${cnae.codigo} (${cnae.codigoLimpo} — ${cnae.titulo}) no Simples Nacional 2026: ${
+      cnae.permiteMEI ? "pode ser MEI" : "não permite MEI (abre como ME)"
+    }, Anexo ${cnae.anexo} (${
+      cnae.fatorR
+        ? "cai de 15,5% para 6% com Fator R"
         : `inicia em ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
-    }). Simule a guia DAS.`,
+    }) e cálculo da guia DAS.`,
     alternates: {
       canonical: `/cnae/${cnae.slug}`,
     },
@@ -169,6 +173,12 @@ export default async function CNAEDetailPage({
             Resumo fiscal 2026
           </h2>
           <div className="text-xs sm:text-sm space-y-2.5 text-slate-700">
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Código CNAE (com e sem máscara)</span>
+              <strong className="font-mono text-slate-900">
+                {cnae.codigo} ({cnae.codigoLimpo})
+              </strong>
+            </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
               <span className="text-slate-500">Enquadramento MEI</span>
               <strong className="text-slate-900">

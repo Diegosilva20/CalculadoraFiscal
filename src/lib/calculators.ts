@@ -83,8 +83,8 @@ export function calculateINSS2026(salarioBruto: number): {
 }
 
 /**
- * Cálculo do IRPF lendo diretamente os parâmetros de isenção (R$ 5.000) e faixas de parametros-fiscais.json.
- * Aplica redutor linear suave entre R$ 5.000,01 e R$ 7.000,00 sem degraus abruptos.
+ * Cálculo do IRPF 2026 conforme Lei nº 15.270/2025 e tabela progressiva da Receita Federal.
+ * Aplica isenção efetiva até R$ 5.000,00 e redutor decrescente oficial (978,62 - 0,133145 * bruto) até R$ 7.350,00.
  */
 export function calculateIRPF2026(
   salarioBruto: number,
@@ -101,6 +101,7 @@ export function calculateIRPF2026(
   const {
     limiteIsencaoEfetivaMensal,
     limiteTransicaoRedutorMensal,
+    redutorLei15270,
     faixasBaseCalculo,
   } = parametrosFiscais.irpf;
 
@@ -142,16 +143,16 @@ export function calculateIRPF2026(
     base * faixaEncontrada.aliquota - faixaEncontrada.deducao
   );
 
-  // Redutor gradual linear de 100% (em R$ 5.000) até 0% (em R$ 7.000)
+  // Redutor oficial da Lei nº 15.270/2025 para rendimentos entre R$ 5.000,01 e R$ 7.350,00
   if (
     salarioBruto > limiteIsencaoEfetivaMensal &&
     salarioBruto < limiteTransicaoRedutorMensal
   ) {
-    const amplitude =
-      limiteTransicaoRedutorMensal - limiteIsencaoEfetivaMensal;
-    const fatorTransicao =
-      (limiteTransicaoRedutorMensal - salarioBruto) / amplitude;
-    const descontoRedutor = impostoTabela * Math.max(0, Math.min(1, fatorTransicao));
+    const descontoRedutor = Math.max(
+      0,
+      redutorLei15270.constanteTransicao -
+        redutorLei15270.fatorTransicao * salarioBruto
+    );
     impostoTabela = Math.max(0, impostoTabela - descontoRedutor);
   }
 

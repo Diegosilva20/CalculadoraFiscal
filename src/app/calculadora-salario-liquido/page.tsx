@@ -7,9 +7,9 @@ import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
   title:
-    "Calculadora de Salário Líquido 2026 — Com Nova Isenção de IRPF até R$ 5.000 e INSS",
+    "Calculadora de Salário Líquido 2026 — Isenção IRPF R$ 5.000, Redutor R$ 7.350 e INSS",
   description:
-    "Calcule seu Salário Líquido CLT em 2026 com a nova tabela de isenção de Imposto de Renda até R$ 5.000, desconto progressivo para salários até R$ 7.000 e INSS atualizado.",
+    "Calcule seu Salário Líquido CLT em 2026 conforme a Lei nº 15.270/2025: isenção de IRRF até R$ 5.000, redutor gradual até R$ 7.350 e INSS progressivo atualizado (teto R$ 8.475,55).",
   alternates: {
     canonical: "/calculadora-salario-liquido",
   },
@@ -29,7 +29,7 @@ export default function SalarioLiquidoPage() {
       {
         question: "Quem está isento de Imposto de Renda no salário CLT em 2026?",
         answer:
-          "Em 2026, trabalhadores com remuneração bruta mensal de até R$ 5.000,00 contam com isenção total de Imposto de Renda Retido na Fonte (IRRF = R$ 0,00). Para salários entre R$ 5.000,01 e R$ 7.000,00 há um redutor gradual, e acima de R$ 7.000,00 aplica-se a tabela progressiva tradicional comparando automaticamente o desconto simplificado (R$ 607,20) com as deduções legais.",
+          "Pela Lei nº 15.270/2025, trabalhadores com rendimento tributável mensal de até R$ 5.000,00 têm isenção total de Imposto de Renda Retido na Fonte (IRRF = R$ 0,00). Para salários entre R$ 5.000,01 e R$ 7.350,00 aplica-se o redutor gradual de R$ 978,62 − (0,133145 × rendimento); acima de R$ 7.350,00 vale a tabela progressiva tradicional comparando automaticamente o desconto simplificado (R$ 607,20) com as deduções legais.",
       },
       {
         question: "Como funciona o desconto progressivo do INSS em 2026?",
@@ -54,7 +54,7 @@ export default function SalarioLiquidoPage() {
           Calculadora de Salário Líquido 2026
         </h1>
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          Simule o valor líquido mensal após os descontos progressivos do INSS e do Imposto de Renda Retido na Fonte (IRRF), considerando a isenção para remunerações até R$ 5.000,00 e a faixa de redução gradual até R$ 7.000,00.
+          Simule o valor líquido mensal após os descontos progressivos do INSS (Portaria MPS/MF nº 13/2026) e do Imposto de Renda Retido na Fonte (Lei nº 15.270/2025), considerando isenção total até R$ 5.000,00 e redutor gradual até R$ 7.350,00.
         </p>
       </div>
 
@@ -81,7 +81,7 @@ export default function SalarioLiquidoPage() {
                 Dedução anual com previdência PGBL
               </h3>
               <p className="text-xs sm:text-sm">
-                Para quem recebe acima de R$ 7.000,00 e declara no modelo completo do IRPF, contribuições em planos de previdência privada PGBL permitem abater até 12% da renda bruta tributável anual no ajuste da Receita Federal.
+                Para quem recebe acima de R$ 7.350,00 e declara no modelo completo do IRPF, contribuições em planos de previdência privada PGBL permitem abater até 12% da renda bruta tributável anual no ajuste da Receita Federal.
               </p>
             </div>
           </div>

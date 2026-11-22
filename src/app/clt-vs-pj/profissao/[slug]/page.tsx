@@ -33,8 +33,8 @@ export async function generateMetadata({
   });
 
   return {
-    title: prof.tituloSEO,
-    description: `Para ${prof.nome}, salário CLT de ${formatBRL(prof.salarioMedioCLT)} deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos (pacote total ${formatBRL(sim.clt.pacoteTotalMensalReal)}). Veja quanto faturar como PJ no CNAE ${prof.cnaeRecomendadoCodigo}.`,
+    title: `${prof.tituloSEO} · CNAE ${prof.cnaeRecomendadoCodigo}`,
+    description: `${prof.nome} em 2026: salário CLT de ${formatBRL(prof.salarioMedioCLT)} rende ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos (pacote total ${formatBRL(sim.clt.pacoteTotalMensalReal)}). Simule quanto cobrar como PJ no CNAE ${prof.cnaeRecomendadoCodigo} (${prof.sujeitoFatorR ? "6% via Fator R" : `Anexo ${prof.anexoPadrao}`}).`,
     alternates: {
       canonical: `/clt-vs-pj/profissao/${prof.slug}`,
     },

@@ -802,6 +802,12 @@ export default function CLTvsPJCalculator({
               </dd>
             </div>
           </dl>
+          {resultado.pj.lucroLiquidoIsento > 50000 && (
+            <p className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-relaxed">
+              <strong>Nota sobre dividendos altos (Lei nº 15.270/2025):</strong>{" "}
+              distribuições de lucros e dividendos acima de R$ 50.000,00/mês pagas pela mesma PJ a uma pessoa física ficam sujeitas à retenção de 10% de IRRF na fonte.
+            </p>
+          )}
         </div>
       </div>
 

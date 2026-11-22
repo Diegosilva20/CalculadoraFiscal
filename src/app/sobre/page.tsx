@@ -109,7 +109,7 @@ export default function SobreMetodologiaPage() {
               O desconto previdenciário (INSS) na CLT é calculado de forma <strong>progressiva faixa a faixa</strong> (7,5%, 9%, 12% e 14% até o teto previdenciário de {formatBRL(TETO_INSS_2026)}).
             </p>
             <p>
-              Para o Imposto de Renda 2026, o sistema aplica a <strong>isenção efetiva para rendimentos mensais até R$ 5.000,00</strong>, a transição gradual para rendimentos entre R$ 5.000,01 e R$ 7.000,00, e compara automaticamente a dedução legal (INSS + R$ 189,59 por dependente) contra o <strong>Desconto Simplificado Mensal (R$ 607,20)</strong>, escolhendo sempre a opção que resulta no menor imposto para o trabalhador.
+              Para o Imposto de Renda 2026 (<strong>Lei nº 15.270/2025</strong>), o sistema aplica a <strong>isenção efetiva para rendimentos mensais até R$ 5.000,00</strong>, o redutor oficial decrescente (R$ 978,62 − 0,133145 × rendimento) entre R$ 5.000,01 e <strong>R$ 7.350,00</strong>, e compara automaticamente a dedução legal (INSS + R$ 189,59 por dependente) contra o <strong>Desconto Simplificado Mensal (R$ 607,20)</strong> nas faixas da Receita Federal (até R$ 2.428,80; R$ 2.826,65; R$ 3.751,05; R$ 4.664,68 e acima). Para lucros/dividendos acima de R$ 50.000,00/mês pagos pela mesma PJ a uma pessoa física, a lei prevê retenção de 10% na fonte.
             </p>
           </div>
 

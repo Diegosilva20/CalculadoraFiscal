@@ -2,9 +2,9 @@
   "anoVigencia": 2026,
   "ultimaAtualizacao": "2026-11-22",
   "fontesOficiais": [
-    "Receita Federal do Brasil (Tabelas IRPF e Simples Nacional LC 123/2006)",
-    "Ministério da Previdência Social / INSS (Portaria Interministerial 2026)",
-    "Lei Complementar da Reforma Tributária (CBS e IBS - Ano-Teste 2026)"
+    "Receita Federal do Brasil (Lei nº 15.270/2025 — IRPF 2026 e Simples Nacional LC 123/2006)",
+    "Ministério da Previdência Social / INSS (Portaria Interministerial MPS/MF nº 13/2026)",
+    "Reforma Tributária (EC 132/2023 e LC 214/2025 — Ano-Teste CBS/IBS 2026)"
   ],
   "trabalhista": {
     "salarioMinimo": 1621.00,
@@ -25,15 +25,22 @@
   },
   "irpf": {
     "limiteIsencaoEfetivaMensal": 5000.00,
-    "limiteTransicaoRedutorMensal": 7000.00,
+    "limiteTransicaoRedutorMensal": 7350.00,
+    "redutorLei15270": {
+      "reducaoMaximaAte5k": 312.89,
+      "constanteTransicao": 978.62,
+      "fatorTransicao": 0.133145,
+      "limiteDividendosMensaisIsentosPJ": 50000.00,
+      "aliquotaRetencaoDividendos": 0.10
+    },
     "deducaoPorDependente": 189.59,
     "descontoSimplificadoMensal": 607.20,
     "faixasBaseCalculo": [
       { "ate": 2428.80, "aliquota": 0.0, "deducao": 0.0 },
-      { "ate": 3200.00, "aliquota": 0.075, "deducao": 182.16 },
-      { "ate": 4150.00, "aliquota": 0.15, "deducao": 422.16 },
-      { "ate": 5100.00, "aliquota": 0.225, "deducao": 733.41 },
-      { "ate": 999999999, "aliquota": 0.275, "deducao": 988.41 }
+      { "ate": 2826.65, "aliquota": 0.075, "deducao": 182.16 },
+      { "ate": 3751.05, "aliquota": 0.15, "deducao": 394.16 },
+      { "ate": 4664.68, "aliquota": 0.225, "deducao": 675.49 },
+      { "ate": 999999999, "aliquota": 0.275, "deducao": 908.73 }
     ]
   },
   "pj": {

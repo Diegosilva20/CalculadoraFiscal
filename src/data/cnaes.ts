@@ -44,7 +44,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Customização de softwares de terceiros e integração de APIs",
     ],
     dicaTributaria2026:
-      "Inicia no Anexo V (15,5%), mas possui Fator R! Ajustando seu pró-labore para 28% do faturamento, sua alíquota cai imediatamente para 6% no Anexo III.",
+      "Inicia no Anexo V (15,5%), porém está sujeito ao Fator R: mantendo pró-labore em 28% do faturamento, a tributação cai para 6% no Anexo III.",
   },
   {
     codigo: "6201-5/02",
@@ -164,7 +164,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Gestão de armazenamento e infraestrutura web",
     ],
     dicaTributaria2026:
-      "Tributado diretamente no Anexo III (6%) sem depender do Fator R! Excelente opção complementar para profissionais de dados e cloud.",
+      "Tributado diretamente no Anexo III (6% inicial) sem depender da trava de 28% do Fator R; alternativa regular para infraestrutura cloud e pipelines de dados.",
   },
   {
     codigo: "6319-4/00",
@@ -184,7 +184,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Publicação de conteúdo informativo e utilitário na internet",
     ],
     dicaTributaria2026:
-      "É o CNAE ideal para quem recebe dólares do Google AdSense no Brasil! Entra direto no Anexo III (6% inicial sem Fator R) e, por ser exportação de serviço de publicidade para o exterior (Google LLC), pode ter isenção de PIS, COFINS e ISS reduzindo o DAS para cerca de 3%!",
+      "Enquadramento usual para receitas recebidas em dólar do Google AdSense no Brasil: tributa direto no Anexo III (6% inicial sem Fator R) e, quando caracterizada exportação de serviço para o exterior (Google LLC), pode segregar PIS, COFINS e ISS reduzindo o DAS efetivo.",
   },
 
   // ================= SAÚDE E MEDICINA =================
@@ -486,18 +486,18 @@ export const CNAES_DATA: CNAEItem[] = [
     reducaoIVA2026: 0.0,
     atividadesCompreendidas: [
       "Promoção de vendas e campanhas promocionais digitais",
-      "Atividades de apoio a lançamentos digitais, afiliados e social media",
-      "Ações de marketing direto e captação de clientes",
+      "Atividades de lançador digital, coprodutor, agência de lançamentos e social media",
+      "Gestão de tráfego pago, funis de vendas e marketing direto",
     ],
     dicaTributaria2026:
-      "O CNAE queridinho do mercado digital: permite ser MEI (até R$ 81 mil/ano) e, quando migra para Microempresa (ME), cai direto no Anexo III (6%) sem precisar de Fator R!",
+      "Um dos códigos mais usados por gestores de tráfego e lançadores digitais: aceita MEI até R$ 81.000/ano e, como Microempresa (ME), entra direto no Anexo III (6% inicial) sem exigir Fator R.",
   },
   {
     codigo: "7311-4/00",
     codigoLimpo: "7311400",
     slug: "7311-4-00-agencias-de-publicidade",
     titulo: "Agências de publicidade",
-    nomePopular: "Agência de Marketing e Publicidade PJ",
+    nomePopular: "Agência de Marketing, Publicidade e Lançamentos PJ",
     categoria: "Marketing, Design e Digital",
     anexo: "V",
     fatorR: true,
@@ -506,7 +506,7 @@ export const CNAES_DATA: CNAEItem[] = [
     reducaoIVA2026: 0.0,
     atividadesCompreendidas: [
       "Criação e gestão completa de campanhas publicitárias e mídia paga",
-      "Planejamento estratégico de comunicação, branding e tráfego pago",
+      "Agência de lançamentos digitais, coproduções, branding e tráfego pago",
       "Assessoria de publicidade para marcas e anunciantes",
     ],
     dicaTributaria2026:
@@ -834,7 +834,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Instrução esportiva para condomínios, clubes e academias",
     ],
     dicaTributaria2026:
-      "Ativando o Fator R (28% de pró-labore), o Personal Trainer PJ sai do Anexo V (15,5%) e paga apenas 6% no Anexo III.",
+      "Com acompanhamento contábil para personal trainer ativando o Fator R (28% de pró-labore/folha), o imposto no Simples Nacional sai do Anexo V (15,5%) e cai para a tabela do Anexo III a partir de 6%.",
   },
 
   // ================= SERVIÇOS ADMINISTRATIVOS E APOIO =================
@@ -856,7 +856,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Organização de documentos, faturamento e atendimento ao cliente",
     ],
     dicaTributaria2026:
-      "Um dos CNAEs mais vantajosos do Brasil: aceita MEI e, no Simples Nacional, tributa direto no Anexo III (6%) sem necessidade de Fator R.",
+      "Código amplamente utilizado por prestadores de apoio administrativo e BPO: aceita inscrição como MEI (até R$ 81.000/ano) e, como Microempresa no Simples Nacional, entra direto no Anexo III (6%) sem necessidade de Fator R.",
   },
   {
     codigo: "8219-9/99",
@@ -896,7 +896,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Atuação em clínicas de estética avançada e bem-estar",
     ],
     dicaTributaria2026:
-      "Permite MEI (para esteticistas autônomas) e, como Microempresa, tributa direto no Anexo III (6%) sem precisar de Fator R!",
+      "Esteticistas autônomas podem atuar como MEI (observado o teto de R$ 81.000/ano) e, como Microempresa, o CNAE 9602-5/02 tributa diretamente no Anexo III (6% inicial) sem exigir Fator R.",
   },
 
   // ================= COMÉRCIO E E-COMMERCE =================

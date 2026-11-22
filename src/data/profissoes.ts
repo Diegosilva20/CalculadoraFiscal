@@ -125,7 +125,7 @@ export const PROFISSOES_SEO: ProfissaoSEO[] = [
     anexoPadrao: "V",
     sujeitoFatorR: true,
     resumoMercado2026:
-      "Nutricionistas que prestam consultoria e atendimento clínico via CNPJ reduzem a alíquota do Simples de 15,5% para 6% calibrando o pró-labore em 28% (Fator R).",
+      "Nutricionistas que prestam consultoria e atendimento clínico via CNPJ reduzem a alíquota do Simples de 15,5% para 6% calibrando o pró-labore em 28% (Fator R). No planejamento de IRPF para nutricionista PJ em 2026, pró-labore até R$ 5.000 fica isento de IRRF na fonte (com redutor da Lei nº 15.270/2025 até R$ 7.350), reduzindo o imposto frente ao Carnê-Leão na pessoa física.",
   },
   {
     slug: "psicologo-e-terapeuta",
@@ -321,7 +321,7 @@ export const PROFISSOES_SEO: ProfissaoSEO[] = [
     anexoPadrao: "III",
     sujeitoFatorR: false,
     resumoMercado2026:
-      "Por permitir enquadramento como MEI (imposto fixo de ~R$ 86/mês até R$ 6.750 mensais), o CNAE 8211-3/00 oferece altíssima retenção líquida para profissionais administrativos remotos.",
+      "Por permitir enquadramento como MEI (DAS fixo de R$ 86,05/mês para serviços até R$ 6.750 mensais em média), o CNAE 8211-3/00 entrega alta retenção líquida para profissionais administrativos e BPO remotos.",
   },
   {
     slug: "personal-trainer-e-educador-fisico",
