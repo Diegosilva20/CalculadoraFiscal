@@ -1,20 +1,12 @@
 import type { MetadataRoute } from "next";
-import { headers } from "next/headers";
 import { CNAES_DATA } from "@/data/cnaes";
 import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
-import { normalizeSiteUrl } from "@/lib/seo-schema";
+import { SITE_BASE_URL } from "@/lib/seo-schema";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const headersList = await headers();
-  const host = headersList.get("x-forwarded-host") || headersList.get("host");
-  const proto = headersList.get("x-forwarded-proto") || "https";
-
-  const baseUrl = host
-    ? normalizeSiteUrl(`${proto}://${host}`)
-    : normalizeSiteUrl();
-
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = SITE_BASE_URL;
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [

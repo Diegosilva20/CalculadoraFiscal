@@ -23,7 +23,7 @@ export default function TermosDeUsoPage() {
           Termos e Condições de Uso
         </h1>
         <p className="text-xs text-slate-500">
-          Vigência: Outubro de 2026 • Portal CalculaFiscal Brasil
+          Vigência: Novembro de 2026 • Portal CalculaFiscal Brasil
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export default function TermosDeUsoPage() {
           3. Propriedade Intelectual e Uso Gratuito
         </h2>
         <p>
-          O uso dos simuladores por pessoas físicas, estudantes, profissionais liberais e contadores é 100% gratuito. É proibida a cópia automatizada integral (*scraping* malicioso) ou a reprodução comercial do código-fonte proprietário sem autorização prévia, sendo livre o compartilhamento dos links das nossas páginas e tabelas com a devida citação da fonte (<strong>CalculaFiscal</strong>).
+          O uso dos simuladores por pessoas físicas, estudantes, profissionais liberais e contadores é 100% gratuito. É proibida a cópia automatizada integral (<em>scraping</em> abusivo) ou a reprodução comercial do código-fonte sem autorização prévia, sendo livre o compartilhamento dos links das páginas e tabelas com a citação da fonte (<strong>CalculaFiscal</strong>).
         </p>
       </section>
 

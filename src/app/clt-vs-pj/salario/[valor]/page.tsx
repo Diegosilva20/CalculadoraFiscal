@@ -6,7 +6,13 @@ import CLTvsPJCalculator from "@/components/CLTvsPJCalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { FAIXAS_SALARIAIS_SEO } from "@/data/profissoes";
-import { calculateCLTvsPJ, formatBRL, formatPercent } from "@/lib/calculators";
+import {
+  DAS_MEI_SERVICOS_2026,
+  TETO_ANUAL_MEI_2026,
+  calculateCLTvsPJ,
+  formatBRL,
+  formatPercent,
+} from "@/lib/calculators";
 import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export async function generateStaticParams() {
@@ -86,7 +92,7 @@ export default async function SalarioProgrammaticPage({
     salario <= 5000
       ? {
           titulo: "Efeito da isenção de IRRF até R$ 5.000 e avaliação de MEI",
-          texto: `Nesta faixa de ${formatBRL(salario)} na CLT, o Imposto de Renda Retido na Fonte (IRRF) é zerado em 2026, restando apenas o desconto progressivo do INSS (${formatBRL(simAnexoIII.clt.inss)}). Como a carga tributária na carteira já é baixa, propostas PJ próximas a ${formatBRL(pjSugerido)}/mês só compensam em Microempresa se houver expectativa de crescimento de faturamento; caso a atividade aceite MEI e a receita anual fique abaixo de R$ 81.000, o custo fixo mensal do CNPJ permanece próximo de R$ 86.`,
+          texto: `Nesta faixa de ${formatBRL(salario)} na CLT, o Imposto de Renda Retido na Fonte (IRRF) é zerado em 2026, restando apenas o desconto progressivo do INSS (${formatBRL(simAnexoIII.clt.inss)}). Como a carga tributária na carteira já é baixa, propostas PJ próximas a ${formatBRL(pjSugerido)}/mês só compensam em Microempresa se houver expectativa de crescimento de faturamento; caso a atividade aceite MEI e a receita anual fique abaixo de ${formatBRL(TETO_ANUAL_MEI_2026)}, o DAS fixo mensal de serviços fica em ${formatBRL(DAS_MEI_SERVICOS_2026)}.`,
         }
       : salario <= 7000
       ? {
@@ -192,14 +198,14 @@ export default async function SalarioProgrammaticPage({
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-slate-900 text-white">
-                <th className="p-3.5 font-semibold">Indicador mensal</th>
-                <th className="p-3.5 font-semibold text-right">
+                <th scope="col" className="p-3.5 font-semibold">Indicador mensal</th>
+                <th scope="col" className="p-3.5 font-semibold text-right">
                   CLT ({formatBRL(salario)})
                 </th>
-                <th className="p-3.5 font-semibold text-right">
+                <th scope="col" className="p-3.5 font-semibold text-right">
                   PJ Anexo III ({formatBRL(pjSugerido)})
                 </th>
-                <th className="p-3.5 font-semibold text-right">
+                <th scope="col" className="p-3.5 font-semibold text-right">
                   PJ Anexo V s/ Fator R
                 </th>
               </tr>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { CNAEItem } from "@/data/cnaes";
 import { ArrowRight, Check, Minus, Search, Filter } from "lucide-react";
@@ -22,6 +22,22 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState<string>("Todas");
   const [apenasMEI, setApenasMEI] = useState(false);
   const [apenas6Porcento, setApenas6Porcento] = useState(false);
+
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get("q");
+      if (q) setBusca(q);
+    } catch {
+      // Ignora se location não estiver disponível
+    }
+  }, []);
+
+  const limparFiltros = () => {
+    setBusca("");
+    setCategoriaAtiva("Todas");
+    setApenasMEI(false);
+    setApenas6Porcento(false);
+  };
 
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
@@ -53,8 +69,15 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
     <div className="space-y-6">
       <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-4">
         <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <label htmlFor="cnae-busca" className="sr-only">
+            Filtrar por código CNAE ou descrição da atividade
+          </label>
+          <Search
+            className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"
+            aria-hidden="true"
+          />
           <input
+            id="cnae-busca"
             type="text"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
@@ -63,12 +86,17 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
           />
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-          <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1" />
+        <div
+          role="group"
+          aria-label="Filtrar CNAEs por categoria"
+          className="flex items-center gap-1.5 overflow-x-auto pb-1"
+        >
+          <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1" aria-hidden="true" />
           {CATEGORIAS.map((cat) => (
             <button
               key={cat}
               type="button"
+              aria-pressed={categoriaAtiva === cat}
               onClick={() => setCategoriaAtiva(cat)}
               className={`px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap transition-colors ${
                 categoriaAtiva === cat
@@ -115,13 +143,13 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-slate-900 text-white text-[11px] uppercase tracking-wider">
-                <th className="py-3.5 px-4">Código CNAE</th>
-                <th className="py-3.5 px-4">Atividade</th>
-                <th className="py-3.5 px-4">Anexo</th>
-                <th className="py-3.5 px-4">Fator R</th>
-                <th className="py-3.5 px-4">MEI</th>
-                <th className="py-3.5 px-4">Redução IVA</th>
-                <th className="py-3.5 px-4">Simulador</th>
+                <th scope="col" className="py-3.5 px-4">Código CNAE</th>
+                <th scope="col" className="py-3.5 px-4">Atividade</th>
+                <th scope="col" className="py-3.5 px-4">Anexo</th>
+                <th scope="col" className="py-3.5 px-4">Fator R</th>
+                <th scope="col" className="py-3.5 px-4">MEI</th>
+                <th scope="col" className="py-3.5 px-4">Redução IVA</th>
+                <th scope="col" className="py-3.5 px-4">Simulador</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -191,8 +219,17 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
               ))}
               {filtrados.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-500 text-sm">
-                    Nenhum CNAE encontrado para &ldquo;{busca}&rdquo;. Ajuste os termos ou limpe os filtros acima.
+                  <td colSpan={7} className="py-8 text-center text-slate-500 text-sm space-y-3">
+                    <p>
+                      Nenhum CNAE encontrado{busca ? ` para "${busca}"` : ""}. Ajuste os termos ou limpe os filtros aplicados.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={limparFiltros}
+                      className="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white hover:bg-blue-700 transition-colors"
+                    >
+                      Limpar busca e filtros
+                    </button>
                   </td>
                 </tr>
               )}

@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { FAIXAS_SALARIAIS_SEO } from "@/data/profissoes";
 import { CNAES_DATA } from "@/data/cnaes";
+import CookiePreferencesButton from "./CookiePreferencesButton";
 
 export default function Footer() {
   return (
@@ -95,7 +96,7 @@ export default function Footer() {
           <p>
             © 2026 CalculaFiscal. Valores com finalidade simulatória e informativa; não substituem conferência contábil formal.
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <Link href="/sobre" className="hover:text-slate-900">
               Sobre e Metodologia
             </Link>
@@ -108,6 +109,7 @@ export default function Footer() {
             <Link href="/contato" className="hover:text-slate-900">
               Contato
             </Link>
+            <CookiePreferencesButton />
           </div>
         </div>
       </div>

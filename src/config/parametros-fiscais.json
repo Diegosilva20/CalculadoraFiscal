@@ -1,6 +1,6 @@
 {
   "anoVigencia": 2026,
-  "ultimaAtualizacao": "2026-10-21",
+  "ultimaAtualizacao": "2026-11-22",
   "fontesOficiais": [
     "Receita Federal do Brasil (Tabelas IRPF e Simples Nacional LC 123/2006)",
     "Ministério da Previdência Social / INSS (Portaria Interministerial 2026)",
@@ -10,6 +10,12 @@
     "salarioMinimo": 1621.00,
     "tetoINSS": 8475.55,
     "aliquotaFGTS": 0.08,
+    "encargosEmpregador": {
+      "aliquotaINSSPatronalLucroPresumidoTotal": 0.278,
+      "aliquotaINSSPatronalAnexoIVTotal": 0.22,
+      "aliquotaINSSPatronalMEI": 0.03,
+      "aliquotaMultaRescisoriaFGTS": 0.40
+    },
     "faixasINSS": [
       { "ate": 1621.00, "aliquota": 0.075 },
       { "ate": 2902.84, "aliquota": 0.09 },
@@ -32,6 +38,11 @@
   },
   "pj": {
     "tetoAnualMEI": 81000.00,
+    "mei": {
+      "aliquotaINSS": 0.05,
+      "issFixoMensal": 5.00,
+      "icmsFixoMensal": 1.00
+    },
     "fatorRMinimoFolha": 0.28,
     "aliquotaINSSProLaboreSimples": 0.11,
     "reformaTributaria": {

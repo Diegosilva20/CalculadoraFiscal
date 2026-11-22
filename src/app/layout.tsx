@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -22,16 +23,31 @@ const jetbrains = JetBrains_Mono({
 });
 
 const siteUrl = normalizeSiteUrl();
+const defaultTitle =
+  "CalculaFiscal 2026 — Calculadora CLT vs PJ, Tabela CNAE, Fator R e Salário Líquido";
+const defaultDescription =
+  "Simuladores trabalhistas e tributários atualizados para 2026: Calculadora CLT vs PJ por salário e profissão, Tabela CNAE com Fator R (6%), Reforma Tributária (CBS/IBS) e Salário Líquido com isenção de IRPF até R$ 5.000.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default:
-      "CalculaFiscal 2026 — Calculadora CLT vs PJ, Tabela CNAE, Fator R e Salário Líquido",
+    default: defaultTitle,
     template: "%s | CalculaFiscal 2026",
   },
-  description:
-    "Simuladores trabalhistas e tributários atualizados para 2026: Calculadora CLT vs PJ por salário e profissão, Tabela CNAE com Fator R (6%), Reforma Tributária (CBS/IBS) e Salário Líquido com isenção de IRPF até R$ 5.000.",
+  description: defaultDescription,
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: siteUrl,
+    siteName: "CalculaFiscal 2026",
+    title: defaultTitle,
+    description: defaultDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: defaultDescription,
+  },
   keywords: [
     "calculadora clt vs pj 2026",
     "tabela cnae simples nacional 2026",
@@ -54,31 +70,54 @@ export default function RootLayout({
   const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
   const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-GFLR2VMELW";
 
+  const consentInitScript = `
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    try {
+      var raw = localStorage.getItem('calculafiscal_lgpd_consent_v1');
+      var parsed = raw ? JSON.parse(raw) : null;
+      var modo = parsed && parsed.tipo ? parsed.tipo : null;
+      gtag('consent', 'default', {
+        ad_storage: modo === 'all' ? 'granted' : 'denied',
+        ad_user_data: modo === 'all' ? 'granted' : 'denied',
+        ad_personalization: modo === 'all' ? 'granted' : 'denied',
+        analytics_storage: modo === 'essential' ? 'denied' : 'granted',
+        wait_for_update: 500
+      });
+    } catch (e) {
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'granted',
+        wait_for_update: 500
+      });
+    }
+    gtag('js', new Date());
+    gtag('config', '${gaId}');
+  `;
+
   return (
     <html lang="pt-BR" className={`${jakarta.variable} ${jetbrains.variable}`}>
-      <head>
-        {adsenseClientId && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-            crossOrigin="anonymous"
-          />
-        )}
+      <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
         {gaId && (
           <>
-            <script
-              async
+            <Script id="gtag-consent-init" strategy="beforeInteractive">
+              {consentInitScript}
+            </Script>
+            <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`,
-              }}
+              strategy="afterInteractive"
             />
           </>
         )}
-      </head>
-      <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
+        {adsenseClientId && (
+          <Script
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        )}
         <IndicadoresOficiaisBar />
         <Header />
         <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">

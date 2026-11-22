@@ -180,6 +180,7 @@ export default function SalarioLiquidoCalculator({
             <button
               type="button"
               onClick={copiarHolerite}
+              aria-live="polite"
               className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
             >
               {copiado ? (

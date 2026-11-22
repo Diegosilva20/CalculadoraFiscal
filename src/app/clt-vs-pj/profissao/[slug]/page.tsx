@@ -181,9 +181,9 @@ export default async function ProfissaoProgrammaticPage({
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-slate-900 text-white">
-                <th className="p-3.5 font-semibold">Indicador (2026)</th>
-                <th className="p-3.5 font-semibold text-right">CLT ({formatBRL(prof.salarioMedioCLT)})</th>
-                <th className="p-3.5 font-semibold text-right">
+                <th scope="col" className="p-3.5 font-semibold">Indicador (2026)</th>
+                <th scope="col" className="p-3.5 font-semibold text-right">CLT ({formatBRL(prof.salarioMedioCLT)})</th>
+                <th scope="col" className="p-3.5 font-semibold text-right">
                   PJ ({formatBRL(prof.propostaMediaPJ)})
                 </th>
               </tr>
@@ -249,7 +249,7 @@ export default async function ProfissaoProgrammaticPage({
               </Link>
               .{" "}
               {prof.sujeitoFatorR
-                ? "Por se tratar de atividade originalmente no Anexo V (15,5%), manter o pró-labore em 28% do faturamento via contabilidade digital enquadra a empresa no Anexo III a partir de 6,0%."
+                ? `Por se tratar de atividade originalmente no Anexo V (15,5%), manter o pró-labore em 28% do faturamento (${formatBRL(sim.pj.proLaboreSugerido)}/mês) enquadra a empresa no Anexo III a partir de 6,0% e economiza cerca de ${formatBRL(sim.pj.economiaMensalComFatorR * 12)} por ano frente ao Anexo V sem Fator R.`
                 : `Este código ingressa diretamente no Anexo ${prof.anexoPadrao}, dispensando a exigência de folha de 28%.`}
             </p>
           </div>

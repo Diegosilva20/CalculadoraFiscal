@@ -87,9 +87,15 @@ export default function RescisaoFeriasCalculator() {
   return (
     <div className="space-y-6">
       <div className="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex rounded-lg bg-slate-200/80 p-1 max-w-md w-full">
+        <div
+          role="tablist"
+          aria-label="Selecionar tipo de simulação trabalhista"
+          className="flex rounded-lg bg-slate-200/80 p-1 max-w-md w-full"
+        >
           <button
             type="button"
+            role="tab"
+            aria-selected={abaAtiva === "rescisao"}
             onClick={() => setAbaAtiva("rescisao")}
             className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md transition-colors ${
               abaAtiva === "rescisao"
@@ -101,6 +107,8 @@ export default function RescisaoFeriasCalculator() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={abaAtiva === "ferias"}
             onClick={() => setAbaAtiva("ferias")}
             className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md transition-colors ${
               abaAtiva === "ferias"
@@ -253,6 +261,7 @@ export default function RescisaoFeriasCalculator() {
                   <button
                     type="button"
                     onClick={copiarResumo}
+                    aria-live="polite"
                     className="no-print inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700"
                   >
                     {copiado ? (

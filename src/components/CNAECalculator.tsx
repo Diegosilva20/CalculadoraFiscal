@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   AnexoSimples,
+  DAS_MEI_SERVICOS_2026,
+  TETO_ANUAL_MEI_2026,
   calculateSimplesNacional2026,
   formatBRL,
   formatPercent,
@@ -10,7 +13,7 @@ import {
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import PrintButton from "./PrintButton";
-import { CheckCircle2, Info } from "lucide-react";
+import { ArrowRight, CheckCircle2, Info } from "lucide-react";
 
 interface CNAECalculatorProps {
   codigoCNAE: string;
@@ -47,7 +50,7 @@ export default function CNAECalculator({
     reducaoSetorialIVA: reducaoIVA2026,
   });
 
-  const cabeNoMEI = permiteMEI && faturamentoMensal * 12 <= 81000;
+  const cabeNoMEI = permiteMEI && faturamentoMensal * 12 <= TETO_ANUAL_MEI_2026;
 
   return (
     <div className="space-y-6">
@@ -218,11 +221,11 @@ export default function CNAECalculator({
           </div>
           {cabeNoMEI ? (
             <p className="text-emerald-800">
-              Com faturamento anual de {formatBRL(faturamentoMensal * 12)}, esta atividade é aceita no <strong>MEI</strong>, com recolhimento fixo mensal em torno de R$ 86.
+              Com faturamento anual de {formatBRL(faturamentoMensal * 12)}, esta atividade é aceita no <strong>MEI</strong>, com recolhimento fixo mensal de {formatBRL(DAS_MEI_SERVICOS_2026)} (serviços).
             </p>
           ) : permiteMEI ? (
             <p className="text-amber-800">
-              Embora o CNAE conste na lista do MEI, a receita anual de {formatBRL(faturamentoMensal * 12)} excede o teto de R$ 81.000/ano, exigindo Microempresa (ME) no Simples Nacional.
+              Embora o CNAE conste na lista do MEI, a receita anual de {formatBRL(faturamentoMensal * 12)} excede o teto de {formatBRL(TETO_ANUAL_MEI_2026)}/ano, exigindo Microempresa (ME) no Simples Nacional.
             </p>
           ) : (
             <p className="text-slate-600">
@@ -237,6 +240,15 @@ export default function CNAECalculator({
               </strong>{" "}
               (<span className="font-mono">{formatBRL(resultado.economiaMensalComFatorR * 12)}</span> ao ano) em comparação ao Anexo V.
             </p>
+          )}
+          {sujeitoFatorR && (
+            <Link
+              href="/calculadora-fator-r"
+              className="no-print inline-flex items-center gap-1 font-semibold text-blue-700 hover:underline pt-1"
+            >
+              Auditar pró-labore de 28% na Calculadora de Fator R
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           )}
         </div>
 

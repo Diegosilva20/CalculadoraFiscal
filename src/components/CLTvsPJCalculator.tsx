@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AnexoSimples,
   calculateCLTvsPJ,
@@ -10,7 +10,7 @@ import {
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import PrintButton from "./PrintButton";
-import { ArrowRight, Copy, Check } from "lucide-react";
+import { ArrowRight, Copy, Check, Share2 } from "lucide-react";
 import Link from "next/link";
 
 type OpcaoRegimePJ = "III_FATOR_R" | "III_DIRETO" | "V" | "IV" | "I";
@@ -65,6 +65,36 @@ export default function CLTvsPJCalculator({
   );
   const [custoContabilidade, setCustoContabilidade] = useState<number>(249);
   const [copiado, setCopiado] = useState<boolean>(false);
+  const [linkCopiado, setLinkCopiado] = useState<boolean>(false);
+
+  useEffect(() => {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const clt = Number(sp.get("clt"));
+      const pj = Number(sp.get("pj"));
+      const ben = Number(sp.get("ben"));
+      const dep = Number(sp.get("dep"));
+      const contab = Number(sp.get("contab"));
+      const reg = sp.get("reg");
+      if (Number.isFinite(clt) && clt > 0) setSalarioCLT(clt);
+      if (Number.isFinite(pj) && pj > 0) setFaturamentoPJ(pj);
+      if (sp.has("ben") && Number.isFinite(ben) && ben >= 0) setBeneficiosCLT(ben);
+      if (sp.has("dep") && Number.isFinite(dep) && dep >= 0) setDependentes(dep);
+      if (sp.has("contab") && Number.isFinite(contab) && contab >= 0)
+        setCustoContabilidade(contab);
+      if (
+        reg === "III_FATOR_R" ||
+        reg === "III_DIRETO" ||
+        reg === "V" ||
+        reg === "IV" ||
+        reg === "I"
+      ) {
+        setRegimePJ(reg);
+      }
+    } catch {
+      // Ignora em caso de erro de leitura de URL
+    }
+  }, []);
 
   const anexoMap: Record<
     OpcaoRegimePJ,
@@ -131,6 +161,24 @@ export default function CLTvsPJCalculator({
     navigator.clipboard?.writeText(texto);
     setCopiado(true);
     setTimeout(() => setCopiado(false), 3000);
+  };
+
+  const copiarLinkSimulacao = () => {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("clt", String(salarioCLT));
+      url.searchParams.set("pj", String(faturamentoPJ));
+      url.searchParams.set("ben", String(beneficiosCLT));
+      url.searchParams.set("dep", String(dependentes));
+      url.searchParams.set("contab", String(custoContabilidade));
+      url.searchParams.set("reg", regimePJ);
+      window.history.replaceState(null, "", url.pathname + url.search);
+      navigator.clipboard?.writeText(url.toString());
+      setLinkCopiado(true);
+      setTimeout(() => setLinkCopiado(false), 3000);
+    } catch {
+      // Ignora
+    }
   };
 
   return (
@@ -398,17 +446,37 @@ export default function CLTvsPJCalculator({
               <button
                 type="button"
                 onClick={copiarResumoSimulacao}
+                aria-live="polite"
                 className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
                 {copiado ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-emerald-700" />
+                    <Check className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
                     Resumo copiado
                   </>
                 ) : (
                   <>
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="w-3.5 h-3.5" aria-hidden="true" />
                     Copiar resumo
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={copiarLinkSimulacao}
+                aria-live="polite"
+                className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+              >
+                {linkCopiado ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
+                    Link copiado
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
+                    Copiar link
                   </>
                 )}
               </button>

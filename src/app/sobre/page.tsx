@@ -75,7 +75,7 @@ export default function SobreMetodologiaPage() {
       </div>
 
       {/* Metodologia Matemática Detalhada */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-6">
         <div className="flex items-center gap-2 text-blue-700 font-bold text-sm uppercase tracking-wider">
           <BookOpen className="w-4 h-4" />
           Fórmulas Oficiais e Base Legal Utilizadas
@@ -125,13 +125,13 @@ export default function SobreMetodologiaPage() {
       </section>
 
       {/* Fontes Governamentais e APIs */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm uppercase tracking-wider">
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-4">
+        <div className="flex items-center gap-2 text-blue-700 font-bold text-sm uppercase tracking-wider">
           <Landmark className="w-4 h-4" />
           Fontes de Dados Governamentais & APIs Conectadas
         </div>
         <h2 className="text-xl font-extrabold text-slate-900">
-          De onde vêm os dados do CalculaFiscal?
+          De onde vêm os dados do CalculaFiscal
         </h2>
         <ul className="space-y-3 text-sm text-slate-700">
           {PARAMETROS_FISCAIS.fontesOficiais.map((fonte, i) => (
@@ -154,15 +154,21 @@ export default function SobreMetodologiaPage() {
           </li>
         </ul>
 
-        <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-4 text-xs font-bold text-blue-600">
+        <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-4 text-xs font-bold text-blue-700">
+          <Link href="/clt-vs-pj" className="hover:underline">
+            Simulador CLT vs PJ →
+          </Link>
+          <Link href="/cnae" className="hover:underline">
+            Tabela CNAE 2026 →
+          </Link>
           <Link href="/politica-de-privacidade" className="hover:underline">
             Ler Política de Privacidade e LGPD →
           </Link>
           <Link href="/termos-de-uso" className="hover:underline">
-            Ler Termos de Uso e Isenção Contábil →
+            Ler Termos de Uso →
           </Link>
           <Link href="/contato" className="hover:underline">
-            Falar com Nossa Equipe Editorial →
+            Enviar dúvida ou sugestão →
           </Link>
         </div>
       </section>

@@ -23,7 +23,7 @@ export default function PoliticaPrivacidadePage() {
           Política de Privacidade e Proteção de Dados
         </h1>
         <p className="text-xs text-slate-500">
-          Última atualização: 21 de outubro de 2026 • Vigente para todo o domínio CalculaFiscal.
+          Última atualização: 22 de novembro de 2026 • Vigente para todo o portal CalculaFiscal.
         </p>
       </div>
 
@@ -85,14 +85,14 @@ export default function PoliticaPrivacidadePage() {
           3. Coleta de Dados de Navegação e Métricas Anônimas
         </h2>
         <p>
-          Coletamos apenas informações técnicas agregadas e anonimizadas estritamente necessárias para medir o desempenho e a estabilidade das páginas (como tipo de navegador, sistema operacional, páginas mais visitadas e tempo médio de carregamento — Core Web Vitals).
+          Coletamos apenas informações técnicas agregadas via Google Analytics 4 com suporte a <strong>Consent Mode v2</strong> (como tipo de navegador, páginas acessadas e desempenho de carregamento Core Web Vitals). Quando você opta por &ldquo;Apenas Essenciais&rdquo;, o armazenamento analítico e de publicidade é bloqueado no navegador.
         </p>
         <p>
-          Caso você entre em contato voluntariamente conosco através da página de{" "}
-          <Link href="/contato" className="text-blue-600 font-semibold underline">
+          Na página de{" "}
+          <Link href="/contato" className="text-blue-700 font-semibold underline">
             Contato
           </Link>
-          , os dados informados (nome e e-mail) serão utilizados única e exclusivamente para responder à sua solicitação, jamais sendo vendidos ou compartilhados com terceiros.
+          , os campos preenchidos geram apenas um rascunho local para envio direto pelo seu aplicativo de e-mail (<code className="text-xs bg-slate-100 px-1 py-0.5 rounded">mailto:</code>), sem gravação automática em banco de dados. Eventuais mensagens enviadas ao nosso e-mail de atendimento são usadas exclusivamente para resposta técnica.
         </p>
       </section>
 
@@ -101,8 +101,8 @@ export default function PoliticaPrivacidadePage() {
           4. Seus Direitos sob a LGPD (Lei Geral de Proteção de Dados)
         </h2>
         <p>
-          Nos termos do Art. 18 da Lei Federal nº 13.709/2018 (LGPD), você tem direito a confirmar a existência de tratamento de dados, revogar o consentimento de cookies a qualquer momento limpando os dados do seu navegador ou utilizando nosso banner de preferências de privacidade, e solicitar esclarecimentos através do nosso canal oficial em{" "}
-          <Link href="/contato" className="text-blue-600 font-semibold underline">
+          Nos termos do Art. 18 da Lei Federal nº 13.709/2018 (LGPD), você pode revisar ou revogar o consentimento de cookies a qualquer momento clicando em <strong>Preferências de cookies</strong> no rodapé do site, ou solicitar esclarecimentos através de{" "}
+          <Link href="/contato" className="text-blue-700 font-semibold underline">
             /contato
           </Link>
           .

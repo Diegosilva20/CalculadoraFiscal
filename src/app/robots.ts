@@ -1,18 +1,9 @@
 import type { MetadataRoute } from "next";
-import { headers } from "next/headers";
-import { normalizeSiteUrl } from "@/lib/seo-schema";
+import { SITE_BASE_URL } from "@/lib/seo-schema";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 
-export default async function robots(): Promise<MetadataRoute.Robots> {
-  const headersList = await headers();
-  const host = headersList.get("x-forwarded-host") || headersList.get("host");
-  const proto = headersList.get("x-forwarded-proto") || "https";
-
-  const baseUrl = host
-    ? normalizeSiteUrl(`${proto}://${host}`)
-    : normalizeSiteUrl();
-
+export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
@@ -34,6 +25,6 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
         allow: "/",
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_BASE_URL}/sitemap.xml`,
   };
 }

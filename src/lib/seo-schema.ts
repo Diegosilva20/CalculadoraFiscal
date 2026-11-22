@@ -64,10 +64,49 @@ export interface PageSchemaOptions {
 }
 
 export function buildCalculatorSchemaGraph(options: PageSchemaOptions) {
-  const cleanPath = options.path.startsWith("/") ? options.path : `/${options.path}`;
+  const cleanPath =
+    options.path === "/"
+      ? ""
+      : options.path.startsWith("/")
+      ? options.path
+      : `/${options.path}`;
   const fullUrl = `${SITE_BASE_URL}${cleanPath}`;
+  const orgId = `${SITE_BASE_URL}/#organization`;
+  const websiteId = `${SITE_BASE_URL}/#website`;
 
   const graph: Record<string, unknown>[] = [
+    {
+      "@type": "Organization",
+      "@id": orgId,
+      name: "CalculaFiscal",
+      url: SITE_BASE_URL,
+      email: "contato@calculafiscal.com.br",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "BR",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: "contato@calculafiscal.com.br",
+        url: `${SITE_BASE_URL}/contato`,
+        availableLanguage: ["Portuguese"],
+        areaServed: "BR",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      name: "CalculaFiscal 2026",
+      url: SITE_BASE_URL,
+      inLanguage: "pt-BR",
+      publisher: { "@id": orgId },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${SITE_BASE_URL}/cnae?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
     {
       "@type": "SoftwareApplication",
       "@id": `${fullUrl}#app`,
@@ -78,16 +117,13 @@ export function buildCalculatorSchemaGraph(options: PageSchemaOptions) {
       inLanguage: "pt-BR",
       isAccessibleForFree: true,
       description: options.description,
+      isPartOf: { "@id": websiteId },
       offers: {
         "@type": "Offer",
         price: "0.00",
         priceCurrency: "BRL",
       },
-      publisher: {
-        "@type": "Organization",
-        name: "CalculaFiscal",
-        url: SITE_BASE_URL,
-      },
+      publisher: { "@id": orgId },
     },
     {
       "@type": "BreadcrumbList",

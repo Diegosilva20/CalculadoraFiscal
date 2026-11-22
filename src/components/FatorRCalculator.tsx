@@ -3,9 +3,7 @@
 import React, { useState } from "react";
 import {
   SALARIO_MINIMO_2026,
-  TETO_INSS_2026,
-  TABELAS_SIMPLES_2026,
-  calculateIRPF2026,
+  calculateFatorR2026,
   formatBRL,
   formatPercent,
 } from "@/lib/calculators";
@@ -21,18 +19,6 @@ const PRESETS_FATURAMENTO = [
   { label: "R$ 45.000/mês", mensal: 45000, rbt12: 540000, fs11: 138600 },
 ];
 
-function getAliquotaEfetivaAnexo(anexo: "III" | "V", rbt12: number): number {
-  const rbtEfetivo = Math.max(1, rbt12);
-  const tabela = TABELAS_SIMPLES_2026[anexo];
-  const faixa =
-    tabela.find((f) => rbtEfetivo <= f.limiteSuperior) ||
-    tabela[tabela.length - 1];
-  return Math.max(
-    0,
-    (rbtEfetivo * faixa.aliquotaNominal - faixa.parcelaDeduzir) / rbtEfetivo
-  );
-}
-
 export default function FatorRCalculator() {
   const [modo, setModo] = useState<"mensal" | "auditoria12m">("mensal");
   const [faturamentoMensal, setFaturamentoMensal] = useState<number>(15000);
@@ -42,53 +28,30 @@ export default function FatorRCalculator() {
     useState<number>(46200);
   const [copiado, setCopiado] = useState<boolean>(false);
 
-  const rbt12Base =
-    modo === "mensal" ? Math.max(faturamentoMensal * 12, 1) : Math.max(rbt12, 1);
-
-  const fs12Total =
-    modo === "mensal"
-      ? folhaAtualMensal * 12
-      : folha11MesesAnteriores + folhaAtualMensal;
-
-  const fatorRAtual = fs12Total / rbt12Base;
-  const atingiu28 = fatorRAtual >= 0.28;
-
-  const folhaAnualNecessaria28 = rbt12Base * 0.28;
-  const proLaboreIdealNesteMes =
-    modo === "mensal"
-      ? Math.max(SALARIO_MINIMO_2026, faturamentoMensal * 0.28)
-      : Math.max(
-          SALARIO_MINIMO_2026,
-          folhaAnualNecessaria28 - folha11MesesAnteriores
-        );
-
-  const faltaNesteMesPara28 = Math.max(
-    0,
-    proLaboreIdealNesteMes - folhaAtualMensal
-  );
-
-  const aliqAnexoIII = getAliquotaEfetivaAnexo("III", rbt12Base);
-  const aliqAnexoV = getAliquotaEfetivaAnexo("V", rbt12Base);
-
-  const dasAnexoIII = faturamentoMensal * aliqAnexoIII;
-  const inssComFatorR = Math.min(proLaboreIdealNesteMes, TETO_INSS_2026) * 0.11;
-  const irpfComFatorR = calculateIRPF2026(
+  const {
+    rbt12Base,
+    fatorRAtual,
+    atingiu28,
     proLaboreIdealNesteMes,
+    faltaNesteMesPara28,
+    aliqAnexoIII,
+    aliqAnexoV,
+    dasAnexoIII,
     inssComFatorR,
-    0,
-    0
-  ).valor;
-  const custoTotalComFatorR = dasAnexoIII + inssComFatorR + irpfComFatorR;
-
-  const dasAnexoV = faturamentoMensal * aliqAnexoV;
-  const inssSemFatorR = SALARIO_MINIMO_2026 * 0.11;
-  const irpfSemFatorR = 0;
-  const custoTotalSemFatorR = dasAnexoV + inssSemFatorR + irpfSemFatorR;
-
-  const economiaLiquidaMensal = Math.max(
-    0,
-    custoTotalSemFatorR - custoTotalComFatorR
-  );
+    irpfComFatorR,
+    custoTotalComFatorR,
+    dasAnexoV,
+    inssSemFatorR,
+    custoTotalSemFatorR,
+    saldoEconomiaMensal,
+    compensaFatorR,
+  } = calculateFatorR2026({
+    modo,
+    faturamentoMensal,
+    rbt12,
+    folhaAtualMensal,
+    folha11MesesAnteriores,
+  });
 
   const copiarDiagnostico = () => {
     const texto = `Resumo Fator R 2026 (CalculaFiscal)\n- Faturamento mensal: ${formatBRL(
@@ -101,9 +64,9 @@ export default function FatorRCalculator() {
       custoTotalComFatorR
     )}/mês\n- Total no Anexo V: ${formatBRL(
       custoTotalSemFatorR
-    )}/mês\n- Economia líquida anual estimada: ${formatBRL(
-      economiaLiquidaMensal * 12
-    )}/ano`;
+    )}/mês\n- Saldo comparativo anual: ${
+      saldoEconomiaMensal >= 0 ? "+" : ""
+    }${formatBRL(saldoEconomiaMensal * 12)}/ano`;
 
     navigator.clipboard?.writeText(texto);
     setCopiado(true);
@@ -114,9 +77,15 @@ export default function FatorRCalculator() {
     <div className="space-y-6">
       <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-          <div className="flex rounded-lg bg-slate-100 p-1">
+          <div
+            role="tablist"
+            aria-label="Modo de apuração do Fator R"
+            className="flex rounded-lg bg-slate-100 p-1"
+          >
             <button
               type="button"
+              role="tab"
+              aria-selected={modo === "mensal"}
               onClick={() => setModo("mensal")}
               className={`px-3.5 py-2 rounded-md text-xs font-semibold transition-colors ${
                 modo === "mensal"
@@ -128,6 +97,8 @@ export default function FatorRCalculator() {
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={modo === "auditoria12m"}
               onClick={() => setModo("auditoria12m")}
               className={`px-3.5 py-2 rounded-md text-xs font-semibold transition-colors ${
                 modo === "auditoria12m"
@@ -320,7 +291,14 @@ export default function FatorRCalculator() {
         </div>
 
         <div className="relative pt-2">
-          <div className="w-full h-4 rounded bg-slate-100 overflow-hidden flex">
+          <div
+            role="meter"
+            aria-label="Proporção atual do Fator R em relação ao faturamento"
+            aria-valuemin={0}
+            aria-valuemax={40}
+            aria-valuenow={Number((fatorRAtual * 100).toFixed(1))}
+            className="w-full h-4 rounded bg-slate-100 overflow-hidden flex"
+          >
             <div
               style={{
                 width: `${Math.min(100, (fatorRAtual / 0.4) * 100)}%`,
@@ -364,26 +342,39 @@ export default function FatorRCalculator() {
       />
 
       {/* Resumo de Economia Anual */}
-      <div className="bg-white rounded-xl border border-slate-200 border-t-4 border-t-emerald-700 p-6">
+      <div
+        className={`bg-white rounded-xl border border-slate-200 border-t-4 ${
+          compensaFatorR ? "border-t-emerald-700" : "border-t-amber-600"
+        } p-6`}
+      >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                Economia estimada com Fator R
+              <span
+                className={`px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider border ${
+                  compensaFatorR
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                    : "bg-amber-50 text-amber-900 border-amber-200"
+                }`}
+              >
+                {compensaFatorR
+                  ? "Economia estimada com Fator R"
+                  : "Alerta: Anexo V direto fica mais econômico"}
               </span>
               <button
                 type="button"
                 onClick={copiarDiagnostico}
+                aria-live="polite"
                 className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
                 {copiado ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-emerald-700" />
+                    <Check className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
                     Copiado
                   </>
                 ) : (
                   <>
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="w-3.5 h-3.5" aria-hidden="true" />
                     Copiar resumo
                   </>
                 )}
@@ -391,41 +382,80 @@ export default function FatorRCalculator() {
               <PrintButton />
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Economia líquida de{" "}
-              <span className="font-mono tabular-nums text-emerald-700">
-                {formatBRL(economiaLiquidaMensal * 12)}/ano
-              </span>{" "}
-              ajustando o pró-labore para 28%
-            </h3>
+            {compensaFatorR ? (
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                Economia líquida de{" "}
+                <span className="font-mono tabular-nums text-emerald-700">
+                  {formatBRL(saldoEconomiaMensal * 12)}/ano
+                </span>{" "}
+                ajustando o pró-labore para 28%
+              </h3>
+            ) : (
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                Anexo V direto economiza{" "}
+                <span className="font-mono tabular-nums text-amber-800">
+                  {formatBRL(Math.abs(saldoEconomiaMensal) * 12)}/ano
+                </span>{" "}
+                sem funcionários CLT
+              </h3>
+            )}
 
             <p className="text-sm text-slate-600 max-w-2xl leading-relaxed">
-              Com a faixa de isenção do IRPF até R$ 5.000 em 2026, um pró-labore de{" "}
-              <strong className="font-mono text-slate-900">
-                {formatBRL(proLaboreIdealNesteMes)}
-              </strong>{" "}
-              recolhe{" "}
-              <strong className="font-mono text-slate-900">
-                {formatBRL(inssComFatorR)} de INSS
-              </strong>{" "}
-              e{" "}
-              <strong className="font-mono text-emerald-700">
-                {formatBRL(irpfComFatorR)} de IRRF
-              </strong>
-              , reduzindo a guia DAS em{" "}
-              <strong className="font-mono text-emerald-700">
-                {formatBRL(dasAnexoV - dasAnexoIII)}/mês
-              </strong>
-              .
+              {compensaFatorR ? (
+                <>
+                  Com a faixa de isenção do IRPF até R$ 5.000 em 2026, um pró-labore de{" "}
+                  <strong className="font-mono text-slate-900">
+                    {formatBRL(proLaboreIdealNesteMes)}
+                  </strong>{" "}
+                  recolhe{" "}
+                  <strong className="font-mono text-slate-900">
+                    {formatBRL(inssComFatorR)} de INSS
+                  </strong>{" "}
+                  e{" "}
+                  <strong className="font-mono text-emerald-700">
+                    {formatBRL(irpfComFatorR)} de IRRF
+                  </strong>
+                  , reduzindo a guia DAS em{" "}
+                  <strong className="font-mono text-emerald-700">
+                    {formatBRL(dasAnexoV - dasAnexoIII)}/mês
+                  </strong>
+                  .
+                </>
+              ) : (
+                <>
+                  Para este faturamento sem folha de empregados CLT, fixar 28% apenas em pró-labore (
+                  <strong className="font-mono text-slate-900">
+                    {formatBRL(proLaboreIdealNesteMes)}
+                  </strong>
+                  ) gera{" "}
+                  <strong className="font-mono text-rose-700">
+                    {formatBRL(irpfComFatorR)} de IRRF
+                  </strong>{" "}
+                  e{" "}
+                  <strong className="font-mono text-rose-700">
+                    {formatBRL(inssComFatorR)} de INSS
+                  </strong>
+                  , superando a economia de{" "}
+                  <strong className="font-mono text-slate-900">
+                    {formatBRL(dasAnexoV - dasAnexoIII)}/mês
+                  </strong>{" "}
+                  no DAS. Avalie manter o Anexo V com pró-labore mínimo ou comparar o Lucro Presumido com contador.
+                </>
+              )}
             </p>
           </div>
 
           <div className="bg-slate-50 rounded-lg p-5 min-w-[240px] border border-slate-200 shrink-0">
             <span className="text-[11px] uppercase font-bold tracking-wider text-slate-500">
-              Economia líquida por mês
+              {compensaFatorR ? "Economia líquida por mês" : "Diferença no Anexo III vs V"}
             </span>
-            <p className="text-3xl font-mono font-bold tabular-nums text-emerald-700 mt-1">
-              + {formatBRL(economiaLiquidaMensal)}
+            <p
+              className={`text-3xl font-mono font-bold tabular-nums mt-1 ${
+                compensaFatorR ? "text-emerald-700" : "text-rose-700"
+              }`}
+            >
+              {saldoEconomiaMensal >= 0 ? "+ " : "- "}
+              {formatBRL(Math.abs(saldoEconomiaMensal))}
             </p>
             <span className="text-xs text-slate-500 block mt-1">
               Já descontando INSS e IRRF do pró-labore

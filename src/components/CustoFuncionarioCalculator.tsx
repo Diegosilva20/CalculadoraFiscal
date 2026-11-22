@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import {
-  calculateSalarioLiquidoCLT,
+  RegimeEmpresaCLT,
+  calculateCustoFuncionario2026,
   formatBRL,
   formatPercent,
 } from "@/lib/calculators";
@@ -13,8 +14,6 @@ import { getNearestSalarioSEO } from "@/data/profissoes";
 import Link from "next/link";
 import { ArrowRight, Copy, Check } from "lucide-react";
 
-type RegimeEmpresa = "simples_geral" | "lucro_presumido_real" | "mei";
-
 const PRESETS_SALARIOS_EMPRESA = [
   { label: "R$ 2.000", salario: 2000, vr: 450, vt: 220 },
   { label: "R$ 3.500", salario: 3500, vr: 650, vt: 250 },
@@ -24,82 +23,45 @@ const PRESETS_SALARIOS_EMPRESA = [
 
 export default function CustoFuncionarioCalculator() {
   const [salarioBruto, setSalarioBruto] = useState<number>(3500);
-  const [regime, setRegime] = useState<RegimeEmpresa>("simples_geral");
+  const [regime, setRegime] = useState<RegimeEmpresaCLT>("simples_geral");
   const [beneficiosVRPlano, setBeneficiosVRPlano] = useState<number>(650);
   const [gastoBrutoVT, setGastoBrutoVT] = useState<number>(250);
   const [incluirProvisaoMulta40, setIncluirProvisaoMulta40] =
     useState<boolean>(true);
   const [copiado, setCopiado] = useState<boolean>(false);
 
-  const aliquotaINSSPatronalTotal =
-    regime === "simples_geral"
-      ? 0
-      : regime === "mei"
-      ? 0.03
-      : 0.278;
-
-  const fgtsMensal = salarioBruto * 0.08;
-  const inssPatronalSobreSalario = salarioBruto * aliquotaINSSPatronalTotal;
-
-  const provisao13Base = salarioBruto / 12;
-  const encargosSobre13 = provisao13Base * (0.08 + aliquotaINSSPatronalTotal);
-  const provisao13Total = provisao13Base + encargosSobre13;
-
-  const provisaoFeriasBase = (salarioBruto * (4 / 3)) / 12;
-  const encargosSobreFerias =
-    provisaoFeriasBase * (0.08 + aliquotaINSSPatronalTotal);
-  const provisaoFeriasTotal = provisaoFeriasBase + encargosSobreFerias;
-
-  const fgtsTotalMensalEProvisoes =
-    fgtsMensal + provisao13Base * 0.08 + provisaoFeriasBase * 0.08;
-  const provisaoMultaFGTS = incluirProvisaoMulta40
-    ? fgtsTotalMensalEProvisoes * 0.4
-    : 0;
-
-  const descontoMaximoVTFuncionario = salarioBruto * 0.06;
-  const custoLiquidoVTEmpresa = Math.max(
-    0,
-    gastoBrutoVT - descontoMaximoVTFuncionario
-  );
-
-  const totalEncargosEProvisoes =
-    fgtsMensal +
-    inssPatronalSobreSalario +
-    provisao13Total +
-    provisaoFeriasTotal +
-    provisaoMultaFGTS;
-
-  const totalBeneficiosEmpresa = beneficiosVRPlano + custoLiquidoVTEmpresa;
-
-  const custoTotalMensalEmpresa =
-    salarioBruto + totalEncargosEProvisoes + totalBeneficiosEmpresa;
-
-  const sobrecustoPercentual =
-    salarioBruto > 0 ? (custoTotalMensalEmpresa - salarioBruto) / salarioBruto : 0;
-
-  const visaoTrabalhador = calculateSalarioLiquidoCLT({
+  const {
+    aliquotaINSSPatronalTotal,
+    fgtsMensal,
+    inssPatronalSobreSalario,
+    provisao13Total,
+    provisaoFeriasTotal,
+    provisaoMultaFGTS,
+    totalEncargosEProvisoes,
+    totalBeneficiosEmpresa,
+    custoTotalMensalEmpresa,
+    sobrecustoPercentual,
+    visaoTrabalhador,
+    pctLiquidoTrabalhador,
+    pctBeneficios,
+    pctImpostosEProvisoes,
+  } = calculateCustoFuncionario2026({
     salarioBruto,
-    beneficiosMensais: beneficiosVRPlano,
-    descontarVT: gastoBrutoVT > 0,
+    regime,
+    beneficiosVRPlano,
+    gastoBrutoVT,
+    incluirProvisaoMulta40,
   });
-
-  const pctLiquidoTrabalhador =
-    (visaoTrabalhador.salarioLiquidoMensal / Math.max(1, custoTotalMensalEmpresa)) *
-    100;
-  const pctBeneficios =
-    (totalBeneficiosEmpresa / Math.max(1, custoTotalMensalEmpresa)) * 100;
-  const pctImpostosEProvisoes = Math.max(
-    0,
-    100 - pctLiquidoTrabalhador - pctBeneficios
-  );
 
   const copiarRelatorio = () => {
     const nomeRegime =
       regime === "simples_geral"
-        ? "Simples Nacional (Anexo I, II, III ou V)"
+        ? "Simples Nacional (Anexos I, II, III ou V)"
+        : regime === "anexo_iv"
+        ? "Simples Nacional Anexo IV (CPP 20% + RAT)"
         : regime === "lucro_presumido_real"
-        ? "Lucro Presumido / Real (ou Anexo IV)"
-        : "MEI";
+        ? "Lucro Presumido / Real"
+        : "MEI (1 empregado)";
 
     const texto = `Custo de Funcionário CLT 2026 (CalculaFiscal)\n- Regime: ${nomeRegime}\n- Salário na carteira: ${formatBRL(
       salarioBruto
@@ -148,12 +110,17 @@ export default function CustoFuncionarioCalculator() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+          <span className="block text-xs font-semibold text-slate-700 mb-2">
             Regime tributário da empresa empregadora
-          </label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          </span>
+          <div
+            role="group"
+            aria-label="Selecionar regime tributário da empresa empregadora"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"
+          >
             <button
               type="button"
+              aria-pressed={regime === "simples_geral"}
               onClick={() => setRegime("simples_geral")}
               className={`p-3.5 rounded-lg border text-left transition-colors ${
                 regime === "simples_geral"
@@ -162,15 +129,34 @@ export default function CustoFuncionarioCalculator() {
               }`}
             >
               <span className="font-bold text-xs sm:text-sm text-slate-900 block">
-                Simples Nacional (Anexos I, II, III e V)
+                Simples (Anexos I, II, III e V)
               </span>
               <span className="text-[11px] text-emerald-800 font-medium">
-                Sem CPP patronal de 20% e Sistema S
+                Isento de CPP 20% e Sistema S
               </span>
             </button>
 
             <button
               type="button"
+              aria-pressed={regime === "anexo_iv"}
+              onClick={() => setRegime("anexo_iv")}
+              className={`p-3.5 rounded-lg border text-left transition-colors ${
+                regime === "anexo_iv"
+                  ? "bg-blue-50/70 border-blue-700 ring-1 ring-blue-700"
+                  : "bg-slate-50 border-slate-200 hover:bg-slate-100"
+              }`}
+            >
+              <span className="font-bold text-xs sm:text-sm text-slate-900 block">
+                Simples Anexo IV
+              </span>
+              <span className="text-[11px] text-amber-800 font-medium">
+                +22,0% patronal (CPP 20% + RAT, sem Sistema S)
+              </span>
+            </button>
+
+            <button
+              type="button"
+              aria-pressed={regime === "lucro_presumido_real"}
               onClick={() => setRegime("lucro_presumido_real")}
               className={`p-3.5 rounded-lg border text-left transition-colors ${
                 regime === "lucro_presumido_real"
@@ -179,15 +165,16 @@ export default function CustoFuncionarioCalculator() {
               }`}
             >
               <span className="font-bold text-xs sm:text-sm text-slate-900 block">
-                Lucro Presumido / Real (ou Anexo IV)
+                Lucro Presumido / Real
               </span>
               <span className="text-[11px] text-rose-700 font-medium">
-                Recolhe +27,8% (INSS Patronal, RAT e Sistema S)
+                +27,8% (CPP 20%, RAT e Sistema S)
               </span>
             </button>
 
             <button
               type="button"
+              aria-pressed={regime === "mei"}
               onClick={() => setRegime("mei")}
               className={`p-3.5 rounded-lg border text-left transition-colors ${
                 regime === "mei"
@@ -196,10 +183,10 @@ export default function CustoFuncionarioCalculator() {
               }`}
             >
               <span className="font-bold text-xs sm:text-sm text-slate-900 block">
-                MEI (até 1 empregado)
+                MEI (1 empregado)
               </span>
               <span className="text-[11px] text-slate-600 font-medium">
-                INSS patronal reduzido de 3% + 8% de FGTS
+                INSS patronal de 3% + 8% de FGTS
               </span>
             </button>
           </div>
@@ -296,16 +283,17 @@ export default function CustoFuncionarioCalculator() {
               <button
                 type="button"
                 onClick={copiarRelatorio}
+                aria-live="polite"
                 className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
                 {copiado ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-emerald-700" />
+                    <Check className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
                     Copiado
                   </>
                 ) : (
                   <>
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="w-3.5 h-3.5" aria-hidden="true" />
                     Copiar relatório
                   </>
                 )}

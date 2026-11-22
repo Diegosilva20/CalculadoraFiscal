@@ -24,11 +24,13 @@ export const DEDUCAO_DEPENDENTE_IR_2026 =
   parametrosFiscais.irpf.deducaoPorDependente;
 export const DESCONTO_SIMPLIFICADO_IR_2026 =
   parametrosFiscais.irpf.descontoSimplificadoMensal;
-export const TETO_ANUAL_MEI_2026 = parametrosFaiscaisCheck();
-
-function parametrosFaiscaisCheck() {
-  return parametrosFiscais.pj.tetoAnualMEI;
-}
+export const TETO_ANUAL_MEI_2026 = parametrosFiscais.pj.tetoAnualMEI;
+export const DAS_MEI_SERVICOS_2026 = Number(
+  (
+    SALARIO_MINIMO_2026 * parametrosFiscais.pj.mei.aliquotaINSS +
+    parametrosFiscais.pj.mei.issFixoMensal
+  ).toFixed(2)
+);
 
 export function formatBRL(value: number): string {
   return new Intl.NumberFormat("pt-BR", {
@@ -608,5 +610,217 @@ export function calculateFeriasCLT(params: {
     inss: Number(inss.toFixed(2)),
     irpf: Number(irpf.toFixed(2)),
     liquidoReceber: Number(liquidoReceber.toFixed(2)),
+  };
+}
+
+export type RegimeEmpresaCLT =
+  | "simples_geral"
+  | "anexo_iv"
+  | "lucro_presumido_real"
+  | "mei";
+
+export function calculateFatorR2026(params: {
+  modo: "mensal" | "auditoria12m";
+  faturamentoMensal: number;
+  rbt12: number;
+  folhaAtualMensal: number;
+  folha11MesesAnteriores: number;
+}) {
+  const fat = Math.max(
+    0,
+    Number.isFinite(params.faturamentoMensal) ? params.faturamentoMensal : 0
+  );
+  const rbt12Input = Math.max(0, Number.isFinite(params.rbt12) ? params.rbt12 : 0);
+  const folhaAtual = Math.max(
+    0,
+    Number.isFinite(params.folhaAtualMensal) ? params.folhaAtualMensal : 0
+  );
+  const fs11 = Math.max(
+    0,
+    Number.isFinite(params.folha11MesesAnteriores)
+      ? params.folha11MesesAnteriores
+      : 0
+  );
+
+  const fatorRMinimo = parametrosFiscais.pj.fatorRMinimoFolha;
+  const aliqInssProLabore = parametrosFiscais.pj.aliquotaINSSProLaboreSimples;
+
+  const rbt12Base =
+    params.modo === "mensal" ? Math.max(fat * 12, 1) : Math.max(rbt12Input, 1);
+
+  const fs12Total =
+    params.modo === "mensal" ? folhaAtual * 12 : fs11 + folhaAtual;
+
+  const fatorRAtual = fs12Total / rbt12Base;
+  const atingiu28 = fatorRAtual >= fatorRMinimo;
+
+  const folhaAnualNecessaria28 = rbt12Base * fatorRMinimo;
+  const proLaboreIdealNesteMes =
+    params.modo === "mensal"
+      ? Math.max(SALARIO_MINIMO_2026, fat * fatorRMinimo)
+      : Math.max(SALARIO_MINIMO_2026, folhaAnualNecessaria28 - fs11);
+
+  const faltaNesteMesPara28 = Math.max(0, proLaboreIdealNesteMes - folhaAtual);
+
+  const calcAliq = (anexo: "III" | "V") => {
+    const tabela = TABELAS_SIMPLES_2026[anexo];
+    const faixa =
+      tabela.find((f) => rbt12Base <= f.limiteSuperior) ||
+      tabela[tabela.length - 1];
+    return Math.max(
+      0,
+      (rbt12Base * faixa.aliquotaNominal - faixa.parcelaDeduzir) / rbt12Base
+    );
+  };
+
+  const aliqAnexoIII = calcAliq("III");
+  const aliqAnexoV = calcAliq("V");
+
+  const dasAnexoIII = fat * aliqAnexoIII;
+  const inssComFatorR =
+    Math.min(proLaboreIdealNesteMes, TETO_INSS_2026) * aliqInssProLabore;
+  const irpfComFatorR = calculateIRPF2026(
+    proLaboreIdealNesteMes,
+    inssComFatorR,
+    0,
+    0
+  ).valor;
+  const custoTotalComFatorR = dasAnexoIII + inssComFatorR + irpfComFatorR;
+
+  const dasAnexoV = fat * aliqAnexoV;
+  const inssSemFatorR = SALARIO_MINIMO_2026 * aliqInssProLabore;
+  const irpfSemFatorR = 0;
+  const custoTotalSemFatorR = dasAnexoV + inssSemFatorR + irpfSemFatorR;
+
+  // Preserva o sinal real para alertar casos em que o IRRF sobre pró-labore elevado supera a economia no DAS
+  const saldoEconomiaMensal = custoTotalSemFatorR - custoTotalComFatorR;
+
+  return {
+    rbt12Base,
+    fs12Total,
+    fatorRAtual,
+    atingiu28,
+    proLaboreIdealNesteMes: Number(proLaboreIdealNesteMes.toFixed(2)),
+    faltaNesteMesPara28: Number(faltaNesteMesPara28.toFixed(2)),
+    aliqAnexoIII,
+    aliqAnexoV,
+    dasAnexoIII: Number(dasAnexoIII.toFixed(2)),
+    inssComFatorR: Number(inssComFatorR.toFixed(2)),
+    irpfComFatorR: Number(irpfComFatorR.toFixed(2)),
+    custoTotalComFatorR: Number(custoTotalComFatorR.toFixed(2)),
+    dasAnexoV: Number(dasAnexoV.toFixed(2)),
+    inssSemFatorR: Number(inssSemFatorR.toFixed(2)),
+    irpfSemFatorR,
+    custoTotalSemFatorR: Number(custoTotalSemFatorR.toFixed(2)),
+    saldoEconomiaMensal: Number(saldoEconomiaMensal.toFixed(2)),
+    economiaLiquidaMensal: Number(Math.max(0, saldoEconomiaMensal).toFixed(2)),
+    compensaFatorR: saldoEconomiaMensal > 0,
+  };
+}
+
+export function calculateCustoFuncionario2026(params: {
+  salarioBruto: number;
+  regime: RegimeEmpresaCLT;
+  beneficiosVRPlano: number;
+  gastoBrutoVT: number;
+  incluirProvisaoMulta40: boolean;
+}) {
+  const bruto = Math.max(
+    0,
+    Number.isFinite(params.salarioBruto) ? params.salarioBruto : 0
+  );
+  const beneficiosVR = Math.max(
+    0,
+    Number.isFinite(params.beneficiosVRPlano) ? params.beneficiosVRPlano : 0
+  );
+  const vtBruto = Math.max(
+    0,
+    Number.isFinite(params.gastoBrutoVT) ? params.gastoBrutoVT : 0
+  );
+
+  const { aliquotaFGTS, encargosEmpregador } = parametrosFiscais.trabalhista;
+
+  const aliquotaINSSPatronalTotal =
+    params.regime === "simples_geral"
+      ? 0
+      : params.regime === "anexo_iv"
+      ? encargosEmpregador.aliquotaINSSPatronalAnexoIVTotal
+      : params.regime === "mei"
+      ? encargosEmpregador.aliquotaINSSPatronalMEI
+      : encargosEmpregador.aliquotaINSSPatronalLucroPresumidoTotal;
+
+  const fgtsMensal = bruto * aliquotaFGTS;
+  const inssPatronalSobreSalario = bruto * aliquotaINSSPatronalTotal;
+
+  const provisao13Base = bruto / 12;
+  const encargosSobre13 =
+    provisao13Base * (aliquotaFGTS + aliquotaINSSPatronalTotal);
+  const provisao13Total = provisao13Base + encargosSobre13;
+
+  const provisaoFeriasBase = (bruto * (4 / 3)) / 12;
+  const encargosSobreFerias =
+    provisaoFeriasBase * (aliquotaFGTS + aliquotaINSSPatronalTotal);
+  const provisaoFeriasTotal = provisaoFeriasBase + encargosSobreFerias;
+
+  const fgtsTotalMensalEProvisoes =
+    fgtsMensal +
+    provisao13Base * aliquotaFGTS +
+    provisaoFeriasBase * aliquotaFGTS;
+  const provisaoMultaFGTS = params.incluirProvisaoMulta40
+    ? fgtsTotalMensalEProvisoes * encargosEmpregador.aliquotaMultaRescisoriaFGTS
+    : 0;
+
+  const descontoMaximoVTFuncionario = bruto * 0.06;
+  const custoLiquidoVTEmpresa = Math.max(
+    0,
+    vtBruto - descontoMaximoVTFuncionario
+  );
+
+  const totalEncargosEProvisoes =
+    fgtsMensal +
+    inssPatronalSobreSalario +
+    provisao13Total +
+    provisaoFeriasTotal +
+    provisaoMultaFGTS;
+
+  const totalBeneficiosEmpresa = beneficiosVR + custoLiquidoVTEmpresa;
+
+  const custoTotalMensalEmpresa =
+    bruto + totalEncargosEProvisoes + totalBeneficiosEmpresa;
+
+  const sobrecustoPercentual =
+    bruto > 0 ? (custoTotalMensalEmpresa - bruto) / bruto : 0;
+
+  const visaoTrabalhador = calculateSalarioLiquidoCLT({
+    salarioBruto: bruto,
+    beneficiosMensais: beneficiosVR,
+    descontarVT: vtBruto > 0,
+  });
+
+  const baseDiv = Math.max(1, custoTotalMensalEmpresa);
+  const pctLiquidoTrabalhador =
+    (visaoTrabalhador.salarioLiquidoMensal / baseDiv) * 100;
+  const pctBeneficios = (totalBeneficiosEmpresa / baseDiv) * 100;
+  const pctImpostosEProvisoes = Math.max(
+    0,
+    100 - pctLiquidoTrabalhador - pctBeneficios
+  );
+
+  return {
+    aliquotaINSSPatronalTotal,
+    fgtsMensal: Number(fgtsMensal.toFixed(2)),
+    inssPatronalSobreSalario: Number(inssPatronalSobreSalario.toFixed(2)),
+    provisao13Total: Number(provisao13Total.toFixed(2)),
+    provisaoFeriasTotal: Number(provisaoFeriasTotal.toFixed(2)),
+    provisaoMultaFGTS: Number(provisaoMultaFGTS.toFixed(2)),
+    custoLiquidoVTEmpresa: Number(custoLiquidoVTEmpresa.toFixed(2)),
+    totalEncargosEProvisoes: Number(totalEncargosEProvisoes.toFixed(2)),
+    totalBeneficiosEmpresa: Number(totalBeneficiosEmpresa.toFixed(2)),
+    custoTotalMensalEmpresa: Number(custoTotalMensalEmpresa.toFixed(2)),
+    sobrecustoPercentual,
+    visaoTrabalhador,
+    pctLiquidoTrabalhador,
+    pctBeneficios,
+    pctImpostosEProvisoes,
   };
 }

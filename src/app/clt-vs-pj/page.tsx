@@ -75,11 +75,11 @@ export default function CLTvsPJHubPage() {
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="border-b-2 border-slate-200 text-slate-500 uppercase text-[11px]">
-                <th className="py-3 px-3">Salário bruto CLT</th>
-                <th className="py-3 px-3">Líquido mensal CLT</th>
-                <th className="py-3 px-3">Pacote CLT (FGTS + 13º + benef.)</th>
-                <th className="py-3 px-3 text-emerald-800">Mínimo equivalente PJ</th>
-                <th className="py-3 px-3">Detalhe</th>
+                <th scope="col" className="py-3 px-3">Salário bruto CLT</th>
+                <th scope="col" className="py-3 px-3">Líquido mensal CLT</th>
+                <th scope="col" className="py-3 px-3">Pacote CLT (FGTS + 13º + benef.)</th>
+                <th scope="col" className="py-3 px-3 text-emerald-800">Mínimo equivalente PJ</th>
+                <th scope="col" className="py-3 px-3">Detalhe</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
