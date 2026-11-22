@@ -3,11 +3,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CNAES_DATA, getCNAEBySlug } from "@/data/cnaes";
+import { PROFISSOES_SEO } from "@/data/profissoes";
 import { fetchCNAEFromIBGE } from "@/lib/gov-apis";
 import CNAECalculator from "@/components/CNAECalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
-import { Check, Info } from "lucide-react";
+import { Check, Info, ArrowRight } from "lucide-react";
 import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export async function generateStaticParams() {
@@ -50,6 +51,9 @@ export default async function CNAEDetailPage({
   if (!cnae) notFound();
 
   const dadosIBGE = await fetchCNAEFromIBGE(cnae.codigoLimpo);
+  const profissoesRelacionadas = PROFISSOES_SEO.filter(
+    (p) => p.cnaeRecomendadoSlug === cnae.slug
+  );
 
   const schemaGraph = buildCalculatorSchemaGraph({
     title: `Calculadora e Consulta CNAE ${cnae.codigo} (${cnae.nomePopular}) — Simples Nacional 2026`,
@@ -219,13 +223,38 @@ export default async function CNAEDetailPage({
         </div>
       </section>
 
+      {profissoesRelacionadas.length > 0 && (
+        <section className="bg-white rounded-xl border border-slate-200 p-6 space-y-3">
+          <h2 className="text-base font-bold text-slate-900">
+            Comparativos CLT vs PJ para quem atua com o CNAE {cnae.codigo}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {profissoesRelacionadas.map((prof) => (
+              <Link
+                key={prof.slug}
+                href={`/clt-vs-pj/profissao/${prof.slug}`}
+                className="p-3.5 rounded-lg border border-slate-200 hover:border-blue-700 hover:bg-slate-50 transition-colors flex items-center justify-between text-xs sm:text-sm"
+              >
+                <span className="font-semibold text-slate-900">{prof.nome}</span>
+                <ArrowRight className="w-4 h-4 text-blue-700 shrink-0" />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <AdSlot
         slotId="cnae-bottom-banner"
         format="leaderboard"
         label={`Abertura de CNPJ no CNAE ${cnae.codigo}, certificado digital e-CNPJ A1 e Conta PJ`}
       />
 
-      <SnowballLinks currentSalary={10000} />
+      <SnowballLinks
+        currentSalary={10000}
+        seedKey={cnae.slug}
+        cnaeCategoria={cnae.categoria}
+        currentSlug={cnae.slug}
+      />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default async function IndicadoresOficiaisBar() {
   const bcb = await fetchIndicadoresBancoCentral();
 
   return (
-    <div className="bg-slate-900 text-slate-300 text-[11px] border-b border-slate-800">
+    <div className="no-print bg-slate-900 text-slate-300 text-[11px] border-b border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-1.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
           <span className="font-semibold text-slate-100">

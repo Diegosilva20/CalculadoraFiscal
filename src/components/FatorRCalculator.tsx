@@ -11,6 +11,7 @@ import {
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
+import PrintButton from "./PrintButton";
 import { Check, Copy, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 const PRESETS_FATURAMENTO = [
@@ -167,16 +168,20 @@ export default function FatorRCalculator() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-1">
           <div className="space-y-4 p-4 sm:p-5 rounded-lg bg-slate-50 border border-slate-200">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              <label
+                htmlFor="fatorr-faturamento"
+                className="block text-xs font-semibold text-slate-700 mb-1.5"
+              >
                 Faturamento bruto no mês (R$)
               </label>
               <input
+                id="fatorr-faturamento"
                 type="number"
                 step={500}
-                min={1000}
+                min={0}
                 value={faturamentoMensal}
                 onChange={(e) => {
-                  const val = Number(e.target.value) || 0;
+                  const val = Math.max(0, Number(e.target.value) || 0);
                   setFaturamentoMensal(val);
                   if (modo === "mensal") {
                     setRbt12(val * 12);
@@ -186,6 +191,7 @@ export default function FatorRCalculator() {
               />
               <input
                 type="range"
+                aria-label="Ajustar faturamento mensal"
                 min={2000}
                 max={80000}
                 step={500}
@@ -195,20 +201,27 @@ export default function FatorRCalculator() {
                   setFaturamentoMensal(val);
                   if (modo === "mensal") setRbt12(val * 12);
                 }}
-                className="w-full mt-2 accent-blue-700 cursor-pointer"
+                className="no-print w-full mt-2 accent-blue-700 cursor-pointer"
               />
             </div>
 
             {modo === "auditoria12m" && (
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="fatorr-rbt12"
+                  className="block text-xs font-medium text-slate-700 mb-1"
+                >
                   Receita bruta dos últimos 12 meses — RBT12 (R$)
                 </label>
                 <input
+                  id="fatorr-rbt12"
                   type="number"
                   step={5000}
+                  min={0}
                   value={rbt12}
-                  onChange={(e) => setRbt12(Number(e.target.value) || 0)}
+                  onChange={(e) =>
+                    setRbt12(Math.max(0, Number(e.target.value) || 0))
+                  }
                   className="w-full px-3.5 py-2 text-sm font-mono font-bold tabular-nums bg-white border border-slate-300 rounded-lg"
                 />
               </div>
@@ -217,7 +230,10 @@ export default function FatorRCalculator() {
 
           <div className="space-y-4 p-4 sm:p-5 rounded-lg bg-slate-50 border border-slate-200">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <label className="block text-xs font-semibold text-slate-700">
+              <label
+                htmlFor="fatorr-folha"
+                className="block text-xs font-semibold text-slate-700"
+              >
                 Pró-labore + folha do mês (R$)
               </label>
               <button
@@ -225,7 +241,7 @@ export default function FatorRCalculator() {
                 onClick={() =>
                   setFolhaAtualMensal(Math.ceil(proLaboreIdealNesteMes))
                 }
-                className="text-[11px] font-semibold text-blue-700 bg-white hover:bg-slate-100 px-2.5 py-1 rounded border border-slate-300 transition-colors"
+                className="no-print text-[11px] font-semibold text-blue-700 bg-white hover:bg-slate-100 px-2.5 py-1 rounded border border-slate-300 transition-colors"
               >
                 Ajustar para 28% ({formatBRL(proLaboreIdealNesteMes)})
               </button>
@@ -233,17 +249,19 @@ export default function FatorRCalculator() {
 
             <div>
               <input
+                id="fatorr-folha"
                 type="number"
                 step={100}
                 min={0}
                 value={folhaAtualMensal}
                 onChange={(e) =>
-                  setFolhaAtualMensal(Number(e.target.value) || 0)
+                  setFolhaAtualMensal(Math.max(0, Number(e.target.value) || 0))
                 }
                 className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:outline-none"
               />
               <input
                 type="range"
+                aria-label="Ajustar pró-labore e folha do mês"
                 min={SALARIO_MINIMO_2026}
                 max={Math.max(25000, Math.round(faturamentoMensal * 0.5))}
                 step={100}
@@ -252,21 +270,28 @@ export default function FatorRCalculator() {
                   folhaAtualMensal
                 )}
                 onChange={(e) => setFolhaAtualMensal(Number(e.target.value))}
-                className="w-full mt-2 accent-emerald-700 cursor-pointer"
+                className="no-print w-full mt-2 accent-emerald-700 cursor-pointer"
               />
             </div>
 
             {modo === "auditoria12m" && (
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="fatorr-fs11"
+                  className="block text-xs font-medium text-slate-700 mb-1"
+                >
                   Folha + pró-labore + encargos dos 11 meses anteriores (R$)
                 </label>
                 <input
+                  id="fatorr-fs11"
                   type="number"
                   step={1000}
+                  min={0}
                   value={folha11MesesAnteriores}
                   onChange={(e) =>
-                    setFolha11MesesAnteriores(Number(e.target.value) || 0)
+                    setFolha11MesesAnteriores(
+                      Math.max(0, Number(e.target.value) || 0)
+                    )
                   }
                   className="w-full px-3.5 py-2 text-sm font-mono font-bold tabular-nums bg-white border border-slate-300 rounded-lg"
                 />
@@ -349,7 +374,7 @@ export default function FatorRCalculator() {
               <button
                 type="button"
                 onClick={copiarDiagnostico}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
                 {copiado ? (
                   <>
@@ -363,6 +388,7 @@ export default function FatorRCalculator() {
                   </>
                 )}
               </button>
+              <PrintButton />
             </div>
 
             <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">

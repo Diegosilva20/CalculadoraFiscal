@@ -16,3 +16,29 @@ input[type="range"] {
   height: 5px;
   border-radius: 999px;
 }
+
+@media print {
+  header,
+  footer,
+  .no-print,
+  [role="dialog"],
+  [aria-label="Publicidade"] {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .rounded-xl {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}

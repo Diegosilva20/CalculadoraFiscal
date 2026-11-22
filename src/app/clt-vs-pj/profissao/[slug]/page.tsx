@@ -157,7 +157,8 @@ export default async function ProfissaoProgrammaticPage({
         initialSalarioCLT={prof.salarioMedioCLT}
         initialFaturamentoPJ={prof.propostaMediaPJ}
         initialBeneficiosCLT={prof.beneficiosMediosCLT}
-        initialAnexo={prof.sujeitoFatorR ? "III" : prof.anexoPadrao}
+        initialAnexo={prof.anexoPadrao}
+        initialSujeitoFatorR={prof.sujeitoFatorR}
         profissaoNome={prof.nome}
         cnaeRecomendado={{
           codigo: prof.cnaeRecomendadoCodigo,
@@ -276,7 +277,7 @@ export default async function ProfissaoProgrammaticPage({
         </div>
       </section>
 
-      <SnowballLinks currentSalary={prof.salarioMedioCLT} />
+      <SnowballLinks currentSalary={prof.salarioMedioCLT} seedKey={prof.slug} />
     </div>
   );
 }

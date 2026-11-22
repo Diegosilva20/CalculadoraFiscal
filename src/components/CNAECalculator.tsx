@@ -9,6 +9,7 @@ import {
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
+import PrintButton from "./PrintButton";
 import { CheckCircle2, Info } from "lucide-react";
 
 interface CNAECalculatorProps {
@@ -84,25 +85,32 @@ export default function CNAECalculator({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
           <div className="md:col-span-2">
-            <label className="block text-sm font-semibold text-slate-800 mb-1.5">
+            <label
+              htmlFor="cnae-faturamento"
+              className="block text-sm font-semibold text-slate-800 mb-1.5"
+            >
               Faturamento bruto mensal previsto (R$)
             </label>
             <input
+              id="cnae-faturamento"
               type="number"
               step={500}
-              min={1000}
+              min={0}
               value={faturamentoMensal}
-              onChange={(e) => setFaturamentoMensal(Number(e.target.value) || 0)}
+              onChange={(e) =>
+                setFaturamentoMensal(Math.max(0, Number(e.target.value) || 0))
+              }
               className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:bg-white focus:outline-none"
             />
             <input
               type="range"
+              aria-label="Ajustar faturamento bruto mensal"
               min={2000}
               max={60000}
               step={500}
               value={Math.min(60000, faturamentoMensal)}
               onChange={(e) => setFaturamentoMensal(Number(e.target.value))}
-              className="w-full mt-2.5 accent-blue-700 cursor-pointer"
+              className="no-print w-full mt-2.5 accent-blue-700 cursor-pointer"
             />
           </div>
 
@@ -161,23 +169,35 @@ export default function CNAECalculator({
 
         <div className="bg-white border border-slate-200 rounded-xl p-5">
           <span className="text-xs text-slate-500 uppercase font-semibold">
-            INSS e IRRF sobre pró-labore
+            {resultado.cppPatronalAnexoIV > 0
+              ? "INSS, CPP 20% e IRRF (Anexo IV)"
+              : "INSS e IRRF sobre pró-labore"}
           </span>
           <p className="text-2xl font-mono font-bold tabular-nums text-slate-900 mt-1">
-            {formatBRL(resultado.inssProLabore + resultado.irpfProLabore)}/mês
+            {formatBRL(
+              resultado.inssProLabore +
+                resultado.cppPatronalAnexoIV +
+                resultado.irpfProLabore
+            )}
+            /mês
           </p>
           <p className="text-xs text-slate-500 mt-1">
             Pró-labore base:{" "}
             <span className="font-mono text-slate-700">
               {formatBRL(resultado.proLaboreSugerido)}
             </span>
+            {resultado.cppPatronalAnexoIV > 0 &&
+              ` · CPP: ${formatBRL(resultado.cppPatronalAnexoIV)}`}
           </p>
         </div>
 
         <div className="bg-white border border-slate-200 border-t-4 border-t-emerald-700 rounded-xl p-5">
-          <span className="text-xs text-slate-500 uppercase font-semibold">
-            Lucro líquido após impostos
-          </span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs text-slate-500 uppercase font-semibold">
+              Lucro líquido após impostos
+            </span>
+            <PrintButton label="PDF" />
+          </div>
           <p className="text-2xl font-mono font-bold tabular-nums text-emerald-700 mt-1">
             {formatBRL(resultado.lucroLiquidoIsento)}/mês
           </p>

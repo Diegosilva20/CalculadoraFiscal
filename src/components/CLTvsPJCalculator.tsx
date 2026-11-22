@@ -9,18 +9,18 @@ import {
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
-import {
-  ArrowRight,
-  Copy,
-  Check,
-} from "lucide-react";
+import PrintButton from "./PrintButton";
+import { ArrowRight, Copy, Check } from "lucide-react";
 import Link from "next/link";
+
+type OpcaoRegimePJ = "III_FATOR_R" | "III_DIRETO" | "V" | "IV" | "I";
 
 interface Props {
   initialSalarioCLT?: number;
   initialFaturamentoPJ?: number;
   initialBeneficiosCLT?: number;
   initialAnexo?: AnexoSimples;
+  initialSujeitoFatorR?: boolean;
   profissaoNome?: string;
   cnaeRecomendado?: { codigo: string; slug: string };
 }
@@ -34,11 +34,23 @@ const PRESETS_CENARIOS = [
   { label: "R$ 25.000", clt: 25000, pj: 36000, ben: 1500 },
 ];
 
+function resolveRegimeInicial(
+  anexo: AnexoSimples,
+  sujeitoFatorR?: boolean
+): OpcaoRegimePJ {
+  if (anexo === "IV") return "IV";
+  if (anexo === "I") return "I";
+  if (sujeitoFatorR) return "III_FATOR_R";
+  if (anexo === "V") return "V";
+  return "III_DIRETO";
+}
+
 export default function CLTvsPJCalculator({
   initialSalarioCLT = 8000,
   initialFaturamentoPJ,
   initialBeneficiosCLT = 900,
   initialAnexo = "III",
+  initialSujeitoFatorR = true,
   profissaoNome,
   cnaeRecomendado,
 }: Props) {
@@ -48,17 +60,33 @@ export default function CLTvsPJCalculator({
   );
   const [beneficiosCLT, setBeneficiosCLT] = useState<number>(initialBeneficiosCLT);
   const [dependentes, setDependentes] = useState<number>(0);
-  const [anexoPJ, setAnexoPJ] = useState<AnexoSimples>(initialAnexo);
+  const [regimePJ, setRegimePJ] = useState<OpcaoRegimePJ>(
+    resolveRegimeInicial(initialAnexo, initialSujeitoFatorR)
+  );
   const [custoContabilidade, setCustoContabilidade] = useState<number>(249);
   const [copiado, setCopiado] = useState<boolean>(false);
+
+  const anexoMap: Record<
+    OpcaoRegimePJ,
+    { anexoPJ: AnexoSimples; sujeitoFatorR: boolean; otimizarFatorR: boolean }
+  > = {
+    III_FATOR_R: { anexoPJ: "V", sujeitoFatorR: true, otimizarFatorR: true },
+    III_DIRETO: { anexoPJ: "III", sujeitoFatorR: false, otimizarFatorR: false },
+    V: { anexoPJ: "V", sujeitoFatorR: false, otimizarFatorR: false },
+    IV: { anexoPJ: "IV", sujeitoFatorR: false, otimizarFatorR: false },
+    I: { anexoPJ: "I", sujeitoFatorR: false, otimizarFatorR: false },
+  };
+
+  const pjParams = anexoMap[regimePJ];
 
   const resultado = calculateCLTvsPJ({
     salarioBrutoCLT: salarioCLT,
     faturamentoBrutoPJ: faturamentoPJ,
     beneficiosCLT,
     dependentes,
-    anexoPJ,
-    sujeitoFatorR: true,
+    anexoPJ: pjParams.anexoPJ,
+    sujeitoFatorR: pjParams.sujeitoFatorR,
+    otimizarFatorR: pjParams.otimizarFatorR,
     custoContabilidade,
   });
 
@@ -90,7 +118,9 @@ export default function CLTvsPJCalculator({
       resultado.clt.salarioLiquidoMensal
     )} | Pacote com FGTS, 13º e benefícios: ${formatBRL(
       resultado.clt.pacoteTotalMensalReal
-    )})\n- Proposta PJ: ${formatBRL(faturamentoPJ)} (Líquido isento estimado: ${formatBRL(
+    )})\n- Proposta PJ (Anexo ${resultado.pj.anexoEfetivo}): ${formatBRL(
+      faturamentoPJ
+    )} (Líquido isento estimado: ${formatBRL(
       resultado.pj.lucroLiquidoIsento
     )})\n- Equivalente mínimo no PJ: ${formatBRL(
       resultado.faturamentoPJEquivalente
@@ -105,8 +135,8 @@ export default function CLTvsPJCalculator({
 
   return (
     <div className="space-y-6">
-      {/* Faixas salariais rápidas */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5">
+      {/* Referências rápidas */}
+      <div className="no-print bg-white rounded-xl border border-slate-200 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <span className="text-xs font-semibold text-slate-600">
             Referências rápidas de salário bruto CLT:
@@ -157,52 +187,71 @@ export default function CLTvsPJCalculator({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              <label
+                htmlFor="clt-salario-bruto"
+                className="block text-xs font-semibold text-slate-700 mb-1.5"
+              >
                 Salário bruto mensal CLT (R$)
               </label>
               <input
+                id="clt-salario-bruto"
                 type="number"
                 step={250}
-                min={1621}
+                min={0}
                 value={salarioCLT}
-                onChange={(e) => setSalarioCLT(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  setSalarioCLT(Math.max(0, Number(e.target.value) || 0))
+                }
                 className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:outline-none"
               />
               <input
                 type="range"
+                aria-label="Ajustar salário bruto mensal CLT"
                 min={1621}
                 max={35000}
                 step={250}
                 value={Math.min(35000, salarioCLT)}
                 onChange={(e) => setSalarioCLT(Number(e.target.value))}
-                className="w-full mt-2.5 accent-blue-700 cursor-pointer"
+                className="no-print w-full mt-2.5 accent-blue-700 cursor-pointer"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="clt-beneficios"
+                  className="block text-xs font-medium text-slate-700 mb-1"
+                >
                   Benefícios (VR, VA, saúde)
                 </label>
                 <input
+                  id="clt-beneficios"
                   type="number"
                   step={100}
                   min={0}
                   value={beneficiosCLT}
-                  onChange={(e) => setBeneficiosCLT(Number(e.target.value) || 0)}
+                  onChange={(e) =>
+                    setBeneficiosCLT(Math.max(0, Number(e.target.value) || 0))
+                  }
                   className="w-full px-3 py-2 text-sm font-mono font-semibold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="clt-dependentes"
+                  className="block text-xs font-medium text-slate-700 mb-1"
+                >
                   Dependentes IRPF
                 </label>
                 <input
+                  id="clt-dependentes"
                   type="number"
                   min={0}
-                  max={10}
+                  max={20}
                   value={dependentes}
-                  onChange={(e) => setDependentes(Number(e.target.value) || 0)}
+                  onChange={(e) =>
+                    setDependentes(Math.max(0, Number(e.target.value) || 0))
+                  }
                   className="w-full px-3 py-2 text-sm font-mono font-semibold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg"
                 />
               </div>
@@ -220,62 +269,86 @@ export default function CLTvsPJCalculator({
                 onClick={() =>
                   setFaturamentoPJ(Math.round(resultado.faturamentoPJEquivalente))
                 }
-                className="text-[11px] font-semibold text-blue-700 hover:text-blue-900 bg-white px-2.5 py-1 rounded border border-slate-300 transition-colors"
+                className="no-print text-[11px] font-semibold text-blue-700 hover:text-blue-900 bg-white px-2.5 py-1 rounded border border-slate-300 transition-colors"
               >
                 Igualar ao equilíbrio ({formatBRL(resultado.faturamentoPJEquivalente)})
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              <label
+                htmlFor="pj-faturamento"
+                className="block text-xs font-semibold text-slate-700 mb-1.5"
+              >
                 Faturamento bruto mensal PJ (R$)
               </label>
               <input
+                id="pj-faturamento"
                 type="number"
                 step={250}
-                min={1621}
+                min={0}
                 value={faturamentoPJ}
-                onChange={(e) => setFaturamentoPJ(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  setFaturamentoPJ(Math.max(0, Number(e.target.value) || 0))
+                }
                 className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:outline-none"
               />
               <input
                 type="range"
+                aria-label="Ajustar faturamento bruto mensal PJ"
                 min={2000}
                 max={50000}
                 step={250}
                 value={Math.min(50000, faturamentoPJ)}
                 onChange={(e) => setFaturamentoPJ(Number(e.target.value))}
-                className="w-full mt-2.5 accent-emerald-700 cursor-pointer"
+                className="no-print w-full mt-2.5 accent-emerald-700 cursor-pointer"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="pj-anexo"
+                  className="block text-xs font-medium text-slate-700 mb-1"
+                >
                   Anexo Simples Nacional
                 </label>
                 <select
-                  value={anexoPJ}
-                  onChange={(e) => setAnexoPJ(e.target.value as AnexoSimples)}
+                  id="pj-anexo"
+                  value={regimePJ}
+                  onChange={(e) => setRegimePJ(e.target.value as OpcaoRegimePJ)}
                   className="w-full px-3 py-2 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg"
                 >
-                  <option value="III">Anexo III (6% inicial / Fator R)</option>
-                  <option value="IV">Anexo IV (4,5% inicial)</option>
-                  <option value="V">Anexo V sem Fator R (15,5%)</option>
-                  <option value="I">Anexo I Comércio (4%)</option>
+                  <option value="III_FATOR_R">
+                    Anexo III via Fator R (6% inicial · pró-labore 28%)
+                  </option>
+                  <option value="III_DIRETO">
+                    Anexo III direto (6% inicial · sem Fator R)
+                  </option>
+                  <option value="V">
+                    Anexo V sem Fator R (15,5% inicial)
+                  </option>
+                  <option value="IV">
+                    Anexo IV Advocacia/Obras (4,5% + 20% CPP)
+                  </option>
+                  <option value="I">Anexo I Comércio (4% inicial)</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label
+                  htmlFor="pj-contabilidade"
+                  className="block text-xs font-medium text-slate-700 mb-1"
+                >
                   Contabilidade (R$/mês)
                 </label>
                 <input
+                  id="pj-contabilidade"
                   type="number"
                   step={50}
                   min={0}
                   value={custoContabilidade}
                   onChange={(e) =>
-                    setCustoContabilidade(Number(e.target.value) || 0)
+                    setCustoContabilidade(Math.max(0, Number(e.target.value) || 0))
                   }
                   className="w-full px-3 py-2 text-sm font-mono font-semibold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg"
                 />
@@ -305,7 +378,7 @@ export default function CLTvsPJCalculator({
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded ${
                   resultado.veredito === "PJ_VANTAJOSO"
@@ -325,7 +398,7 @@ export default function CLTvsPJCalculator({
               <button
                 type="button"
                 onClick={copiarResumoSimulacao}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                className="no-print inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
                 {copiado ? (
                   <>
@@ -339,6 +412,8 @@ export default function CLTvsPJCalculator({
                   </>
                 )}
               </button>
+
+              <PrintButton />
             </div>
 
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
@@ -374,7 +449,8 @@ export default function CLTvsPJCalculator({
               <strong className="font-mono text-slate-900">
                 {formatBRL(resultado.clt.pacoteTotalMensalReal)}/mês
               </strong>{" "}
-              quando incluídos FGTS, 13º, férias e benefícios. Para empatar nesse patamar como PJ, o faturamento mínimo estimado é de{" "}
+              quando incluídos FGTS, 13º, férias e benefícios. Para empatar nesse patamar no regime{" "}
+              <strong>Anexo {resultado.pj.anexoEfetivo}</strong>, o faturamento mínimo estimado é de{" "}
               <strong className="font-mono text-slate-900">
                 {formatBRL(resultado.faturamentoPJEquivalente)}
               </strong>{" "}
@@ -407,7 +483,7 @@ export default function CLTvsPJCalculator({
         </div>
 
         {cnaeRecomendado && (
-          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
+          <div className="no-print mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
             <span>
               CNAE usual para {profissaoNome || "esta atividade"}:{" "}
               <strong className="font-mono text-slate-900">
@@ -527,9 +603,7 @@ export default function CLTvsPJCalculator({
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-600">
-                IRRF ({resultado.clt.metodoIR})
-              </dt>
+              <dt className="text-slate-600">IRRF ({resultado.clt.metodoIR})</dt>
               <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.clt.irpf)}
               </dd>
@@ -604,6 +678,16 @@ export default function CLTvsPJCalculator({
                 - {formatBRL(resultado.pj.inssProLabore)}
               </dd>
             </div>
+            {resultado.pj.cppPatronalAnexoIV > 0 && (
+              <div className="flex justify-between">
+                <dt className="text-slate-600">
+                  CPP Patronal Anexo IV (20% s/ pró-labore)
+                </dt>
+                <dd className="font-mono font-medium tabular-nums text-rose-700">
+                  - {formatBRL(resultado.pj.cppPatronalAnexoIV)}
+                </dd>
+              </div>
+            )}
             <div className="flex justify-between">
               <dt className="text-slate-600">IRRF sobre pró-labore</dt>
               <dd className="font-mono font-medium tabular-nums text-rose-700">
@@ -625,14 +709,16 @@ export default function CLTvsPJCalculator({
                 {formatPercent(resultado.pj.cargaTributariaTotalPercentual)}
               </dd>
             </div>
-            <div className="flex justify-between text-xs">
-              <dt className="text-slate-600">
-                Economia mensal com Fator R (28%)
-              </dt>
-              <dd className="font-mono font-semibold tabular-nums text-emerald-700">
-                + {formatBRL(resultado.pj.economiaMensalComFatorR)}/mês
-              </dd>
-            </div>
+            {resultado.pj.enquadrouFatorR && (
+              <div className="flex justify-between text-xs">
+                <dt className="text-slate-600">
+                  Economia mensal com Fator R (28%)
+                </dt>
+                <dd className="font-mono font-semibold tabular-nums text-emerald-700">
+                  + {formatBRL(resultado.pj.economiaMensalComFatorR)}/mês
+                </dd>
+              </div>
+            )}
             <div className="flex justify-between text-xs">
               <dt className="text-slate-600">
                 Destaque teste CBS/IBS (0,9% + 0,1%)

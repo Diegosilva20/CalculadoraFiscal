@@ -4,30 +4,64 @@ import { ArrowRight } from "lucide-react";
 import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
 import { CNAES_DATA } from "@/data/cnaes";
 
+function hashString(str: string): number {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
 /**
- * Malha de navegação cruzada interna ("Hub & Spoke") com visual editorial limpo.
- * Distribui links para todas as calculadoras, faixas salariais, profissões e CNAEs.
+ * Malha de navegação cruzada interna ("Hub & Spoke").
+ * Aceita seedKey (ex: slug do CNAE ou profissão) e cnaeCategoria para evitar
+ * repetição dos mesmos links entre páginas e criar clusters semânticos por setor.
  */
 export default function SnowballLinks({
   currentSalary = 8000,
+  seedKey,
+  cnaeCategoria,
+  currentSlug,
 }: {
   currentSalary?: number;
+  seedKey?: string;
+  cnaeCategoria?: string;
+  currentSlug?: string;
 }) {
   const nearbySalaries = FAIXAS_SALARIAIS_SEO.filter(
     (s) => Math.abs(s - currentSalary) <= 4500 && s !== currentSalary
   ).slice(0, 6);
 
-  const seed = Math.abs(Math.round(currentSalary / 500));
+  const seed = seedKey
+    ? hashString(seedKey)
+    : Math.abs(Math.round(currentSalary / 500));
 
   const rotatedProfissoes = Array.from({ length: 5 }, (_, idx) => {
     const pos = (seed * 3 + idx) % PROFISSOES_SEO.length;
     return PROFISSOES_SEO[pos];
   });
 
-  const rotatedCnaes = Array.from({ length: 5 }, (_, idx) => {
-    const pos = (seed * 5 + idx) % CNAES_DATA.length;
-    return CNAES_DATA[pos];
-  });
+  // Se estiver numa página de CNAE, prioriza outros CNAEs da mesma categoria antes de rotacionar
+  const sameCategoryCnaes = cnaeCategoria
+    ? CNAES_DATA.filter(
+        (c) => c.categoria === cnaeCategoria && c.slug !== currentSlug
+      )
+    : [];
+
+  const rotatedCnaes =
+    sameCategoryCnaes.length >= 5
+      ? sameCategoryCnaes.slice(0, 5)
+      : [
+          ...sameCategoryCnaes,
+          ...Array.from({ length: 5 }, (_, idx) => {
+            const pos = (seed * 5 + idx) % CNAES_DATA.length;
+            return CNAES_DATA[pos];
+          }).filter(
+            (c) =>
+              c.slug !== currentSlug &&
+              !sameCategoryCnaes.some((sc) => sc.slug === c.slug)
+          ),
+        ].slice(0, 5);
 
   const mainCalculators = [
     { name: "CLT vs PJ 2026", href: "/clt-vs-pj" },
@@ -39,16 +73,14 @@ export default function SnowballLinks({
   ];
 
   return (
-    <section className="mt-10 bg-white border border-slate-200 border-t-2 border-t-slate-900 rounded-xl p-6 sm:p-7 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900">
-            Outras ferramentas e comparativos 2026
-          </h2>
-          <p className="text-xs text-slate-500">
-            Consulte faixas salariais vizinhas, profissões ou códigos CNAE do Simples Nacional.
-          </p>
-        </div>
+    <section className="no-print mt-10 bg-white border border-slate-200 border-t-2 border-t-slate-900 rounded-xl p-6 sm:p-7 space-y-6">
+      <div className="border-b border-slate-100 pb-4">
+        <h2 className="text-lg font-bold text-slate-900">
+          Outras ferramentas e comparativos 2026
+        </h2>
+        <p className="text-xs text-slate-500">
+          Consulte faixas salariais vizinhas, profissões ou códigos CNAE do Simples Nacional.
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -74,7 +106,7 @@ export default function SnowballLinks({
               <Link
                 key={sal}
                 href={`/clt-vs-pj/salario/${sal}`}
-                className="text-xs font-medium bg-slate-50 border border-slate-200 hover:border-blue-600 hover:text-blue-700 text-slate-800 px-3 py-2 rounded-lg flex items-center justify-between transition-colors"
+                className="text-xs font-medium bg-slate-50 border border-slate-200 hover:border-blue-700 hover:text-blue-700 text-slate-800 px-3 py-2 rounded-lg flex items-center justify-between transition-colors"
               >
                 <span className="font-mono">R$ {sal.toLocaleString("pt-BR")}</span>
                 <ArrowRight className="w-3 h-3 text-slate-400" />
@@ -104,7 +136,7 @@ export default function SnowballLinks({
 
         <div>
           <h3 className="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">
-            Consulta de CNAEs e Fator R
+            {cnaeCategoria ? `CNAEs em ${cnaeCategoria}` : "Consulta de CNAEs e Fator R"}
           </h3>
           <ul className="divide-y divide-slate-100 text-xs">
             {rotatedCnaes.map((cnae) => (

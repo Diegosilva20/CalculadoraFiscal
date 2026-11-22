@@ -1,15 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Calculator } from "lucide-react";
-
-const NAV_ITEMS = [
-  { label: "CLT vs PJ", href: "/clt-vs-pj" },
-  { label: "Tabela CNAE", href: "/cnae" },
-  { label: "Fator R", href: "/calculadora-fator-r" },
-  { label: "Salário Líquido", href: "/calculadora-salario-liquido" },
-  { label: "Custo Funcionário", href: "/custo-funcionario-clt" },
-  { label: "Rescisão e Férias", href: "/calculadora-rescisao" },
-];
+import HeaderNav from "./HeaderNav";
 
 export default function Header() {
   return (
@@ -34,17 +26,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-700">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="px-3 py-2 rounded-md hover:bg-slate-100 hover:text-slate-950 transition-colors whitespace-nowrap"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <HeaderNav />
 
         <div className="flex items-center shrink-0">
           <Link
@@ -56,18 +38,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Navegação horizontal em telas menores */}
-      <div className="lg:hidden flex items-center gap-2 overflow-x-auto px-4 py-2 bg-slate-50 border-t border-slate-200 text-xs font-medium text-slate-700 whitespace-nowrap">
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="px-2.5 py-1 rounded-md bg-white border border-slate-200 hover:border-slate-300 text-slate-800"
-          >
-            {item.label}
-          </Link>
-        ))}
-      </div>
+      <HeaderNav mobile />
     </header>
   );
 }

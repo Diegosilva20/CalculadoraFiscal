@@ -6,6 +6,7 @@ import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { CNAES_DATA } from "@/data/cnaes";
 import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
+import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 import {
   ArrowRight,
   Briefcase,
@@ -22,9 +23,41 @@ export const metadata: Metadata = {
   },
 };
 
+const HOME_FAQS = [
+  {
+    question: "Como funciona a comparação entre salário CLT e proposta PJ em 2026?",
+    answer:
+      "A simulação compara o salário líquido mensal na carteira assinada e o pacote anual de direitos trabalhistas (FGTS de 8%, 13º salário, adicional de 1/3 de férias e benefícios) contra o lucro líquido de uma empresa no Simples Nacional após descontar DAS, INSS sobre pró-labore, IRRF e contabilidade.",
+  },
+  {
+    question: "Quando vale a pena usar o Fator R no Simples Nacional?",
+    answer:
+      "Atividades intelectuais enquadradas no Anexo V (a partir de 15,5%) podem migrar para o Anexo III (a partir de 6%) quando a soma da folha de salários e pró-labore dos últimos 12 meses atinge pelo menos 28% da receita bruta acumulada (RBT12).",
+  },
+  {
+    question: "Qual a regra de isenção de Imposto de Renda no salário em 2026?",
+    answer:
+      "Rendimentos brutos mensais até R$ 5.000,00 possuem isenção de IRRF na simulação de 2026, com transição linear gradual até R$ 7.000,00 e aplicação da tabela progressiva padrão acima dessa faixa.",
+  },
+];
+
 export default function HomePage() {
+  const schemaGraph = buildCalculatorSchemaGraph({
+    title: "CalculaFiscal 2026 — Calculadora CLT vs PJ, Tabela CNAE e Salário Líquido",
+    description:
+      "Portal brasileiro de simuladores trabalhistas e tributários atualizados para 2026: CLT vs PJ, Tabela CNAE, Fator R 28%, Custo de Funcionário CLT, Salário Líquido e Rescisão.",
+    path: "/",
+    breadcrumbs: [{ name: "Início", path: "/" }],
+    faqs: HOME_FAQS,
+  });
+
   return (
     <div className="space-y-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+      />
+
       {/* Cabeçalho Editorial Direto */}
       <section className="bg-white border border-slate-200 border-t-4 border-t-slate-900 rounded-xl p-6 sm:p-8">
         <div className="max-w-3xl space-y-3">
@@ -292,6 +325,25 @@ export default function HomePage() {
           </div>
         </section>
       </div>
+
+      {/* Perguntas Frequentes (GEO + Schema sincronizado) */}
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-4">
+        <h2 className="text-lg font-bold text-slate-900">
+          Dúvidas frequentes sobre os cálculos de 2026
+        </h2>
+        <div className="divide-y divide-slate-100">
+          {HOME_FAQS.map((item, idx) => (
+            <div key={idx} className="py-3.5 first:pt-0 last:pb-0">
+              <h3 className="font-semibold text-sm text-slate-900 mb-1">
+                {item.question}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                {item.answer}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <SnowballLinks currentSalary={8000} />
     </div>

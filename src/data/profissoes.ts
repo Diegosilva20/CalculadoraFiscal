@@ -366,3 +366,14 @@ export const FAIXAS_SALARIAIS_SEO: number[] = [
 export function getProfissaoBySlug(slug: string): ProfissaoSEO | undefined {
   return PROFISSOES_SEO.find((p) => p.slug === slug);
 }
+
+/**
+ * Retorna a faixa salarial oficial do sitemap mais próxima de um valor informado,
+ * evitando que links internos apontem para URLs fora da malha canônica do Google.
+ */
+export function getNearestSalarioSEO(valor: number): number {
+  const safeVal = Number.isFinite(valor) ? valor : 5000;
+  return FAIXAS_SALARIAIS_SEO.reduce((prev, curr) =>
+    Math.abs(curr - safeVal) < Math.abs(prev - safeVal) ? curr : prev
+  );
+}
