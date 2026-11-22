@@ -97,6 +97,7 @@ export function calculateIRPF2026(
   aliquotaEfetiva: number;
   metodoDeducao: "simplificado" | "legal";
   isentoNovaRegra5k: boolean;
+  economiaRedutorLei15270: number;
 } {
   const {
     limiteIsencaoEfetivaMensal,
@@ -112,16 +113,7 @@ export function calculateIRPF2026(
       aliquotaEfetiva: 0,
       metodoDeducao: "simplificado",
       isentoNovaRegra5k: true,
-    };
-  }
-
-  if (salarioBruto <= limiteIsencaoEfetivaMensal) {
-    return {
-      valor: 0,
-      baseCalculo: Math.max(0, salarioBruto - DESCONTO_SIMPLIFICADO_IR_2026),
-      aliquotaEfetiva: 0,
-      metodoDeducao: "simplificado",
-      isentoNovaRegra5k: true,
+      economiaRedutorLei15270: 0,
     };
   }
 
@@ -138,10 +130,23 @@ export function calculateIRPF2026(
     faixasBaseCalculo.find((f) => base <= f.ate) ||
     faixasBaseCalculo[faixasBaseCalculo.length - 1];
 
-  let impostoTabela = Math.max(
+  const impostoTabelaTradicional = Math.max(
     0,
     base * faixaEncontrada.aliquota - faixaEncontrada.deducao
   );
+
+  if (salarioBruto <= limiteIsencaoEfetivaMensal) {
+    return {
+      valor: 0,
+      baseCalculo: Number(base.toFixed(2)),
+      aliquotaEfetiva: 0,
+      metodoDeducao: usarSimplificado ? "simplificado" : "legal",
+      isentoNovaRegra5k: true,
+      economiaRedutorLei15270: Number(impostoTabelaTradicional.toFixed(2)),
+    };
+  }
+
+  let impostoTabela = impostoTabelaTradicional;
 
   // Redutor oficial da Lei nº 15.270/2025 para rendimentos entre R$ 5.000,01 e R$ 7.350,00
   if (
@@ -156,12 +161,15 @@ export function calculateIRPF2026(
     impostoTabela = Math.max(0, impostoTabela - descontoRedutor);
   }
 
+  const economiaRedutor = Math.max(0, impostoTabelaTradicional - impostoTabela);
+
   return {
     valor: Number(impostoTabela.toFixed(2)),
     baseCalculo: Number(base.toFixed(2)),
     aliquotaEfetiva: salarioBruto > 0 ? impostoTabela / salarioBruto : 0,
     metodoDeducao: usarSimplificado ? "simplificado" : "legal",
     isentoNovaRegra5k: false,
+    economiaRedutorLei15270: Number(economiaRedutor.toFixed(2)),
   };
 }
 
@@ -179,6 +187,7 @@ export interface SalarioLiquidoResult {
   pacoteTotalMensalReal: number;
   metodoIR: "simplificado" | "legal";
   isentoNovaRegra5k: boolean;
+  economiaRedutorLei15270: number;
 }
 
 export function calculateSalarioLiquidoCLT(params: {
@@ -232,6 +241,7 @@ export function calculateSalarioLiquidoCLT(params: {
     pacoteTotalMensalReal: Number(pacoteTotalMensalReal.toFixed(2)),
     metodoIR: irpfRes.metodoDeducao,
     isentoNovaRegra5k: irpfRes.isentoNovaRegra5k,
+    economiaRedutorLei15270: irpfRes.economiaRedutorLei15270,
   };
 }
 
@@ -255,6 +265,8 @@ export interface SimplesNacionalResult {
   lucroLiquidoIsento: number;
   cargaTributariaTotalPercentual: number;
   economiaMensalComFatorR: number;
+  ultrapassouSublimiteISS: boolean;
+  ultrapassouTetoSimples: boolean;
   reformaTributaria: {
     aliquotaTeste2026: number;
     valorDestaqueNota2026: number;
@@ -272,20 +284,23 @@ export function calculateSimplesNacional2026(params: {
   otimizarFatorR?: boolean;
   custoContabilidade?: number;
   reducaoSetorialIVA?: number;
+  inssJaRecolhidoNoTeto?: boolean;
 }): SimplesNacionalResult {
   const {
     faturamentoMensal,
-    rbt12 = faturamentoMensal * 12,
+    rbt12,
     anexo,
     sujeitoFatorR = anexo === "V",
     otimizarFatorR = true,
     custoContabilidade = 249,
     reducaoSetorialIVA = 0.3,
+    inssJaRecolhidoNoTeto = false,
   } = params;
 
   const fat = Math.max(0, Number.isFinite(faturamentoMensal) ? faturamentoMensal : 0);
   const contab = Math.max(0, Number.isFinite(custoContabilidade) ? custoContabilidade : 0);
-  const rbt12Efetivo = Math.max(rbt12, fat * 12, 1);
+  const rbt12Informado = rbt12 !== undefined && Number.isFinite(rbt12) ? Math.max(0, rbt12) : fat * 12;
+  const rbt12Efetivo = Math.max(rbt12Informado, 1);
   const fatorRMinimo = parametrosFiscais.pj.fatorRMinimoFolha;
 
   // Só ativa Fator R se a atividade for sujeita (ou configurada para Fator R) E otimizarFatorR estiver ligado
@@ -318,7 +333,9 @@ export function calculateSimplesNacional2026(params: {
   const valorDAS = fat * efetiva;
 
   const aliqInssProLabore = parametrosFiscais.pj.aliquotaINSSProLaboreSimples;
-  const baseInssProLabore = Math.min(proLaboreSugerido, TETO_INSS_2026);
+  const baseInssProLabore = inssJaRecolhidoNoTeto
+    ? 0
+    : Math.min(proLaboreSugerido, TETO_INSS_2026);
   const inssProLabore = baseInssProLabore * aliqInssProLabore;
 
   // No Anexo IV (Advocacia, Construção, Vigilância, Limpeza), a CPP de 20% não entra no DAS e é paga à parte sobre o pró-labore/folha
@@ -377,6 +394,8 @@ export function calculateSimplesNacional2026(params: {
     lucroLiquidoIsento: Number(lucroLiquidoIsento.toFixed(2)),
     cargaTributariaTotalPercentual: fat > 0 ? totalTributosSemContab / fat : 0,
     economiaMensalComFatorR: Number(economiaMensalComFatorR.toFixed(2)),
+    ultrapassouSublimiteISS: rbt12Informado > 3600000,
+    ultrapassouTetoSimples: rbt12Informado > 4800000,
     reformaTributaria: {
       aliquotaTeste2026: aliquotaTesteTotal,
       valorDestaqueNota2026: Number((fat * aliquotaTesteTotal).toFixed(2)),
@@ -406,6 +425,8 @@ export function calculateCLTvsPJ(params: {
   sujeitoFatorR?: boolean;
   otimizarFatorR?: boolean;
   custoContabilidade?: number;
+  rbt12PJ?: number;
+  inssJaRecolhidoNoTeto?: boolean;
 }): CLTvsPJComparisonResult {
   const {
     salarioBrutoCLT,
@@ -416,6 +437,8 @@ export function calculateCLTvsPJ(params: {
     sujeitoFatorR = true,
     otimizarFatorR,
     custoContabilidade = 249,
+    rbt12PJ,
+    inssJaRecolhidoNoTeto = false,
   } = params;
 
   const clt = calculateSalarioLiquidoCLT({
@@ -429,10 +452,12 @@ export function calculateCLTvsPJ(params: {
 
   const pj = calculateSimplesNacional2026({
     faturamentoMensal: faturamentoBrutoPJ,
+    rbt12: rbt12PJ,
     anexo: anexoPJ,
     sujeitoFatorR,
     otimizarFatorR: aplicarFatorR,
     custoContabilidade,
+    inssJaRecolhidoNoTeto,
   });
 
   const diferencaNoBolsoMensal =
@@ -482,6 +507,7 @@ export function calculateRescisaoCLT(params: {
   motivo: MotivoRescisao;
   feriasVencidas: boolean;
   avisoPrevioIndenizado: boolean;
+  dependentes?: number;
 }) {
   const {
     salarioBruto,
@@ -490,11 +516,13 @@ export function calculateRescisaoCLT(params: {
     motivo,
     feriasVencidas,
     avisoPrevioIndenizado,
+    dependentes = 0,
   } = params;
 
   const bruto = Math.max(0, Number.isFinite(salarioBruto) ? salarioBruto : 0);
   const meses = Math.max(1, Math.round(Number.isFinite(mesesTrabalhados) ? mesesTrabalhados : 1));
   const diasMes = Math.max(0, Math.min(30, Number.isFinite(diasTrabalhadosNoMes) ? diasTrabalhadosNoMes : 0));
+  const deps = Math.max(0, Math.round(Number.isFinite(dependentes) ? dependentes : 0));
 
   const saldoSalario = (bruto / 30) * diasMes;
   const anosCompletos = Math.floor(meses / 12);
@@ -524,6 +552,22 @@ export function calculateRescisaoCLT(params: {
     }
   }
 
+  // Reflexo da projeção do aviso prévio indenizado (OJ 82 TST: cada >=15 dias projeta 1/12; no acordo, metade)
+  const fatorAcordo = motivo === "acordo_comum" ? 0.5 : 1;
+  const avosProjetadosAviso =
+    avisoPrevioIndenizado &&
+    (motivo === "sem_justa_causa" || motivo === "acordo_comum")
+      ? Math.max(1, Math.floor((diasAviso + 15) / 30))
+      : 0;
+  const reflexo13Aviso =
+    avosProjetadosAviso > 0
+      ? (bruto / 12) * avosProjetadosAviso * fatorAcordo
+      : 0;
+  const reflexoFeriasAviso =
+    avosProjetadosAviso > 0
+      ? (bruto / 12) * avosProjetadosAviso * (4 / 3) * fatorAcordo
+      : 0;
+
   const saldoFGTSEstimado =
     bruto * parametrosFiscais.trabalhista.aliquotaFGTS * meses;
   let multaFGTS = 0;
@@ -537,30 +581,37 @@ export function calculateRescisaoCLT(params: {
     saqueFGTSLiberado = saldoFGTSEstimado * 0.8 + multaFGTS;
   }
 
+  // Aviso indenizado e férias indenizadas na rescisão são isentos de INSS e IRRF; 13º + reflexo do 13º no aviso tributam separadamente (Cosit 188 / STJ Tema 1170)
   const inssSaldo = calculateINSS2026(saldoSalario).valor;
-  const irpfSaldo = calculateIRPF2026(saldoSalario, inssSaldo, 0, 0).valor;
-  const inss13 = calculateINSS2026(decimoTerceiroProporcional).valor;
-  const irpf13 = calculateIRPF2026(decimoTerceiroProporcional, inss13, 0, 0).valor;
+  const irpfSaldo = calculateIRPF2026(saldoSalario, inssSaldo, deps, 0).valor;
+  const base13Total = decimoTerceiroProporcional + reflexo13Aviso;
+  const inss13 = calculateINSS2026(base13Total).valor;
+  const irpf13 = calculateIRPF2026(base13Total, inss13, deps, 0).valor;
 
   const totalDescontos = inssSaldo + irpfSaldo + inss13 + irpf13;
 
   const totalRescisaoEmConta =
     saldoSalario +
     decimoTerceiroProporcional +
+    reflexo13Aviso +
     feriasProporcionais +
     tercoFeriasProporcionais +
+    reflexoFeriasAviso +
     valorFeriasVencidas +
     valorAvisoPrevio -
     totalDescontos;
 
   return {
     diasAviso,
+    avosProjetadosAviso,
     mesesProporcionais,
     saldoSalario: Number(saldoSalario.toFixed(2)),
     decimoTerceiroProporcional: Number(decimoTerceiroProporcional.toFixed(2)),
+    reflexo13Aviso: Number(reflexo13Aviso.toFixed(2)),
     feriasProporcionaisComTerco: Number(
       (feriasProporcionais + tercoFeriasProporcionais).toFixed(2)
     ),
+    reflexoFeriasAviso: Number(reflexoFeriasAviso.toFixed(2)),
     valorFeriasVencidas: Number(valorFeriasVencidas.toFixed(2)),
     valorAvisoPrevio: Number(valorAvisoPrevio.toFixed(2)),
     saldoFGTSEstimado: Number(saldoFGTSEstimado.toFixed(2)),
@@ -581,15 +632,18 @@ export function calculateFeriasCLT(params: {
   diasFerias: number;
   venderDezDias: boolean;
   adiantarPrimeiraParcela13: boolean;
+  dependentes?: number;
 }) {
   const {
     salarioBruto,
     diasFerias,
     venderDezDias,
     adiantarPrimeiraParcela13,
+    dependentes = 0,
   } = params;
 
   const bruto = Math.max(0, Number.isFinite(salarioBruto) ? salarioBruto : 0);
+  const deps = Math.max(0, Math.round(Number.isFinite(dependentes) ? dependentes : 0));
   const valorFeriasBruto = (bruto / 30) * diasFerias;
   const tercoConstitucional = valorFeriasBruto / 3;
   const baseTributavel = valorFeriasBruto + tercoConstitucional;
@@ -598,7 +652,7 @@ export function calculateFeriasCLT(params: {
   const adiantamento13 = adiantarPrimeiraParcela13 ? bruto / 2 : 0;
 
   const inss = calculateINSS2026(baseTributavel).valor;
-  const irpf = calculateIRPF2026(baseTributavel, inss, 0, 0).valor;
+  const irpf = calculateIRPF2026(baseTributavel, inss, deps, 0).valor;
 
   const liquidoReceber =
     baseTributavel - inss - irpf + abonoPecuniario + adiantamento13;
@@ -611,6 +665,70 @@ export function calculateFeriasCLT(params: {
     inss: Number(inss.toFixed(2)),
     irpf: Number(irpf.toFixed(2)),
     liquidoReceber: Number(liquidoReceber.toFixed(2)),
+  };
+}
+
+/**
+ * Calculadora do 13º Salário 2026 (1ª parcela até 30/11 sem descontos e 2ª parcela até 20/12 com INSS + IRRF exclusivo na fonte conforme Lei nº 15.270/2025).
+ */
+export function calculateDecimoTerceiro2026(params: {
+  salarioBruto: number;
+  mesesTrabalhadosNoAno: number;
+  dependentes?: number;
+}) {
+  const bruto = Math.max(
+    0,
+    Number.isFinite(params.salarioBruto) ? params.salarioBruto : 0
+  );
+  const meses = Math.max(
+    1,
+    Math.min(
+      12,
+      Math.round(
+        Number.isFinite(params.mesesTrabalhadosNoAno)
+          ? params.mesesTrabalhadosNoAno
+          : 12
+      )
+    )
+  );
+  const deps = Math.max(
+    0,
+    Math.round(
+      Number.isFinite(params.dependentes ?? 0) ? params.dependentes ?? 0 : 0
+    )
+  );
+
+  const valorBrutoTotal = (bruto / 12) * meses;
+  const primeiraParcela30Nov = valorBrutoTotal / 2;
+
+  const inssDetalhe = calculateINSS2026(valorBrutoTotal);
+  const irpfDetalhe = calculateIRPF2026(
+    valorBrutoTotal,
+    inssDetalhe.valor,
+    deps,
+    0
+  );
+
+  const segundaParcelaLiquida20Dez = Math.max(
+    0,
+    valorBrutoTotal -
+      primeiraParcela30Nov -
+      inssDetalhe.valor -
+      irpfDetalhe.valor
+  );
+  const totalLiquidoAnual = primeiraParcela30Nov + segundaParcelaLiquida20Dez;
+
+  return {
+    mesesTrabalhadosNoAno: meses,
+    valorBrutoTotal: Number(valorBrutoTotal.toFixed(2)),
+    primeiraParcela30Nov: Number(primeiraParcela30Nov.toFixed(2)),
+    inssTotal: inssDetalhe.valor,
+    irpfTotal: irpfDetalhe.valor,
+    segundaParcelaLiquida20Dez: Number(segundaParcelaLiquida20Dez.toFixed(2)),
+    totalLiquidoAnual: Number(totalLiquidoAnual.toFixed(2)),
+    economiaRedutorLei15270: irpfDetalhe.economiaRedutorLei15270,
+    metodoIR: irpfDetalhe.metodoDeducao,
+    isentoNovaRegra5k: irpfDetalhe.isentoNovaRegra5k,
   };
 }
 

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Mail, MessageSquare, Check, Copy, ExternalLink } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const DESTINATARIO_EMAIL = "contato@calculafiscal.com.br";
 
@@ -34,7 +35,13 @@ export default function ContatoPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
+    <div className="max-w-3xl mx-auto space-y-6">
+      <Breadcrumbs
+        items={[
+          { name: "Início", path: "/" },
+          { name: "Contato", path: "/contato" },
+        ]}
+      />
       <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-4">
         <div className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
           Atendimento editorial e comercial

@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import CLTvsPJCalculator from "@/components/CLTvsPJCalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
 import { FAIXAS_SALARIAIS_SEO } from "@/data/profissoes";
 import {
   DAS_MEI_SERVICOS_2026,
@@ -13,7 +15,7 @@ import {
   formatBRL,
   formatPercent,
 } from "@/lib/calculators";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
 
 export async function generateStaticParams() {
   return FAIXAS_SALARIAIS_SEO.map((valor) => ({
@@ -43,16 +45,14 @@ export async function generateMetadata({
     faturamentoBrutoPJ: Math.round(salario * 1.45),
   });
 
-  return {
+  return buildSocialMetadata({
     title: `Salário de R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto PJ em 2026?`,
     description: `Ganhar R$ ${salario.toLocaleString("pt-BR")} CLT deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos na conta. Para empatar como PJ no Simples Nacional em 2026, a nota fiscal parte de ${formatBRL(sim.faturamentoPJEquivalente)}.`,
-    alternates: {
-      canonical: `/clt-vs-pj/salario/${salario}`,
-    },
+    path: `/clt-vs-pj/salario/${salario}`,
     robots: isOfficialBracket
       ? { index: true, follow: true }
       : { index: false, follow: true },
-  };
+  });
 }
 
 export default async function SalarioProgrammaticPage({
@@ -109,25 +109,29 @@ export default async function SalarioProgrammaticPage({
           texto: `Acima de R$ 12.500 na CLT, o INSS fica limitado ao teto de R$ 988,09, enquanto o IRRF consome ${formatBRL(simAnexoIII.clt.irpf)} todos os meses. No PJ com faturamento de ${formatBRL(pjSugerido)} (${formatBRL(pjSugerido * 12)}/ano), o RBT12 ultrapassa a primeira faixa do Simples Nacional (R$ 180 mil/ano), aplicando-se a alíquota efetiva progressiva de ${formatPercent(simAnexoIII.pj.aliquotaEfetivaDAS)} no Anexo III com economia anual estimada de ${formatBRL(simAnexoIII.pj.economiaMensalComFatorR * 12)} frente ao Anexo V.`,
         };
 
+  const breadcrumbs = [
+    { name: "Início", path: "/" },
+    { name: "CLT vs PJ 2026", path: "/clt-vs-pj" },
+    { name: `R$ ${salario.toLocaleString("pt-BR")} CLT vs PJ`, path: `/clt-vs-pj/salario/${salario}` },
+  ];
+
+  const faqs = [
+    {
+      question: `Quanto sobra líquido de um salário de R$ ${salario.toLocaleString("pt-BR")} CLT em 2026?`,
+      answer: `Em 2026, um salário bruto de ${formatBRL(salario)} na carteira assinada tem desconto de ${formatBRL(simAnexoIII.clt.inss)} de INSS e ${formatBRL(simAnexoIII.clt.irpf)} de Imposto de Renda Retido na Fonte (IRRF), deixando ${formatBRL(simAnexoIII.clt.salarioLiquidoMensal)} líquidos por mês.`,
+    },
+    {
+      question: `R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto como PJ em 2026?`,
+      answer: `Somando salário líquido (${formatBRL(simAnexoIII.clt.salarioLiquidoMensal)}), depósito mensal de FGTS (${formatBRL(simAnexoIII.clt.fgtsMensal)}), 13º proporcional, férias + 1/3 e benefícios, o pacote CLT entrega ${formatBRL(simAnexoIII.clt.pacoteTotalMensalReal)}/mês. Para empatar atuando com CNPJ no Simples Nacional (Anexo III com 6% de imposto inicial), você precisa emitir nota fiscal de no mínimo ${formatBRL(simAnexoIII.faturamentoPJEquivalente)} mensais.`,
+    },
+  ];
+
   const schemaGraph = buildCalculatorSchemaGraph({
     title: `Salário de R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto PJ em 2026?`,
     description: `Comparativo CLT vs PJ para salário de ${formatBRL(salario)}: desconto de INSS (${formatBRL(simAnexoIII.clt.inss)}), IRRF (${formatBRL(simAnexoIII.clt.irpf)}), pacote total (${formatBRL(simAnexoIII.clt.pacoteTotalMensalReal)}) e faturamento PJ equivalente (${formatBRL(simAnexoIII.faturamentoPJEquivalente)}).`,
     path: `/clt-vs-pj/salario/${salario}`,
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "CLT vs PJ 2026", path: "/clt-vs-pj" },
-      { name: `R$ ${salario.toLocaleString("pt-BR")} CLT vs PJ`, path: `/clt-vs-pj/salario/${salario}` },
-    ],
-    faqs: [
-      {
-        question: `Quanto sobra líquido de um salário de R$ ${salario.toLocaleString("pt-BR")} CLT em 2026?`,
-        answer: `Em 2026, um salário bruto de ${formatBRL(salario)} na carteira assinada tem desconto de ${formatBRL(simAnexoIII.clt.inss)} de INSS e ${formatBRL(simAnexoIII.clt.irpf)} de Imposto de Renda Retido na Fonte (IRRF), deixando ${formatBRL(simAnexoIII.clt.salarioLiquidoMensal)} líquidos por mês.`,
-      },
-      {
-        question: `R$ ${salario.toLocaleString("pt-BR")} CLT equivale a quanto como PJ em 2026?`,
-        answer: `Somando salário líquido (${formatBRL(simAnexoIII.clt.salarioLiquidoMensal)}), depósito mensal de FGTS (${formatBRL(simAnexoIII.clt.fgtsMensal)}), 13º proporcional, férias + 1/3 e benefícios, o pacote CLT entrega ${formatBRL(simAnexoIII.clt.pacoteTotalMensalReal)}/mês. Para empatar atuando com CNPJ no Simples Nacional (Anexo III com 6% de imposto inicial), você precisa emitir nota fiscal de no mínimo ${formatBRL(simAnexoIII.faturamentoPJEquivalente)} mensais.`,
-      },
-    ],
+    breadcrumbs,
+    faqs,
   });
 
   return (
@@ -137,19 +141,7 @@ export default async function SalarioProgrammaticPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
-      <nav className="text-xs text-slate-500 flex items-center gap-2">
-        <Link href="/" className="hover:text-blue-700">
-          Início
-        </Link>
-        <span>/</span>
-        <Link href="/clt-vs-pj" className="hover:text-blue-700">
-          CLT vs PJ
-        </Link>
-        <span>/</span>
-        <span className="font-medium text-slate-800">
-          R$ {salario.toLocaleString("pt-BR")}
-        </span>
-      </nav>
+      <Breadcrumbs items={breadcrumbs} />
 
       <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-3">
         <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
@@ -277,6 +269,8 @@ export default async function SalarioProgrammaticPage({
           </div>
         </div>
       </section>
+
+      <PageFAQSection faqs={faqs} />
 
       <SnowballLinks currentSalary={salario} seedKey={`sal-${salario}`} />
     </div>

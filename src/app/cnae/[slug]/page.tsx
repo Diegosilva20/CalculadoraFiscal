@@ -8,8 +8,14 @@ import { fetchCNAEFromIBGE } from "@/lib/gov-apis";
 import CNAECalculator from "@/components/CNAECalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
 import { Check, Info, ArrowRight } from "lucide-react";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
+
+function formatCNAEPonto(codigoLimpo: string): string {
+  return codigoLimpo.replace(/^(\d{2})(\d{2})(\d)(\d{2})$/, "$1.$2-$3-$4");
+}
 
 export async function generateStaticParams() {
   return CNAES_DATA.map((c) => ({
@@ -26,23 +32,23 @@ export async function generateMetadata({
   const cnae = getCNAEBySlug(slug);
   if (!cnae) return {};
 
-  return {
-    title: `CNAE ${cnae.codigo} (${cnae.nomePopular}): Anexo ${cnae.anexo}, ${
+  const codigoPonto = formatCNAEPonto(cnae.codigoLimpo);
+
+  return buildSocialMetadata({
+    title: `CNAE ${cnae.codigo} (${codigoPonto} — ${cnae.nomePopular}): Anexo ${cnae.anexo}, ${
       cnae.fatorR
         ? "6% no Fator R"
         : `${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
     } e MEI 2026`,
-    description: `CNAE ${cnae.codigo} (${cnae.codigoLimpo} — ${cnae.titulo}) no Simples Nacional 2026: ${
+    description: `CNAE ${cnae.codigo} (${codigoPonto} / ${cnae.codigoLimpo} — ${cnae.titulo}) no Simples Nacional 2026: ${
       cnae.permiteMEI ? "pode ser MEI" : "não permite MEI (abre como ME)"
     }, Anexo ${cnae.anexo} (${
       cnae.fatorR
         ? "cai de 15,5% para 6% com Fator R"
         : `inicia em ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`
     }) e cálculo da guia DAS.`,
-    alternates: {
-      canonical: `/cnae/${cnae.slug}`,
-    },
-  };
+    path: `/cnae/${cnae.slug}`,
+  });
 }
 
 export default async function CNAEDetailPage({
@@ -54,34 +60,39 @@ export default async function CNAEDetailPage({
   const cnae = getCNAEBySlug(slug);
   if (!cnae) notFound();
 
+  const codigoPonto = formatCNAEPonto(cnae.codigoLimpo);
   const dadosIBGE = await fetchCNAEFromIBGE(cnae.codigoLimpo);
   const profissoesRelacionadas = PROFISSOES_SEO.filter(
     (p) => p.cnaeRecomendadoSlug === cnae.slug
   );
 
+  const breadcrumbs = [
+    { name: "Início", path: "/" },
+    { name: "Tabela CNAE 2026", path: "/cnae" },
+    { name: `CNAE ${cnae.codigo}`, path: `/cnae/${cnae.slug}` },
+  ];
+
+  const faqs = [
+    {
+      question: `O CNAE ${cnae.codigo} (${codigoPonto}) pode ser MEI em 2026?`,
+      answer: cnae.permiteMEI
+        ? `Sim. O CNAE ${cnae.codigo} (${cnae.titulo}) é permitido no MEI em 2026, respeitando o limite de faturamento anual de R$ 81.000.`
+        : `Não. O CNAE ${cnae.codigo} (${cnae.titulo}) não é permitido no MEI por se tratar de atividade intelectual ou regulamentada, devendo ser aberto como Microempresa (ME / SLU) no Simples Nacional.`,
+    },
+    {
+      question: `Qual o Anexo do Simples Nacional e alíquota do CNAE ${cnae.codigo}?`,
+      answer: cnae.fatorR
+        ? `O CNAE ${cnae.codigo} pertence originalmente ao Anexo V (15,5%), mas está sujeito ao Fator R. Mantendo 28% de folha/pró-labore, ele é tributado pelo Anexo III com alíquota inicial de apenas 6%.`
+        : `O CNAE ${cnae.codigo} é tributado diretamente no Anexo ${cnae.anexo} do Simples Nacional, com alíquota nominal inicial de ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}% sem exigir Fator R.`,
+    },
+  ];
+
   const schemaGraph = buildCalculatorSchemaGraph({
     title: `Calculadora e Consulta CNAE ${cnae.codigo} (${cnae.nomePopular}) — Simples Nacional 2026`,
-    description: `Simulador de imposto DAS, Fator R e enquadramento MEI para o CNAE ${cnae.codigo} (${cnae.titulo}) no Simples Nacional 2026.`,
+    description: `Simulador de imposto DAS, Fator R e enquadramento MEI para o CNAE ${cnae.codigo} (${codigoPonto} — ${cnae.titulo}) no Simples Nacional 2026.`,
     path: `/cnae/${cnae.slug}`,
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "Tabela CNAE 2026", path: "/cnae" },
-      { name: `CNAE ${cnae.codigo}`, path: `/cnae/${cnae.slug}` },
-    ],
-    faqs: [
-      {
-        question: `O CNAE ${cnae.codigo} pode ser MEI em 2026?`,
-        answer: cnae.permiteMEI
-          ? `Sim. O CNAE ${cnae.codigo} (${cnae.titulo}) é permitido no MEI em 2026, respeitando o limite de faturamento anual de R$ 81.000.`
-          : `Não. O CNAE ${cnae.codigo} (${cnae.titulo}) não é permitido no MEI por se tratar de atividade intelectual ou regulamentada, devendo ser aberto como Microempresa (ME / SLU) no Simples Nacional.`,
-      },
-      {
-        question: `Qual o Anexo do Simples Nacional e alíquota do CNAE ${cnae.codigo}?`,
-        answer: cnae.fatorR
-          ? `O CNAE ${cnae.codigo} pertence originalmente ao Anexo V (15,5%), mas está sujeito ao Fator R. Mantendo 28% de folha/pró-labore, ele é tributado pelo Anexo III com alíquota inicial de apenas 6%.`
-          : `O CNAE ${cnae.codigo} é tributado diretamente no Anexo ${cnae.anexo} do Simples Nacional, com alíquota nominal inicial de ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}% sem exigir Fator R.`,
-      },
-    ],
+    breadcrumbs,
+    faqs,
   });
 
   return (
@@ -91,19 +102,7 @@ export default async function CNAEDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
-      <nav className="text-xs text-slate-500 flex items-center gap-2">
-        <Link href="/" className="hover:text-blue-700">
-          Início
-        </Link>
-        <span>/</span>
-        <Link href="/cnae" className="hover:text-blue-700">
-          Tabela CNAE
-        </Link>
-        <span>/</span>
-        <span className="font-medium text-slate-800 font-mono">
-          {cnae.codigo}
-        </span>
-      </nav>
+      <Breadcrumbs items={breadcrumbs} />
 
       <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-4">
         <div className="flex flex-wrap gap-2">
@@ -173,10 +172,10 @@ export default async function CNAEDetailPage({
             Resumo fiscal 2026
           </h2>
           <div className="text-xs sm:text-sm space-y-2.5 text-slate-700">
-            <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Código CNAE (com e sem máscara)</span>
-              <strong className="font-mono text-slate-900">
-                {cnae.codigo} ({cnae.codigoLimpo})
+            <div className="flex justify-between gap-2 py-2 border-b border-slate-100">
+              <span className="text-slate-500">Código CNAE (RFB / IBGE / sem máscara)</span>
+              <strong className="font-mono text-slate-900 text-right">
+                {cnae.codigo} · {codigoPonto} · {cnae.codigoLimpo}
               </strong>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
@@ -231,6 +230,9 @@ export default async function CNAEDetailPage({
             <strong>conta digital PJ</strong> própria para receber pelos serviços prestados, pagar a guia DAS mensal e recolher o pró-labore. A escrituração contábil regular feita pela contabilidade online permite transferir o lucro líquido restante para a conta pessoa física com isenção de IRPF.
           </p>
         </div>
+        <p className="pt-2 border-t border-slate-100 text-xs text-slate-600">
+          <strong>NFS-e Padrão Nacional (NBS e Código de Tributação Nacional):</strong> ao emitir nota fiscal em 2026 (código IBGE <span className="font-mono">{codigoPonto}</span>), o emissor municipal ou nacional vincula o CNAE ao item correspondente da Lista de Serviços (LC 116) e à Nomenclatura Brasileira de Serviços (NBS) para fins de controle da transição CBS/IBS, sem acréscimo de imposto no DAS para optantes pelo Simples Nacional.
+        </p>
       </section>
 
       {profissoesRelacionadas.length > 0 && (
@@ -258,6 +260,8 @@ export default async function CNAEDetailPage({
         format="leaderboard"
         label={`Abertura de CNPJ no CNAE ${cnae.codigo}, certificado digital e-CNPJ A1 e Conta PJ`}
       />
+
+      <PageFAQSection faqs={faqs} />
 
       <SnowballLinks
         currentSalary={10000}

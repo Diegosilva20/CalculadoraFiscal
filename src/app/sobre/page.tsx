@@ -9,19 +9,41 @@ import {
   formatBRL,
 } from "@/lib/calculators";
 import { ShieldCheck, BookOpen, Landmark, CheckCircle2, FileCode2 } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { buildInstitutionalPageSchema, buildSocialMetadata } from "@/lib/seo-schema";
 
-export const metadata: Metadata = {
-  title: "Sobre o CalculaFiscal e Metodologia Oficial de Cálculo (2026)",
-  description:
-    "Conheça a metodologia matemática, fontes legislativas oficiais (Receita Federal, INSS, IBGE e Banco Central) e critérios técnicos utilizados nas calculadoras do CalculaFiscal 2026.",
-  alternates: {
-    canonical: "/sobre",
-  },
-};
+const TITLE = "Sobre o CalculaFiscal e Metodologia Oficial de Cálculo (2026)";
+const DESCRIPTION =
+  "Conheça a metodologia matemática, fontes legislativas oficiais (Receita Federal, INSS, IBGE e Banco Central) e critérios técnicos utilizados nas calculadoras do CalculaFiscal 2026.";
+
+export const metadata: Metadata = buildSocialMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/sobre",
+});
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Metodologia e Fontes 2026", path: "/sobre" },
+];
 
 export default function SobreMetodologiaPage() {
+  const schemaGraph = buildInstitutionalPageSchema({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/sobre",
+    breadcrumbs: BREADCRUMBS,
+  });
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+      />
+
+      <Breadcrumbs items={BREADCRUMBS} />
+
       <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-5">
         <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
           Metodologia técnica e fontes legislativas

@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
+
 // ============================================================================
-// GERADOR CENTRAL DE SCHEMA.ORG JSON-LD (PADRÃO CLAUDE-SEO 2026)
+// GERADOR CENTRAL DE SCHEMA.ORG JSON-LD E METADADOS SOCIAIS (PADRÃO CLAUDE-SEO 2026)
 // Combina SoftwareApplication (Rich Result Ativo) + BreadcrumbList + FAQPage (GEO)
 // ============================================================================
 
@@ -158,5 +160,112 @@ export function buildCalculatorSchemaGraph(options: PageSchemaOptions) {
   return {
     "@context": "https://schema.org",
     "@graph": graph,
+  };
+}
+
+export function buildSocialMetadata(params: {
+  title: string;
+  description: string;
+  path: string;
+  robots?: Metadata["robots"];
+}): Metadata {
+  const cleanPath =
+    params.path === "/"
+      ? ""
+      : params.path.startsWith("/")
+      ? params.path
+      : `/${params.path}`;
+  const fullUrl = `${SITE_BASE_URL}${cleanPath}`;
+
+  return {
+    title: params.title,
+    description: params.description,
+    alternates: {
+      canonical: cleanPath || "/",
+    },
+    ...(params.robots ? { robots: params.robots } : {}),
+    openGraph: {
+      type: "website",
+      locale: "pt_BR",
+      siteName: "CalculaFiscal 2026",
+      url: fullUrl,
+      title: params.title,
+      description: params.description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: params.title,
+      description: params.description,
+    },
+  };
+}
+
+export function buildInstitutionalPageSchema(options: PageSchemaOptions) {
+  const cleanPath =
+    options.path === "/"
+      ? ""
+      : options.path.startsWith("/")
+      ? options.path
+      : `/${options.path}`;
+  const fullUrl = `${SITE_BASE_URL}${cleanPath}`;
+  const orgId = `${SITE_BASE_URL}/#organization`;
+  const websiteId = `${SITE_BASE_URL}/#website`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": orgId,
+        name: "CalculaFiscal",
+        url: SITE_BASE_URL,
+        email: "contato@calculafiscal.com.br",
+        address: { "@type": "PostalAddress", addressCountry: "BR" },
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer support",
+          email: "contato@calculafiscal.com.br",
+          url: `${SITE_BASE_URL}/contato`,
+          availableLanguage: ["Portuguese"],
+          areaServed: "BR",
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": websiteId,
+        name: "CalculaFiscal 2026",
+        url: SITE_BASE_URL,
+        inLanguage: "pt-BR",
+        publisher: { "@id": orgId },
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${fullUrl}#webpage`,
+        url: fullUrl,
+        name: options.title,
+        description: options.description,
+        inLanguage: "pt-BR",
+        isPartOf: { "@id": websiteId },
+        publisher: { "@id": orgId },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${fullUrl}#breadcrumb`,
+        itemListElement: options.breadcrumbs.map((item, idx) => {
+          const itemPath =
+            item.path === "/"
+              ? ""
+              : item.path.startsWith("/")
+              ? item.path
+              : `/${item.path}`;
+          return {
+            "@type": "ListItem",
+            position: idx + 1,
+            name: item.name,
+            item: `${SITE_BASE_URL}${itemPath}`,
+          };
+        }),
+      },
+    ],
   };
 }

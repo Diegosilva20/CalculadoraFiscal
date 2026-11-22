@@ -3,17 +3,40 @@ import type { Metadata } from "next";
 import RescisaoFeriasCalculator from "@/components/RescisaoFeriasCalculator";
 import SnowballLinks from "@/components/SnowballLinks";
 import AdSlot from "@/components/AdSlot";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title:
     "Calculadora de Rescisão Trabalhista e Férias CLT 2026 — Acerto, Multa 40% FGTS e Aviso",
   description:
     "Simule o valor exato da sua Rescisão de Contrato de Trabalho CLT e Férias em 2026: demissão sem justa causa, acordo trabalhista (80% FGTS), pedido de demissão e venda de 10 dias de férias.",
-  alternates: {
-    canonical: "/calculadora-rescisao",
+  path: "/calculadora-rescisao",
+});
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Calculadora de Rescisão e Férias 2026", path: "/calculadora-rescisao" },
+];
+
+const FAQS = [
+  {
+    question: "Qual o prazo legal para pagamento da rescisão CLT em 2026?",
+    answer:
+      "Pelo Art. 477, § 6º da CLT, o empregador tem até 10 dias corridos após o término do contrato para quitar todas as verbas rescisórias e entregar os documentos de saque do FGTS e Seguro-Desemprego, sob pena de multa equivalente a um salário bruto do empregado.",
   },
-};
+  {
+    question: "Como funciona a demissão por acordo trabalhista (Art. 484-A da CLT)?",
+    answer:
+      "No acordo de demissão consensual, o trabalhador recebe metade do aviso prévio indenizado, 100% do saldo de salário, férias + 1/3 e 13º proporcional, multa rescisória de 20% sobre o FGTS e pode sacar até 80% do saldo total da conta do FGTS, mas não tem direito ao Seguro-Desemprego.",
+  },
+  {
+    question: "Aviso prévio indenizado e férias indenizadas sofrem desconto de INSS ou IRRF?",
+    answer:
+      "Não. Pela legislação vigente e jurisprudência consolidada, o aviso prévio indenizado principal e as férias indenizadas na rescisão (proporcionais ou vencidas com 1/3) são isentos de INSS e IRRF. Apenas o 13º proporcional e seu reflexo sobre a projeção do aviso prévio sofrem tributação exclusiva na fonte.",
+  },
+];
 
 export default function RescisaoPage() {
   const schemaGraph = buildCalculatorSchemaGraph({
@@ -21,22 +44,8 @@ export default function RescisaoPage() {
     description:
       "Simulador de acerto rescisório CLT e férias 2026 com aviso prévio proporcional (Lei 12.506/2011), saldo de salário, 13º proporcional, férias + 1/3, abono pecuniário e multa de 40% do FGTS.",
     path: "/calculadora-rescisao",
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "Calculadora de Rescisão e Férias 2026", path: "/calculadora-rescisao" },
-    ],
-    faqs: [
-      {
-        question: "Qual o prazo legal para pagamento da rescisão CLT em 2026?",
-        answer:
-          "Pelo Art. 477, § 6º da CLT, o empregador tem até 10 dias corridos após o término do contrato para quitar todas as verbas rescisórias e entregar os documentos de saque do FGTS e Seguro-Desemprego, sob pena de multa equivalente a um salário bruto do empregado.",
-      },
-      {
-        question: "Como funciona a demissão por acordo trabalhista (Art. 484-A da CLT)?",
-        answer:
-          "No acordo de demissão consensual, o trabalhador recebe metade do aviso prévio indenizado, 100% do saldo de salário, férias + 1/3 e 13º proporcional, multa rescisória de 20% sobre o FGTS e pode sacar até 80% do saldo total da conta do FGTS, mas não tem direito ao Seguro-Desemprego.",
-      },
-    ],
+    breadcrumbs: BREADCRUMBS,
+    faqs: FAQS,
   });
 
   return (
@@ -45,6 +54,8 @@ export default function RescisaoPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
+
+      <Breadcrumbs items={BREADCRUMBS} />
 
       <div className="space-y-2 border-b border-slate-200 pb-5">
         <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
@@ -102,6 +113,8 @@ export default function RescisaoPage() {
         format="leaderboard"
         label="CDB de liquidez diária e Tesouro Selic para reserva financeira"
       />
+
+      <PageFAQSection faqs={FAQS} />
 
       <SnowballLinks currentSalary={5000} />
     </div>

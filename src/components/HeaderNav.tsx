@@ -34,7 +34,7 @@ export default function HeaderNav({ mobile = false }: { mobile?: boolean }) {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`px-2.5 py-1 rounded-md border transition-colors ${
+              className={`px-3 py-2 rounded-md border transition-colors ${
                 active
                   ? "bg-slate-900 text-white border-slate-900"
                   : "bg-white border-slate-200 hover:border-slate-300 text-slate-800"

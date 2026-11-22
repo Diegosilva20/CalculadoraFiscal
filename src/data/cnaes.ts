@@ -335,18 +335,18 @@ export const CNAES_DATA: CNAEItem[] = [
     titulo: "Atividades de fisioterapia",
     nomePopular: "Fisioterapeuta e Estúdio de Pilates PJ",
     categoria: "Saúde e Medicina",
-    anexo: "III",
-    fatorR: false,
+    anexo: "V",
+    fatorR: true,
     permiteMEI: false,
-    aliquotaInicialNominal: 0.06,
+    aliquotaInicialNominal: 0.155,
     reducaoIVA2026: 0.6,
     atividadesCompreendidas: [
       "Atendimento fisioterapêutico clínico, domiciliar (home care) e hospitalar",
-      "Reabilitação motora, fisioterapia esportiva e respiratória",
+      "Estúdio de pilates fisioterapêutico, reabilitação motora e esportiva",
       "Sessões terapêuticas e reabilitação postural",
     ],
     dicaTributaria2026:
-      "Fisioterapia tem o privilégio de entrar diretamente no Anexo III (6% inicial) sem depender do Fator R, além de contar com 60% de desconto na alíquota do novo IVA!",
+      "Na LC 155/2016, a fisioterapia inicia no Anexo V (15,5%), mas migra para o Anexo III (6% inicial) mantendo folha e pró-labore a partir de 28% (Fator R), além da redução de 60% no IVA da saúde.",
   },
   {
     codigo: "8650-0/06",
@@ -355,10 +355,10 @@ export const CNAES_DATA: CNAEItem[] = [
     titulo: "Atividades de fonoaudiologia",
     nomePopular: "Fonoaudiólogo Clínico e Infantil PJ",
     categoria: "Saúde e Medicina",
-    anexo: "III",
-    fatorR: false,
+    anexo: "V",
+    fatorR: true,
     permiteMEI: false,
-    aliquotaInicialNominal: 0.06,
+    aliquotaInicialNominal: 0.155,
     reducaoIVA2026: 0.6,
     atividadesCompreendidas: [
       "Terapia fonoaudiológica infantil e adulta em clínicas e escolas",
@@ -366,7 +366,27 @@ export const CNAES_DATA: CNAEItem[] = [
       "Atendimento para convênios e clínicas multidisciplinares (ABA/TEA)",
     ],
     dicaTributaria2026:
-      "Assim como a fisioterapia, a fonoaudiologia entra direto no Anexo III (6% inicial sem precisar de Fator R) e tem redução de 60% no IVA da Reforma Tributária!",
+      "Enquadrada no Anexo V (15,5%) pela LC 123/2006 com regra do Fator R: com folha/pró-labore de 28% do faturamento, a alíquota cai para 6% no Anexo III e conta com redução de 60% no IVA Dual.",
+  },
+  {
+    codigo: "8650-0/99",
+    codigoLimpo: "8650099",
+    slug: "8650-0-99-biomedicina-estetica-e-outros-profissionais-de-saude",
+    titulo: "Atividades de profissionais da área de saúde não especificadas anteriormente",
+    nomePopular: "Biomedicina Estética, Quiropraxia e Optometria PJ",
+    categoria: "Saúde e Medicina",
+    anexo: "V",
+    fatorR: true,
+    permiteMEI: false,
+    aliquotaInicialNominal: 0.155,
+    reducaoIVA2026: 0.6,
+    atividadesCompreendidas: [
+      "Procedimentos e consultoria em Biomedicina Estética por profissional habilitado",
+      "Atividades de quiropraxia, optometria e práticas complementares em saúde",
+      "Atendimento clínico especializado não enquadrado como MEI",
+    ],
+    dicaTributaria2026:
+      "Não permite MEI por ser profissão regulamentada da saúde. Inicia no Anexo V (15,5%) e reduz para 6% no Anexo III mantendo Fator R igual ou superior a 28%.",
   },
 
   // ================= ENGENHARIA E ARQUITETURA =================
@@ -397,10 +417,10 @@ export const CNAES_DATA: CNAEItem[] = [
     titulo: "Serviços de arquitetura",
     nomePopular: "Arquiteto e Urbanista PJ",
     categoria: "Engenharia e Arquitetura",
-    anexo: "III",
-    fatorR: false,
+    anexo: "V",
+    fatorR: true,
     permiteMEI: false,
-    aliquotaInicialNominal: 0.06,
+    aliquotaInicialNominal: 0.155,
     reducaoIVA2026: 0.3,
     atividadesCompreendidas: [
       "Projetos arquitetônicos residenciais, comerciais e corporativos (RRT)",
@@ -408,7 +428,7 @@ export const CNAES_DATA: CNAEItem[] = [
       "Projetos executivos e detalhamento arquitetônico",
     ],
     dicaTributaria2026:
-      "Arquitetura é enquadrada diretamente no Anexo III (a partir de 6% sem precisar de Fator R!), o que torna o CNPJ para arquitetos extremamente econômico.",
+      "Pela LC 155/2016, serviços de arquitetura iniciam no Anexo V (15,5%) e migram para o Anexo III (6% inicial) mediante Fator R >= 28% (pró-labore/folha), contando ainda com redução de 30% no IVA Dual (CAU).",
   },
   {
     codigo: "7119-7/03",

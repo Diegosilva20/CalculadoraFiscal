@@ -2,19 +2,42 @@ import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Shield, Lock, Eye, Cookie } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { buildInstitutionalPageSchema, buildSocialMetadata } from "@/lib/seo-schema";
 
-export const metadata: Metadata = {
-  title: "Política de Privacidade, Cookies e Conformidade LGPD",
-  description:
-    "Política de Privacidade do portal CalculaFiscal em conformidade com a LGPD (Lei nº 13.709/2018) e diretrizes de publicidade do Google AdSense.",
-  alternates: {
-    canonical: "/politica-de-privacidade",
-  },
-};
+const TITLE = "Política de Privacidade, Cookies e Conformidade LGPD";
+const DESCRIPTION =
+  "Política de Privacidade do portal CalculaFiscal em conformidade com a LGPD (Lei nº 13.709/2018) e diretrizes de publicidade do Google AdSense.";
+
+export const metadata: Metadata = buildSocialMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/politica-de-privacidade",
+});
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Política de Privacidade e LGPD", path: "/politica-de-privacidade" },
+];
 
 export default function PoliticaPrivacidadePage() {
+  const schemaGraph = buildInstitutionalPageSchema({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/politica-de-privacidade",
+    breadcrumbs: BREADCRUMBS,
+  });
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-8 text-sm text-slate-700 leading-relaxed">
+    <div className="max-w-4xl mx-auto space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+      />
+
+      <Breadcrumbs items={BREADCRUMBS} />
+
+      <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-8 text-sm text-slate-700 leading-relaxed">
       <div className="border-b border-slate-200 pb-6 space-y-2.5">
         <div className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
           Conformidade LGPD (Lei nº 13.709/2018) e publicidade
@@ -108,6 +131,7 @@ export default function PoliticaPrivacidadePage() {
           .
         </p>
       </section>
+      </div>
     </div>
   );
 }

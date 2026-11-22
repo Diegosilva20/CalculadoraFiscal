@@ -5,9 +5,11 @@ import { notFound } from "next/navigation";
 import CLTvsPJCalculator from "@/components/CLTvsPJCalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
 import { PROFISSOES_SEO, getProfissaoBySlug } from "@/data/profissoes";
 import { calculateCLTvsPJ, formatBRL, formatPercent } from "@/lib/calculators";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
 
 export async function generateStaticParams() {
   return PROFISSOES_SEO.map((prof) => ({
@@ -32,13 +34,11 @@ export async function generateMetadata({
     sujeitoFatorR: prof.sujeitoFatorR,
   });
 
-  return {
+  return buildSocialMetadata({
     title: `${prof.tituloSEO} · CNAE ${prof.cnaeRecomendadoCodigo}`,
     description: `${prof.nome} em 2026: salário CLT de ${formatBRL(prof.salarioMedioCLT)} rende ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos (pacote total ${formatBRL(sim.clt.pacoteTotalMensalReal)}). Simule quanto cobrar como PJ no CNAE ${prof.cnaeRecomendadoCodigo} (${prof.sujeitoFatorR ? "6% via Fator R" : `Anexo ${prof.anexoPadrao}`}).`,
-    alternates: {
-      canonical: `/clt-vs-pj/profissao/${prof.slug}`,
-    },
-  };
+    path: `/clt-vs-pj/profissao/${prof.slug}`,
+  });
 }
 
 export default async function ProfissaoProgrammaticPage({
@@ -63,29 +63,33 @@ export default async function ProfissaoProgrammaticPage({
       ? (sim.clt.inss + sim.clt.irpf) / prof.salarioMedioCLT
       : 0;
 
+  const breadcrumbs = [
+    { name: "Início", path: "/" },
+    { name: "CLT vs PJ 2026", path: "/clt-vs-pj" },
+    { name: prof.nome, path: `/clt-vs-pj/profissao/${prof.slug}` },
+  ];
+
+  const faqs = [
+    {
+      question: `Qual o CNAE mais indicado para ${prof.nome} atuar como PJ em 2026?`,
+      answer: `O código mais utilizado por ${prof.nome} é o CNAE ${prof.cnaeRecomendadoCodigo}, tributado originalmente no Anexo ${prof.anexoPadrao} do Simples Nacional. ${
+        prof.sujeitoFatorR
+          ? "Como esta atividade é sujeita ao Fator R (LC 123/2006), ao manter 28% do faturamento em folha/pró-labore a alíquota nominal inicial cai de 15,50% para 6,00% no Anexo III."
+          : "Esta atividade já ingressa diretamente no Anexo padrão sem exigir a trava de 28% do Fator R."
+      }`,
+    },
+    {
+      question: `Quanto um ${prof.nome} que ganha ${formatBRL(prof.salarioMedioCLT)} CLT precisa faturar como PJ para valer a pena?`,
+      answer: `Um salário bruto de ${formatBRL(prof.salarioMedioCLT)} na CLT entrega ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos por mês e um pacote real acumulado (incluindo FGTS de ${formatBRL(sim.clt.fgtsMensal)}, 13º, férias + 1/3 e benefícios de ${formatBRL(prof.beneficiosMediosCLT)}) de ${formatBRL(sim.clt.pacoteTotalMensalReal)}. Para empatar no bolso atuando como PJ, a nota fiscal mínima de equilíbrio é de ${formatBRL(sim.faturamentoPJEquivalente)}.`,
+    },
+  ];
+
   const schemaGraph = buildCalculatorSchemaGraph({
     title: prof.tituloSEO,
     description: `Comparativo CLT vs PJ 2026 para ${prof.nome} com CNAE ${prof.cnaeRecomendadoCodigo}, cálculo de INSS, IRPF, FGTS, Fator R e Simples Nacional.`,
     path: `/clt-vs-pj/profissao/${prof.slug}`,
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "CLT vs PJ 2026", path: "/clt-vs-pj" },
-      { name: prof.nome, path: `/clt-vs-pj/profissao/${prof.slug}` },
-    ],
-    faqs: [
-      {
-        question: `Qual o CNAE mais indicado para ${prof.nome} atuar como PJ em 2026?`,
-        answer: `O código mais utilizado por ${prof.nome} é o CNAE ${prof.cnaeRecomendadoCodigo}, tributado originalmente no Anexo ${prof.anexoPadrao} do Simples Nacional. ${
-          prof.sujeitoFatorR
-            ? "Como esta atividade é sujeita ao Fator R (LC 123/2006), ao manter 28% do faturamento em folha/pró-labore a alíquota nominal inicial cai de 15,50% para 6,00% no Anexo III."
-            : "Esta atividade já ingressa diretamente no Anexo padrão sem exigir a trava de 28% do Fator R."
-        }`,
-      },
-      {
-        question: `Quanto um ${prof.nome} que ganha ${formatBRL(prof.salarioMedioCLT)} CLT precisa faturar como PJ para valer a pena?`,
-        answer: `Um salário bruto de ${formatBRL(prof.salarioMedioCLT)} na CLT entrega ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos por mês e um pacote real acumulado (incluindo FGTS de ${formatBRL(sim.clt.fgtsMensal)}, 13º, férias + 1/3 e benefícios de ${formatBRL(prof.beneficiosMediosCLT)}) de ${formatBRL(sim.clt.pacoteTotalMensalReal)}. Para empatar no bolso atuando como PJ, a nota fiscal mínima de equilíbrio é de ${formatBRL(sim.faturamentoPJEquivalente)}.`,
-      },
-    ],
+    breadcrumbs,
+    faqs,
   });
 
   return (
@@ -95,17 +99,7 @@ export default async function ProfissaoProgrammaticPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
-      <nav className="text-xs text-slate-500 flex items-center gap-2">
-        <Link href="/" className="hover:text-blue-700">
-          Início
-        </Link>
-        <span>/</span>
-        <Link href="/clt-vs-pj" className="hover:text-blue-700">
-          CLT vs PJ
-        </Link>
-        <span>/</span>
-        <span className="font-medium text-slate-800">{prof.nome}</span>
-      </nav>
+      <Breadcrumbs items={breadcrumbs} />
 
       <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-4">
         <div className="flex flex-wrap gap-2">
@@ -276,6 +270,8 @@ export default async function ProfissaoProgrammaticPage({
           </div>
         </div>
       </section>
+
+      <PageFAQSection faqs={faqs} />
 
       <SnowballLinks currentSalary={prof.salarioMedioCLT} seedKey={prof.slug} />
     </div>

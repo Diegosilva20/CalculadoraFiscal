@@ -38,7 +38,7 @@ Portal gratuito de simulações trabalhistas e tributárias no Brasil atualizado
 - [Comparador CLT vs PJ 2026](${SITE_BASE_URL}/clt-vs-pj): apura líquido CLT, pacote com FGTS/13º/férias/benefícios e faturamento mínimo equivalente no Simples Nacional.
 - [Tabela CNAE 2026](${SITE_BASE_URL}/cnae): ${CNAES_DATA.length} atividades com Anexo, permissão MEI, Fator R e redução CBS/IBS.
 - [Calculadora de Fator R (28%)](${SITE_BASE_URL}/calculadora-fator-r): compara Anexo III e Anexo V considerando RBT12 e FS12.
-- [Salário Líquido 2026](${SITE_BASE_URL}/calculadora-salario-liquido): detalhamento faixa a faixa do INSS e IRRF.
+- [Salário Líquido e 13º 2026](${SITE_BASE_URL}/calculadora-salario-liquido): detalhamento faixa a faixa do INSS, IRRF e 1ª/2ª parcela do 13º salário.
 - [Custo de Funcionário CLT](${SITE_BASE_URL}/custo-funcionario-clt): compara Simples Nacional, Anexo IV, Lucro Presumido/Real e MEI.
 - [Rescisão e Férias CLT](${SITE_BASE_URL}/calculadora-rescisao): saldo de salário, aviso prévio proporcional, 13º, férias + 1/3 e FGTS.
 
@@ -135,16 +135,17 @@ Simula a razão entre Folha de Salários dos últimos 12 meses (FS12) e Receita 
     const exemplo = calculateSalarioLiquidoCLT({ salarioBruto: 5500 });
     return {
       status: 200,
-      body: `# Calculadora de Salário Líquido CLT 2026
+      body: `# Calculadora de Salário Líquido e 13º Salário CLT 2026
 
 URL canônica: ${SITE_BASE_URL}/calculadora-salario-liquido
 
-Aplica o INSS progressivo por faixa até o teto de ${formatBRL(TETO_INSS_2026)} e as regras da Lei nº 15.270/2025 no IRRF 2026 (isenção até R$ 5.000,00, redutor gradual de 978,62 − 0,133145 × rendimento até R$ 7.350,00 e comparação automática entre deduções legais e desconto simplificado de R$ 607,20).
+Aplica o INSS progressivo por faixa até o teto de ${formatBRL(TETO_INSS_2026)} e as regras da Lei nº 15.270/2025 no IRRF 2026 (isenção até R$ 5.000,00, redutor gradual de 978,62 − 0,133145 × rendimento até R$ 7.350,00 e comparação automática entre deduções legais e desconto simplificado de R$ 607,20), inclusive para cálculo das 1ª e 2ª parcelas do 13º salário.
 
 ## Exemplo para R$ 5.500,00 brutos (0 dependentes)
 
 - INSS progressivo: -${formatBRL(exemplo.inss)}
 - IRRF: -${formatBRL(exemplo.irpf)} (critério ${exemplo.metodoIR})
+- Economia com o redutor Lei nº 15.270/2025: +${formatBRL(exemplo.economiaRedutorLei15270)}/mês
 - Salário líquido estimado: ${formatBRL(exemplo.salarioLiquidoMensal)}
 `,
     };
@@ -186,7 +187,7 @@ Comparação de encargos, provisões mensais (FGTS, 13º, férias + 1/3, reserva
 
 URL canônica: ${SITE_BASE_URL}/calculadora-rescisao
 
-Estima saldo de salário, aviso prévio proporcional (Lei 12.506/2011, 30 dias + 3 dias por ano completo até 90 dias), 13º proporcional, férias proporcionais + 1/3, férias vencidas, descontos de INSS/IRRF e saque/multa de FGTS (40% sem justa causa, 20% acordo trabalhista Art. 484-A), além de simulação separada de férias e abono pecuniário.
+Estima saldo de salário, aviso prévio proporcional (Lei 12.506/2011, 30 dias + 3 dias por ano completo até 90 dias), reflexos do aviso prévio indenizado em 13º e férias (OJ 82 SDI-1), férias proporcionais + 1/3, férias vencidas, descontos de INSS/IRRF (considerando isenção legal do aviso prévio indenizado e férias indenizadas) e saque/multa de FGTS (40% sem justa causa, 20% acordo trabalhista Art. 484-A), além de simulação separada de férias e abono pecuniário.
 `,
     };
   }
@@ -201,7 +202,7 @@ URL canônica: ${SITE_BASE_URL}/sobre
 Portal independente mantido no Brasil para simulações trabalhistas e tributárias gratuitas com processamento 100% local no navegador.
 
 ## Base legal e APIs públicas integradas
-- - Receita Federal do Brasil: Lei nº 15.270/2025 para o IRPF 2026 (isenção até R$ 5.000, redutor gradual até R$ 7.350 e desconto simplificado de R$ 607,20) e fórmulas efetivas do Simples Nacional (LC 123/2006).
+- Receita Federal do Brasil: Lei nº 15.270/2025 para o IRPF 2026 (isenção até R$ 5.000, redutor gradual até R$ 7.350 e desconto simplificado de R$ 607,20) e fórmulas efetivas do Simples Nacional (LC 123/2006).
 - Ministério da Previdência Social: alíquotas progressivas do INSS até o teto de ${formatBRL(TETO_INSS_2026)} e salário mínimo de ${formatBRL(SALARIO_MINIMO_2026)}.
 - Reforma Tributária (EC 132/2023 e LC 214/2025): parâmetros do ano-teste de 2026 (CBS 0,9% e IBS 0,1%).
 - APIs governamentais com cache de 24h: Banco Central do Brasil (Selic Meta série 432 e IPCA 12m série 13522) e IBGE CONCLA (Subclasses CNAE 2.3).
@@ -315,12 +316,17 @@ URL canônica: ${SITE_BASE_URL}/clt-vs-pj/salario/${salario}
     const slug = normalized.replace("/cnae/", "");
     const cnae = getCNAEBySlug(slug);
     if (cnae) {
+      const codigoPonto = cnae.codigoLimpo.replace(
+        /^(\d{2})(\d{2})(\d)(\d{2})$/,
+        "$1.$2-$3-$4"
+      );
       return {
         status: 200,
-        body: `# CNAE ${cnae.codigo} — ${cnae.titulo} (${cnae.nomePopular})
+        body: `# CNAE ${cnae.codigo} (${codigoPonto}) — ${cnae.titulo} (${cnae.nomePopular})
 
 URL canônica: ${SITE_BASE_URL}/cnae/${cnae.slug}
 
+- **Código IBGE / Sem máscara**: ${codigoPonto} / ${cnae.codigoLimpo}
 - **Categoria**: ${cnae.categoria}
 - **Anexo padrão Simples Nacional**: Anexo ${cnae.anexo} (${formatPercent(cnae.aliquotaInicialNominal, 1)} inicial)
 - **Sujeito ao Fator R (28%)**: ${cnae.fatorR ? "Sim (pode migrar para Anexo III a partir de 6%)" : "Não"}

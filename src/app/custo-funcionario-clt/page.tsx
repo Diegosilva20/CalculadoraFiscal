@@ -4,19 +4,42 @@ import CustoFuncionarioCalculator from "@/components/CustoFuncionarioCalculator"
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { calculateCustoFuncionario2026, formatBRL, formatPercent } from "@/lib/calculators";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title:
     "Calculadora de Custo de Funcionário e Encargos Trabalhistas CLT 2026 — Simples Nacional, Lucro Presumido e Lucro Real",
   description:
     "Calcule quanto custa um funcionário CLT e os encargos trabalhistas em 2026 no Simples Nacional (I–V e Anexo IV), MEI, Lucro Presumido e Lucro Real: FGTS, INSS patronal, RAT, Sistema S, 13º e férias.",
-  alternates: {
-    canonical: "/custo-funcionario-clt",
-  },
-};
+  path: "/custo-funcionario-clt",
+});
 
 const SALARIOS_REFERENCIA_EMPRESA = [2000, 3500, 5000, 8000];
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Custo de Funcionário CLT e Encargos 2026", path: "/custo-funcionario-clt" },
+];
+
+const FAQS = [
+  {
+    question: "Quanto custa um funcionário CLT para uma empresa no Simples Nacional em 2026?",
+    answer:
+      "No Simples Nacional (Anexos I, II, III e V), a empresa é isenta da cota patronal de 20% do INSS e do Sistema S. Somando FGTS (8%), provisão mensal de 13º salário (8,33%), férias + 1/3 (11,11%), FGTS sobre provisões e reserva para multa rescisória, os encargos trabalhistas representam cerca de 33,7% sobre o salário bruto, além dos benefícios (VR e VT).",
+  },
+  {
+    question: "Quanto custa um funcionário no Lucro Presumido ou Lucro Real?",
+    answer:
+      "No Lucro Presumido e no Lucro Real, além de FGTS, 13º e férias, a empresa recolhe 20% de INSS Patronal, 1% a 3% de RAT e 5,8% de Terceiros (Sistema S) sobre a folha (totalizando +27,8% patronais sobre salário e provisões). Isso eleva os encargos trabalhista-previdenciários totais para cerca de 68% a 74% acima do salário bruto na carteira.",
+  },
+  {
+    question: "Qual a diferença de custo no Simples Nacional Anexo IV?",
+    answer:
+      "Empresas do Anexo IV (como advocacia, construção civil, vigilância e limpeza) recolhem os 20% de INSS patronal + RAT (~2%) na folha, mas continuam isentas dos 5,8% de Terceiros (Sistema S), resultando em encargo patronal menor que o do Lucro Presumido ou Lucro Real.",
+  },
+];
 
 export default function CustoFuncionarioPage() {
   const schemaGraph = buildCalculatorSchemaGraph({
@@ -24,27 +47,8 @@ export default function CustoFuncionarioPage() {
     description:
       "Simulador empresarial de folha de pagamento e encargos trabalhistas 2026 comparando Simples Nacional (Anexos I–III–V e Anexo IV), MEI, Lucro Presumido e Lucro Real.",
     path: "/custo-funcionario-clt",
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "Custo de Funcionário CLT e Encargos 2026", path: "/custo-funcionario-clt" },
-    ],
-    faqs: [
-      {
-        question: "Quanto custa um funcionário CLT para uma empresa no Simples Nacional em 2026?",
-        answer:
-          "No Simples Nacional (Anexos I, II, III e V), a empresa é isenta da cota patronal de 20% do INSS e do Sistema S. Somando FGTS (8%), provisão mensal de 13º salário (8,33%), férias + 1/3 (11,11%), FGTS sobre provisões e reserva para multa rescisória, os encargos trabalhistas representam cerca de 33,7% sobre o salário bruto, além dos benefícios (VR e VT).",
-      },
-      {
-        question: "Quanto custa um funcionário no Lucro Presumido ou Lucro Real?",
-        answer:
-          "No Lucro Presumido e no Lucro Real, além de FGTS, 13º e férias, a empresa recolhe 20% de INSS Patronal, 1% a 3% de RAT e 5,8% de Terceiros (Sistema S) sobre a folha (totalizando +27,8% patronais sobre salário e provisões). Isso eleva os encargos trabalhista-previdenciários totais para cerca de 68% a 74% acima do salário bruto na carteira.",
-      },
-      {
-        question: "Qual a diferença de custo no Simples Nacional Anexo IV?",
-        answer:
-          "Empresas do Anexo IV (como advocacia, construção civil, vigilância e limpeza) recolhem os 20% de INSS patronal + RAT (~2%) na folha, mas continuam isentas dos 5,8% de Terceiros (Sistema S), resultando em encargo patronal menor que o do Lucro Presumido ou Lucro Real.",
-      },
-    ],
+    breadcrumbs: BREADCRUMBS,
+    faqs: FAQS,
   });
 
   return (
@@ -53,6 +57,8 @@ export default function CustoFuncionarioPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
+
+      <Breadcrumbs items={BREADCRUMBS} />
 
       <div className="space-y-2 border-b border-slate-200 pb-5">
         <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
@@ -213,6 +219,8 @@ export default function CustoFuncionarioPage() {
         format="leaderboard"
         label="Contabilidade empresarial, gestão de folha digital e benefícios corporativos"
       />
+
+      <PageFAQSection faqs={FAQS} />
 
       <SnowballLinks currentSalary={6000} />
     </div>

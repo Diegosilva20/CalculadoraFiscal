@@ -10,7 +10,7 @@ import {
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import PrintButton from "./PrintButton";
-import { getNearestSalarioSEO } from "@/data/profissoes";
+import { getNearestSalarioSEO } from "@/data/faixas-salariais";
 import Link from "next/link";
 import { ArrowRight, Copy, Check } from "lucide-react";
 

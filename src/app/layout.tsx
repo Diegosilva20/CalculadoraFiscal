@@ -100,6 +100,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${jakarta.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
+        <a
+          href="#conteudo-principal"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-slate-900 focus:text-white focus:text-xs focus:font-bold"
+        >
+          Pular para o conteúdo principal
+        </a>
         {gaId && (
           <>
             <Script id="gtag-consent-init" strategy="beforeInteractive">
@@ -120,7 +126,11 @@ export default function RootLayout({
         )}
         <IndicadoresOficiaisBar />
         <Header />
-        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
+        <main
+          id="conteudo-principal"
+          tabIndex={-1}
+          className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 focus:outline-none"
+        >
           {children}
         </main>
         <Footer />

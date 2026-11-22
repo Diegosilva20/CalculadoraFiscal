@@ -41,6 +41,7 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
 
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
+    const termoDigitos = termo.replace(/\D/g, "");
     return cnaes.filter((c) => {
       if (categoriaAtiva !== "Todas" && c.categoria !== categoriaAtiva) {
         return false;
@@ -58,6 +59,7 @@ export default function CNAEDirectoryClient({ cnaes }: { cnaes: CNAEItem[] }) {
       return (
         c.codigo.toLowerCase().includes(termo) ||
         c.codigoLimpo.includes(termo) ||
+        (termoDigitos.length >= 2 && c.codigoLimpo.includes(termoDigitos)) ||
         c.nomePopular.toLowerCase().includes(termo) ||
         c.titulo.toLowerCase().includes(termo) ||
         c.atividadesCompreendidas.some((a) => a.toLowerCase().includes(termo))

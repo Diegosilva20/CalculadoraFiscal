@@ -2,19 +2,42 @@ import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Scale, AlertTriangle, FileCheck2 } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { buildInstitutionalPageSchema, buildSocialMetadata } from "@/lib/seo-schema";
 
-export const metadata: Metadata = {
-  title: "Termos de Uso e Isenção de Responsabilidade Contábil",
-  description:
-    "Termos e condições gerais de uso dos simuladores trabalhistas, tributários e financeiros do portal CalculaFiscal.",
-  alternates: {
-    canonical: "/termos-de-uso",
-  },
-};
+const TITLE = "Termos de Uso e Isenção de Responsabilidade Contábil";
+const DESCRIPTION =
+  "Termos e condições gerais de uso dos simuladores trabalhistas, tributários e financeiros do portal CalculaFiscal.";
+
+export const metadata: Metadata = buildSocialMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  path: "/termos-de-uso",
+});
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Termos de Uso", path: "/termos-de-uso" },
+];
 
 export default function TermosDeUsoPage() {
+  const schemaGraph = buildInstitutionalPageSchema({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/termos-de-uso",
+    breadcrumbs: BREADCRUMBS,
+  });
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-8 text-sm text-slate-700 leading-relaxed">
+    <div className="max-w-4xl mx-auto space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
+      />
+
+      <Breadcrumbs items={BREADCRUMBS} />
+
+      <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-8 text-sm text-slate-700 leading-relaxed">
       <div className="border-b border-slate-200 pb-6 space-y-2.5">
         <div className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
           Termos legais e limitação de responsabilidade
@@ -66,6 +89,7 @@ export default function TermosDeUsoPage() {
         <Link href="/politica-de-privacidade" className="hover:underline">
           Ver Política de Privacidade (LGPD) →
         </Link>
+      </div>
       </div>
     </div>
   );

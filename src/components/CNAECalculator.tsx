@@ -41,6 +41,10 @@ export default function CNAECalculator({
 }: CNAECalculatorProps) {
   const [faturamentoMensal, setFaturamentoMensal] = useState<number>(12000);
   const [otimizarFatorR, setOtimizarFatorR] = useState<boolean>(true);
+  const [rbt12Custom, setRbt12Custom] = useState<string>("");
+  const [inssNoTeto, setInssNoTeto] = useState<boolean>(false);
+
+  const rbt12Numerico = Number(rbt12Custom);
 
   const resultado = calculateSimplesNacional2026({
     faturamentoMensal,
@@ -48,6 +52,8 @@ export default function CNAECalculator({
     sujeitoFatorR,
     otimizarFatorR,
     reducaoSetorialIVA: reducaoIVA2026,
+    rbt12: Number.isFinite(rbt12Numerico) && rbt12Numerico > 0 ? rbt12Numerico : undefined,
+    inssJaRecolhidoNoTeto: inssNoTeto,
   });
 
   const cabeNoMEI = permiteMEI && faturamentoMensal * 12 <= TETO_ANUAL_MEI_2026;
@@ -145,6 +151,43 @@ export default function CNAECalculator({
             )}
           </div>
         </div>
+
+        <details className="pt-3 border-t border-slate-100 text-xs">
+          <summary className="cursor-pointer font-semibold text-slate-700 hover:text-slate-900 select-none">
+            Opções avançadas (RBT12 anual e INSS em outro vínculo)
+          </summary>
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+            <div>
+              <label
+                htmlFor="cnae-rbt12"
+                className="block text-xs font-medium text-slate-700 mb-1"
+              >
+                Receita Bruta dos últimos 12 meses — RBT12 (opcional, R$)
+              </label>
+              <input
+                id="cnae-rbt12"
+                type="number"
+                min={0}
+                step={10000}
+                placeholder={`Automático (${formatBRL(faturamentoMensal * 12)})`}
+                value={rbt12Custom}
+                onChange={(e) => setRbt12Custom(e.target.value)}
+                className="w-full px-3 py-2 text-xs font-mono font-semibold text-slate-900 bg-slate-50 border border-slate-300 rounded-lg"
+              />
+            </div>
+            <label className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer pt-2 md:pt-4">
+              <input
+                type="checkbox"
+                checked={inssNoTeto}
+                onChange={(e) => setInssNoTeto(e.target.checked)}
+                className="w-4 h-4 mt-0.5 accent-blue-700 rounded"
+              />
+              <span>
+                Já recolho INSS pelo teto em outro vínculo (isenta INSS de 11% sobre o pró-labore)
+              </span>
+            </label>
+          </div>
+        </details>
       </div>
 
       <AdSlot
@@ -212,6 +255,34 @@ export default function CNAECalculator({
           </p>
         </div>
       </div>
+
+      {(resultado.ultrapassouTetoSimples || resultado.ultrapassouSublimiteISS) && (
+        <div
+          className={`rounded-xl border px-4 py-3 text-xs leading-relaxed ${
+            resultado.ultrapassouTetoSimples
+              ? "bg-rose-50 border-rose-200 text-rose-900"
+              : "bg-amber-50 border-amber-200 text-amber-900"
+          }`}
+        >
+          {resultado.ultrapassouTetoSimples ? (
+            <>
+              <strong>Alerta de teto do Simples Nacional:</strong> o RBT12 de{" "}
+              <span className="font-mono font-semibold">
+                {formatBRL(resultado.rbt12)}
+              </span>{" "}
+              supera R$ 4.800.000/ano, impedindo a permanência no Simples Nacional no próximo ano-calendário (obrigatório Lucro Presumido ou Lucro Real).
+            </>
+          ) : (
+            <>
+              <strong>Alerta de sublimite (R$ 3.600.000/ano):</strong> com RBT12 de{" "}
+              <span className="font-mono font-semibold">
+                {formatBRL(resultado.rbt12)}
+              </span>
+              , o ISS ou ICMS passa a ser recolhido fora do DAS diretamente para o município ou estado.
+            </>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-5 text-xs space-y-2">

@@ -23,6 +23,7 @@ export default function RescisaoFeriasCalculator() {
   const [motivo, setMotivo] = useState<MotivoRescisao>("sem_justa_causa");
   const [feriasVencidas, setFeriasVencidas] = useState<boolean>(false);
   const [avisoIndenizado, setAvisoIndenizado] = useState<boolean>(true);
+  const [dependentes, setDependentes] = useState<number>(0);
 
   const [diasFerias, setDiasFerias] = useState<number>(30);
   const [venderDezDias, setVenderDezDias] = useState<boolean>(false);
@@ -36,6 +37,7 @@ export default function RescisaoFeriasCalculator() {
     motivo,
     feriasVencidas,
     avisoPrevioIndenizado: avisoIndenizado,
+    dependentes,
   });
 
   const ferias = calculateFeriasCLT({
@@ -43,6 +45,7 @@ export default function RescisaoFeriasCalculator() {
     diasFerias,
     venderDezDias,
     adiantarPrimeiraParcela13: adiantar13,
+    dependentes,
   });
 
   const copiarResumo = () => {
@@ -63,6 +66,14 @@ export default function RescisaoFeriasCalculator() {
           }${
             rescisao.valorAvisoPrevio > 0
               ? `\n- Aviso prévio (${rescisao.diasAviso}d): ${formatBRL(rescisao.valorAvisoPrevio)}`
+              : ""
+          }${
+            rescisao.reflexo13Aviso > 0
+              ? `\n- 13º indenizado s/ aviso (${rescisao.avosProjetadosAviso}/12): ${formatBRL(rescisao.reflexo13Aviso)}`
+              : ""
+          }${
+            rescisao.reflexoFeriasAviso > 0
+              ? `\n- Férias indenizadas + 1/3 s/ aviso (${rescisao.avosProjetadosAviso}/12): ${formatBRL(rescisao.reflexoFeriasAviso)}`
               : ""
           }\n- Descontos (INSS + IRRF): -${formatBRL(
             rescisao.totalDescontos
@@ -222,25 +233,46 @@ export default function RescisaoFeriasCalculator() {
               </div>
             </div>
 
-            <div className="md:col-span-3 flex flex-wrap gap-6 pt-1">
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+            <div className="md:col-span-3 flex flex-wrap items-center justify-between gap-4 pt-1 border-t border-slate-100">
+              <div className="flex flex-wrap gap-6">
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={avisoIndenizado}
+                    onChange={(e) => setAvisoIndenizado(e.target.checked)}
+                    className="w-4 h-4 accent-blue-700 rounded"
+                  />
+                  Aviso prévio indenizado
+                </label>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={feriasVencidas}
+                    onChange={(e) => setFeriasVencidas(e.target.checked)}
+                    className="w-4 h-4 accent-blue-700 rounded"
+                  />
+                  Inclui 1 período de férias vencidas
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="resc-dependentes"
+                  className="text-xs font-medium text-slate-700"
+                >
+                  Dependentes IRPF:
+                </label>
                 <input
-                  type="checkbox"
-                  checked={avisoIndenizado}
-                  onChange={(e) => setAvisoIndenizado(e.target.checked)}
-                  className="w-4 h-4 accent-blue-700 rounded"
+                  id="resc-dependentes"
+                  type="number"
+                  min={0}
+                  max={20}
+                  value={dependentes}
+                  onChange={(e) =>
+                    setDependentes(Math.max(0, Number(e.target.value) || 0))
+                  }
+                  className="w-16 px-2.5 py-1.5 text-xs font-mono font-bold bg-slate-50 border border-slate-300 rounded-lg"
                 />
-                Aviso prévio indenizado
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={feriasVencidas}
-                  onChange={(e) => setFeriasVencidas(e.target.checked)}
-                  className="w-4 h-4 accent-blue-700 rounded"
-                />
-                Inclui 1 período de férias vencidas
-              </label>
+              </div>
             </div>
           </div>
 
@@ -332,10 +364,29 @@ export default function RescisaoFeriasCalculator() {
                   <span className="font-mono font-semibold">{formatBRL(rescisao.valorAvisoPrevio)}</span>
                 </div>
               )}
+              {rescisao.reflexo13Aviso > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-slate-600">
+                    13º indenizado s/ aviso prévio ({rescisao.avosProjetadosAviso}/12)
+                  </span>
+                  <span className="font-mono font-semibold">{formatBRL(rescisao.reflexo13Aviso)}</span>
+                </div>
+              )}
+              {rescisao.reflexoFeriasAviso > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-slate-600">
+                    Férias indenizadas + 1/3 s/ aviso ({rescisao.avosProjetadosAviso}/12)
+                  </span>
+                  <span className="font-mono font-semibold">{formatBRL(rescisao.reflexoFeriasAviso)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-rose-700 pt-1 border-t border-slate-100">
                 <span>Descontos INSS ({formatBRL(rescisao.inssDescontado)}) + IRRF ({formatBRL(rescisao.irpfDescontado)})</span>
                 <span className="font-mono font-semibold">- {formatBRL(rescisao.totalDescontos)}</span>
               </div>
+              <p className="text-[11px] text-slate-500 pt-2 border-t border-slate-100 leading-relaxed">
+                Nota fiscal: aviso prévio indenizado e férias indenizadas (com 1/3) são isentos de INSS e IRRF; o 13º proporcional e seu reflexo sobre o aviso sofrem tributação exclusiva na fonte.
+              </p>
             </div>
           </div>
         </div>
@@ -379,25 +430,46 @@ export default function RescisaoFeriasCalculator() {
                 <option value={15}>15 dias</option>
               </select>
             </div>
-            <div className="md:col-span-2 flex flex-wrap gap-6">
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+            <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-4 pt-1 border-t border-slate-100">
+              <div className="flex flex-wrap gap-6">
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={venderDezDias}
+                    onChange={(e) => setVenderDezDias(e.target.checked)}
+                    className="w-4 h-4 accent-blue-700 rounded"
+                  />
+                  Vender 10 dias (abono pecuniário isento de IRRF)
+                </label>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={adiantar13}
+                    onChange={(e) => setAdiantar13(e.target.checked)}
+                    className="w-4 h-4 accent-blue-700 rounded"
+                  />
+                  Adiantar 1ª parcela do 13º salário (50%)
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="ferias-dependentes"
+                  className="text-xs font-medium text-slate-700"
+                >
+                  Dependentes IRPF:
+                </label>
                 <input
-                  type="checkbox"
-                  checked={venderDezDias}
-                  onChange={(e) => setVenderDezDias(e.target.checked)}
-                  className="w-4 h-4 accent-blue-700 rounded"
+                  id="ferias-dependentes"
+                  type="number"
+                  min={0}
+                  max={20}
+                  value={dependentes}
+                  onChange={(e) =>
+                    setDependentes(Math.max(0, Number(e.target.value) || 0))
+                  }
+                  className="w-16 px-2.5 py-1.5 text-xs font-mono font-bold bg-slate-50 border border-slate-300 rounded-lg"
                 />
-                Vender 10 dias (abono pecuniário isento de IRRF)
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={adiantar13}
-                  onChange={(e) => setAdiantar13(e.target.checked)}
-                  className="w-4 h-4 accent-blue-700 rounded"
-                />
-                Adiantar 1ª parcela do 13º salário (50%)
-              </label>
+              </div>
             </div>
           </div>
 

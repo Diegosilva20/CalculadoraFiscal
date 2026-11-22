@@ -108,10 +108,10 @@ export const PROFISSOES_SEO: ProfissaoSEO[] = [
     beneficiosMediosCLT: 650,
     cnaeRecomendadoCodigo: "8650-0/04",
     cnaeRecomendadoSlug: "8650-0-04-atividades-de-fisioterapia",
-    anexoPadrao: "III",
-    sujeitoFatorR: false,
+    anexoPadrao: "V",
+    sujeitoFatorR: true,
     resumoMercado2026:
-      "A fisioterapia (CNAE 8650-0/04) é tributada diretamente no Anexo III (6% inicial sem exigir Fator R), garantindo uma das menores cargas tributárias da área da saúde.",
+      "Fisioterapeutas e estúdios de pilates com CNAE 8650-0/04 iniciam no Anexo V (15,5%), mas enquadram no Anexo III (6% inicial) mantendo pró-labore/folha de 28% pelo Fator R.",
   },
   {
     slug: "nutricionista-clinico-e-esportivo",
@@ -178,10 +178,10 @@ export const PROFISSOES_SEO: ProfissaoSEO[] = [
     beneficiosMediosCLT: 850,
     cnaeRecomendadoCodigo: "7111-1/00",
     cnaeRecomendadoSlug: "7111-1-00-servicos-de-arquitetura",
-    anexoPadrao: "III",
-    sujeitoFatorR: false,
+    anexoPadrao: "V",
+    sujeitoFatorR: true,
     resumoMercado2026:
-      "Arquitetos têm uma das melhores tributações PJ do Brasil: o CNAE 7111-1/00 entra direto no Anexo III (6% inicial) sem precisar de Fator R.",
+      "Arquitetos e urbanistas com o CNAE 7111-1/00 reduzem a tributação inicial de 15,5% (Anexo V) para 6% no Anexo III calibrando o pró-labore/folha em 28% (Fator R).",
   },
   {
     slug: "projetista-bim-e-cad",
@@ -353,27 +353,13 @@ export const PROFISSOES_SEO: ProfissaoSEO[] = [
   },
 ];
 
-// +95 Faixas salariais programáticas (de R$ 1.750 até R$ 50.000) para cobrir 100% das buscas de cauda longa no Google
-export const FAIXAS_SALARIAIS_SEO: number[] = [
-  1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750,
-  5000, 5250, 5500, 5750, 6000, 6250, 6500, 6750, 7000, 7250, 7500, 7750, 8000,
-  8250, 8500, 8750, 9000, 9250, 9500, 9750, 10000, 10500, 11000, 11500, 12000,
-  12500, 13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500,
-  18000, 18500, 19000, 19500, 20000, 21000, 22000, 23000, 24000, 25000, 26000,
-  27000, 28000, 29000, 30000, 32000, 35000, 40000, 45000, 50000,
-];
+import {
+  FAIXAS_SALARIAIS_SEO,
+  getNearestSalarioSEO,
+} from "./faixas-salariais";
+
+export { FAIXAS_SALARIAIS_SEO, getNearestSalarioSEO };
 
 export function getProfissaoBySlug(slug: string): ProfissaoSEO | undefined {
   return PROFISSOES_SEO.find((p) => p.slug === slug);
-}
-
-/**
- * Retorna a faixa salarial oficial do sitemap mais próxima de um valor informado,
- * evitando que links internos apontem para URLs fora da malha canônica do Google.
- */
-export function getNearestSalarioSEO(valor: number): number {
-  const safeVal = Number.isFinite(valor) ? valor : 5000;
-  return FAIXAS_SALARIAIS_SEO.reduce((prev, curr) =>
-    Math.abs(curr - safeVal) < Math.abs(prev - safeVal) ? curr : prev
-  );
 }

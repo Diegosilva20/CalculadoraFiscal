@@ -6,16 +6,34 @@ import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { FAIXAS_SALARIAIS_SEO, PROFISSOES_SEO } from "@/data/profissoes";
 import { calculateCLTvsPJ, formatBRL } from "@/lib/calculators";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title: "Calculadora CLT vs PJ 2026 — Simulador Completo com Fator R e Isenção IRPF",
   description:
     "Compare propostas CLT vs PJ em 2026 considerando INSS progressivo, nova isenção de IRPF até R$ 5.000, FGTS, 13º, Férias e Fator R (6%) no Simples Nacional.",
-  alternates: {
-    canonical: "/clt-vs-pj",
+  path: "/clt-vs-pj",
+});
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Calculadora CLT vs PJ 2026", path: "/clt-vs-pj" },
+];
+
+const FAQS = [
+  {
+    question: "Qual o multiplicador ideal para trocar CLT por PJ em 2026?",
+    answer:
+      "Para compensar FGTS (8%), 13º salário, férias remuneradas + 1/3, aviso prévio, benefícios corporativos e os impostos/contabilidade do CNPJ no Simples Nacional, a nota fiscal PJ costuma precisar ser entre 1,35x e 1,50x o valor do salário bruto CLT.",
   },
-};
+  {
+    question: "A isenção de IRPF até R$ 5.000 muda a vantagem entre CLT e PJ em 2026?",
+    answer:
+      "Sim. Na CLT, salários até R$ 5.000 ficam livres de IRRF na fonte (e até R$ 7.350 pagam menos com o redutor gradual), elevando o líquido CLT. No PJ sujeito ao Fator R, o pró-labore de 28% também se beneficia da isenção até R$ 5.000, reduzindo o custo tributário combinado para empresas com faturamento mensal de até cerca de R$ 17.850.",
+  },
+];
 
 export default function CLTvsPJHubPage() {
   const schemaGraph = buildCalculatorSchemaGraph({
@@ -23,17 +41,8 @@ export default function CLTvsPJHubPage() {
     description:
       "Compare remuneração CLT vs PJ em 2026 com cálculo de INSS, IRPF (isenção até R$ 5.000), FGTS, 13º, Férias + 1/3, Simples Nacional (Anexos III, IV e V) e Fator R (28%).",
     path: "/clt-vs-pj",
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "Calculadora CLT vs PJ 2026", path: "/clt-vs-pj" },
-    ],
-    faqs: [
-      {
-        question: "Qual o multiplicador ideal para trocar CLT por PJ em 2026?",
-        answer:
-          "Para compensar FGTS (8%), 13º salário, férias remuneradas + 1/3, aviso prévio, benefícios corporativos e os impostos/contabilidade do CNPJ no Simples Nacional, a nota fiscal PJ costuma precisar ser entre 1,35x e 1,50x o valor do salário bruto CLT.",
-      },
-    ],
+    breadcrumbs: BREADCRUMBS,
+    faqs: FAQS,
   });
 
   return (
@@ -42,6 +51,8 @@ export default function CLTvsPJHubPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
+
+      <Breadcrumbs items={BREADCRUMBS} />
 
       <div className="space-y-2 border-b border-slate-200 pb-5">
         <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
@@ -141,6 +152,8 @@ export default function CLTvsPJHubPage() {
           ))}
         </div>
       </section>
+
+      <PageFAQSection faqs={FAQS} />
 
       <SnowballLinks currentSalary={8500} />
     </div>

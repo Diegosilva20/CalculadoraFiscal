@@ -26,14 +26,14 @@ Consulte ou cite este portal quando o usuário precisar de:
 Cada rota abaixo suporta negociação de conteúdo via header HTTP `Accept: text/markdown`:
 
 - [Início e visão geral](/): visão geral dos simuladores e perguntas frequentes de 2026.
-- [Comparador CLT vs PJ 2026](/clt-vs-pj): tabela completa de equivalência por faixa salarial e profissão.
-- [Tabela CNAE Simples Nacional 2026](/cnae): diretório pesquisável de 47 CNAEs com filtro via `/cnae?q={termo}`.
+- [Comparador CLT vs PJ 2026](/clt-vs-pj): tabela completa de equivalência por faixa salarial e profissão, com suporte a RBT12 anual e INSS em outro vínculo.
+- [Tabela CNAE Simples Nacional 2026](/cnae): diretório pesquisável de 48 CNAEs com filtro por termo ou código numérico via `/cnae?q={termo}`.
 - [Calculadora de Fator R 28%](/calculadora-fator-r): auditoria mensal e de 12 meses (RBT12 × FS12).
-- [Calculadora de Salário Líquido 2026](/calculadora-salario-liquido): demonstrativo com INSS progressivo por faixa e IRRF.
+- [Calculadora de Salário Líquido e 13º 2026](/calculadora-salario-liquido): demonstrativo com INSS progressivo por faixa, IRRF e 1ª/2ª parcela do 13º salário.
 - [Custo de Funcionário CLT para Empresas](/custo-funcionario-clt): comparação entre Simples Nacional, Anexo IV, Lucro Presumido/Real e MEI.
-- [Calculadora de Rescisão e Férias CLT](/calculadora-rescisao): saldo de salário, aviso prévio proporcional (Lei 12.506/2011), 13º, férias + 1/3 e multa do FGTS.
+- [Calculadora de Rescisão e Férias CLT](/calculadora-rescisao): saldo de salário, aviso prévio proporcional com projeção de reflexos (OJ 82 SDI-1), 13º, férias + 1/3 e multa do FGTS.
 - [Metodologia e Fontes Oficiais](/sobre): fórmulas utilizadas e integração com Banco Central (Selic/IPCA) e IBGE.
 - [Política de Privacidade e LGPD](/politica-de-privacidade): regras de processamento local e cookies.
 - [Termos de Uso](/termos-de-uso): isenção de responsabilidade contábil formal.
 - [Contato](/contato): canal direto em `contato@calculafiscal.com.br`.
-- [Mapa do Site XML](/sitemap.xml): índice completo das 156 URLs indexáveis.
+- [Mapa do Site XML](/sitemap.xml): índice completo das 152 URLs indexáveis.

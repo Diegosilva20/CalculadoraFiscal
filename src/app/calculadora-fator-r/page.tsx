@@ -6,17 +6,35 @@ import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { CNAES_DATA } from "@/data/cnaes";
 import { ArrowRight } from "lucide-react";
-import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
+import { buildCalculatorSchemaGraph, buildSocialMetadata } from "@/lib/seo-schema";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageFAQSection from "@/components/PageFAQSection";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSocialMetadata({
   title:
     "Calculadora de Fator R Simples Nacional 2026 — Como Cair do Anexo V (15,5%) para o Anexo III (6%)",
   description:
     "Simule o Fator R (28%) da sua empresa no Simples Nacional em 2026: descubra o valor exato do pró-labore mensal para sair do Anexo V (15,5%) e pagar apenas 6% no Anexo III.",
-  alternates: {
-    canonical: "/calculadora-fator-r",
+  path: "/calculadora-fator-r",
+});
+
+const BREADCRUMBS = [
+  { name: "Início", path: "/" },
+  { name: "Calculadora de Fator R 2026", path: "/calculadora-fator-r" },
+];
+
+const FAQS = [
+  {
+    question: "Como calcular o Fator R do Simples Nacional em 2026?",
+    answer:
+      "O Fator R é calculado dividindo a soma da Folha de Salários dos últimos 12 meses (incluindo pró-labore dos sócios, salários de funcionários, 13º, INSS patronal e FGTS) pela Receita Bruta acumulada dos últimos 12 meses (RBT12). Se o resultado for igual ou superior a 28% (0,28), a empresa é tributada no Anexo III (a partir de 6%) em vez do Anexo V (a partir de 15,5%).",
   },
-};
+  {
+    question: "Por que o Fator R ficou ainda mais vantajoso em 2026?",
+    answer:
+      "Com a nova regra de isenção do Imposto de Renda Pessoa Física (IRPF) para rendimentos de até R$ 5.000 mensais em 2026, sócios de empresas que faturam até R$ 17.850 por mês conseguem definir um pró-labore de 28% (até R$ 5.000) pagando R$ 0,00 de IRPF sobre o pró-labore, recolhendo apenas 11% de INSS e derrubando o DAS de 15,5% para 6%.",
+  },
+];
 
 export default function CalculadoraFatorRPage() {
   const cnaesComFatorR = CNAES_DATA.filter((c) => c.fatorR).slice(0, 12);
@@ -26,22 +44,8 @@ export default function CalculadoraFatorRPage() {
     description:
       "Simulador do Fator R 28% (LC 123/2006) no Simples Nacional 2026 com cálculo de pró-labore ótimo, INSS, IRPF isento até R$ 5.000 e auditoria de 12 meses (RBT12 x FS12).",
     path: "/calculadora-fator-r",
-    breadcrumbs: [
-      { name: "Início", path: "/" },
-      { name: "Calculadora de Fator R 2026", path: "/calculadora-fator-r" },
-    ],
-    faqs: [
-      {
-        question: "Como calcular o Fator R do Simples Nacional em 2026?",
-        answer:
-          "O Fator R é calculado dividindo a soma da Folha de Salários dos últimos 12 meses (incluindo pró-labore dos sócios, salários de funcionários, 13º, INSS patronal e FGTS) pela Receita Bruta acumulada dos últimos 12 meses (RBT12). Se o resultado for igual ou superior a 28% (0,28), a empresa é tributada no Anexo III (a partir de 6%) em vez do Anexo V (a partir de 15,5%).",
-      },
-      {
-        question: "Por que o Fator R ficou ainda mais vantajoso em 2026?",
-        answer:
-          "Com a nova regra de isenção do Imposto de Renda Pessoa Física (IRPF) para rendimentos de até R$ 5.000 mensais em 2026, sócios de empresas que faturam até R$ 17.850 por mês conseguem definir um pró-labore de 28% (até R$ 5.000) pagando R$ 0,00 de IRPF sobre o pró-labore, recolhendo apenas 11% de INSS e derrubando o DAS de 15,5% para 6%.",
-      },
-    ],
+    breadcrumbs: BREADCRUMBS,
+    faqs: FAQS,
   });
 
   return (
@@ -50,6 +54,8 @@ export default function CalculadoraFatorRPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
+
+      <Breadcrumbs items={BREADCRUMBS} />
 
       <div className="space-y-2 border-b border-slate-200 pb-5">
         <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
@@ -131,6 +137,8 @@ export default function CalculadoraFatorRPage() {
         format="leaderboard"
         label="Abertura e migração de contabilidade PJ para acompanhamento mensal de Anexo III e Fator R"
       />
+
+      <PageFAQSection faqs={FAQS} />
 
       <SnowballLinks currentSalary={12000} />
     </div>

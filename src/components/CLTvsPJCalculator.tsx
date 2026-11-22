@@ -64,6 +64,8 @@ export default function CLTvsPJCalculator({
     resolveRegimeInicial(initialAnexo, initialSujeitoFatorR)
   );
   const [custoContabilidade, setCustoContabilidade] = useState<number>(249);
+  const [rbt12Custom, setRbt12Custom] = useState<string>("");
+  const [inssNoTeto, setInssNoTeto] = useState<boolean>(false);
   const [copiado, setCopiado] = useState<boolean>(false);
   const [linkCopiado, setLinkCopiado] = useState<boolean>(false);
 
@@ -75,6 +77,8 @@ export default function CLTvsPJCalculator({
       const ben = Number(sp.get("ben"));
       const dep = Number(sp.get("dep"));
       const contab = Number(sp.get("contab"));
+      const rbt12 = sp.get("rbt12");
+      const teto = sp.get("teto");
       const reg = sp.get("reg");
       if (Number.isFinite(clt) && clt > 0) setSalarioCLT(clt);
       if (Number.isFinite(pj) && pj > 0) setFaturamentoPJ(pj);
@@ -82,6 +86,9 @@ export default function CLTvsPJCalculator({
       if (sp.has("dep") && Number.isFinite(dep) && dep >= 0) setDependentes(dep);
       if (sp.has("contab") && Number.isFinite(contab) && contab >= 0)
         setCustoContabilidade(contab);
+      if (rbt12 && Number.isFinite(Number(rbt12)) && Number(rbt12) > 0)
+        setRbt12Custom(rbt12);
+      if (teto === "1") setInssNoTeto(true);
       if (
         reg === "III_FATOR_R" ||
         reg === "III_DIRETO" ||
@@ -108,6 +115,7 @@ export default function CLTvsPJCalculator({
   };
 
   const pjParams = anexoMap[regimePJ];
+  const rbt12Numerico = Number(rbt12Custom);
 
   const resultado = calculateCLTvsPJ({
     salarioBrutoCLT: salarioCLT,
@@ -118,6 +126,8 @@ export default function CLTvsPJCalculator({
     sujeitoFatorR: pjParams.sujeitoFatorR,
     otimizarFatorR: pjParams.otimizarFatorR,
     custoContabilidade,
+    rbt12PJ: Number.isFinite(rbt12Numerico) && rbt12Numerico > 0 ? rbt12Numerico : undefined,
+    inssJaRecolhidoNoTeto: inssNoTeto,
   });
 
   const impostosCLT = resultado.clt.inss + resultado.clt.irpf;
@@ -172,6 +182,16 @@ export default function CLTvsPJCalculator({
       url.searchParams.set("dep", String(dependentes));
       url.searchParams.set("contab", String(custoContabilidade));
       url.searchParams.set("reg", regimePJ);
+      if (Number.isFinite(rbt12Numerico) && rbt12Numerico > 0) {
+        url.searchParams.set("rbt12", String(rbt12Numerico));
+      } else {
+        url.searchParams.delete("rbt12");
+      }
+      if (inssNoTeto) {
+        url.searchParams.set("teto", "1");
+      } else {
+        url.searchParams.delete("teto");
+      }
       window.history.replaceState(null, "", url.pathname + url.search);
       navigator.clipboard?.writeText(url.toString());
       setLinkCopiado(true);
@@ -402,6 +422,43 @@ export default function CLTvsPJCalculator({
                 />
               </div>
             </div>
+
+            <details className="pt-2 border-t border-slate-200 text-xs">
+              <summary className="cursor-pointer font-semibold text-slate-700 hover:text-slate-900 select-none">
+                Opções avançadas (RBT12 anual e INSS em outro vínculo)
+              </summary>
+              <div className="mt-3 space-y-3">
+                <div>
+                  <label
+                    htmlFor="pj-rbt12"
+                    className="block text-[11px] font-medium text-slate-700 mb-1"
+                  >
+                    Faturamento acumulado 12 meses — RBT12 (opcional, R$)
+                  </label>
+                  <input
+                    id="pj-rbt12"
+                    type="number"
+                    min={0}
+                    step={10000}
+                    placeholder={`Automático (${formatBRL(faturamentoPJ * 12)})`}
+                    value={rbt12Custom}
+                    onChange={(e) => setRbt12Custom(e.target.value)}
+                    className="w-full px-3 py-1.5 text-xs font-mono font-semibold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg"
+                  />
+                </div>
+                <label className="flex items-start gap-2 text-[11px] text-slate-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={inssNoTeto}
+                    onChange={(e) => setInssNoTeto(e.target.checked)}
+                    className="w-4 h-4 mt-0.5 accent-blue-700 rounded"
+                  />
+                  <span>
+                    Já recolho INSS pelo teto em outro vínculo (isenta 11% de INSS no pró-labore)
+                  </span>
+                </label>
+              </div>
+            </details>
           </div>
         </div>
       </div>
@@ -549,6 +606,35 @@ export default function CLTvsPJCalculator({
             </div>
           </div>
         </div>
+
+        {(resultado.pj.ultrapassouTetoSimples ||
+          resultado.pj.ultrapassouSublimiteISS) && (
+          <div
+            className={`mt-4 rounded-lg border px-4 py-3 text-xs leading-relaxed ${
+              resultado.pj.ultrapassouTetoSimples
+                ? "bg-rose-50 border-rose-200 text-rose-900"
+                : "bg-amber-50 border-amber-200 text-amber-900"
+            }`}
+          >
+            {resultado.pj.ultrapassouTetoSimples ? (
+              <>
+                <strong>Alerta de teto do Simples Nacional:</strong> o RBT12 de{" "}
+                <span className="font-mono font-semibold">
+                  {formatBRL(resultado.pj.rbt12)}
+                </span>{" "}
+                excede o limite legal de R$ 4.800.000/ano (LC 123/2006), exigindo migração para Lucro Presumido ou Lucro Real no próximo exercício.
+              </>
+            ) : (
+              <>
+                <strong>Alerta de sublimite municipal/estadual:</strong> o RBT12 de{" "}
+                <span className="font-mono font-semibold">
+                  {formatBRL(resultado.pj.rbt12)}
+                </span>{" "}
+                supera R$ 3.600.000/ano; o ISS ou ICMS passa a ser recolhido fora da guia DAS, em guia própria da prefeitura ou do estado.
+              </>
+            )}
+          </div>
+        )}
 
         {cnaeRecomendado && (
           <div className="no-print mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
