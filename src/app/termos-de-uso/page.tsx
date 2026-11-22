@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Termos de Uso e Isenção de Responsabilidade Contábil",
   description:
     "Termos e condições gerais de uso dos simuladores trabalhistas, tributários e financeiros do portal CalculaFiscal.",
+  alternates: {
+    canonical: "/termos-de-uso",
+  },
 };
 
 export default function TermosDeUsoPage() {

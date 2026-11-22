@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Política de Privacidade, Cookies e Conformidade LGPD",
   description:
     "Política de Privacidade do portal CalculaFiscal em conformidade com a LGPD (Lei nº 13.709/2018) e diretrizes de publicidade do Google AdSense.",
+  alternates: {
+    canonical: "/politica-de-privacidade",
+  },
 };
 
 export default function PoliticaPrivacidadePage() {

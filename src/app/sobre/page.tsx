@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   title: "Sobre o CalculaFiscal e Metodologia Oficial de Cálculo (2026)",
   description:
     "Conheça a metodologia matemática, fontes legislativas oficiais (Receita Federal, INSS, IBGE e Banco Central) e critérios técnicos utilizados nas calculadoras do CalculaFiscal 2026.",
+  alternates: {
+    canonical: "/sobre",
+  },
 };
 
 export default function SobreMetodologiaPage() {

@@ -3,10 +3,32 @@
 // Combina SoftwareApplication (Rich Result Ativo) + BreadcrumbList + FAQPage (GEO)
 // ============================================================================
 
+const LEGACY_WRONG_HOSTS = new Set([
+  "calculadora-fiscal.vercel.app",
+  "calculafiscal.vercel.app",
+]);
+
+function isValidConfiguredSiteUrl(url?: string): boolean {
+  if (!url || !url.trim()) return false;
+  try {
+    const withProto = /^https?:\/\//i.test(url.trim())
+      ? url.trim()
+      : `https://${url.trim()}`;
+    const parsed = new URL(withProto);
+    return !LEGACY_WRONG_HOSTS.has(parsed.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
 export function normalizeSiteUrl(rawUrl?: string): string {
+  const envSiteUrl = isValidConfiguredSiteUrl(process.env.NEXT_PUBLIC_SITE_URL)
+    ? process.env.NEXT_PUBLIC_SITE_URL
+    : undefined;
+
   const candidate = (
     rawUrl ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
+    envSiteUrl ||
     process.env.VERCEL_PROJECT_PRODUCTION_URL ||
     process.env.VERCEL_URL ||
     "https://calculadora-fiscal-one.vercel.app"
