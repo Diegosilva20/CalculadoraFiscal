@@ -10,12 +10,9 @@ import {
   ArrowRight,
   Briefcase,
   Building2,
-  Calculator,
-  CheckCircle2,
   FileSpreadsheet,
   Gauge,
   ShieldCheck,
-  Sparkles,
   TrendingUp,
 } from "lucide-react";
 
@@ -27,66 +24,48 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="space-y-12">
-      {/* Hero Banner */}
-      <section className="bg-slate-950 bg-fintech-grid text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-slate-800 relative overflow-hidden">
-        <div className="max-w-3xl space-y-4 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            Atualizado com a Isenção IRPF R$ 5.000 e Reforma Tributária (CBS/IBS 2026)
+    <div className="space-y-10">
+      {/* Cabeçalho Editorial Direto */}
+      <section className="bg-white border border-slate-200 border-t-4 border-t-slate-900 rounded-xl p-6 sm:p-8">
+        <div className="max-w-3xl space-y-3">
+          <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+            Tabelas 2026 · INSS, IRPF até R$ 5 mil, Simples Nacional e CBS/IBS
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            Descubra quanto sobra no seu bolso em{" "}
-            <span className="text-emerald-400">2026: CLT ou PJ?</span>
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            Calculadora CLT vs PJ, Tabela CNAE e Simulador Tributário 2026
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            Compare propostas CLT vs. CNPJ até o último centavo, consulte a alíquota exata de qualquer{" "}
-            <strong className="text-white">CNAE no Simples Nacional com Fator R (6%)</strong> e veja o impacto real da Reforma Tributária na sua profissão.
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Compare remuneração em carteira assinada e contratação como Pessoa Jurídica considerando descontos oficiais, FGTS, 13º, férias, alíquota efetiva do Simples Nacional, Fator R de 28% e transição da Reforma Tributária.
           </p>
-          <div className="flex flex-wrap gap-3 pt-2 text-xs font-semibold text-slate-300">
-            <span className="inline-flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              Tabela INSS e IRRF 2026
-            </span>
-            <span className="inline-flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              Cálculo Automático de Fator R (28%)
-            </span>
-            <span className="inline-flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              Simulador IVA Dual (CBS + IBS)
-            </span>
-          </div>
         </div>
       </section>
 
-      {/* Top Leaderboard AdSense */}
       <AdSlot
         slotId="home-top-leaderboard"
         format="leaderboard"
-        label="Banner Topo • Abra sua Empresa PJ Grátis ou Mude de Contador em 5 Minutos"
+        label="Abertura de CNPJ e Conta PJ gratuita para prestadores de serviço"
         estimatedCpc="CPC Médio: R$ 4,50 (Contabilidade Digital / Bancos PJ)"
       />
 
-      {/* Calculadora Principal Interativa já na Home (Retenção Imediata) */}
+      {/* Simulador Principal */}
       <section aria-labelledby="calc-principal">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2
               id="calc-principal"
-              className="text-2xl font-extrabold text-slate-900"
+              className="text-xl font-bold text-slate-900"
             >
-              Simulador Interativo CLT vs PJ 2026
+              Simulador comparativo CLT vs PJ
             </h2>
             <p className="text-sm text-slate-600">
-              Ajuste os controles abaixo para descobrir o ponto de equilíbrio exato entre carteira assinada e CNPJ.
+              Preencha o salário bruto ou o valor da nota fiscal para apurar o ponto de equilíbrio mensal.
             </p>
           </div>
           <Link
             href="/clt-vs-pj"
-            className="hidden sm:inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:underline"
+            className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:underline"
           >
-            Ver guia completo CLT vs PJ
+            Ver tabela completa por faixa salarial
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -94,221 +73,217 @@ export default function HomePage() {
         <CLTvsPJCalculator initialSalarioCLT={8000} initialFaturamentoPJ={12000} />
       </section>
 
-      {/* Os 3 Motores do Portal (Links para páginas internas) */}
-      <section className="space-y-6">
+      {/* Grade de Calculadoras */}
+      <section className="space-y-5">
         <div className="border-b border-slate-200 pb-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-            Hub Completo de Ferramentas Fiscais & Trabalhistas
-          </span>
-          <h2 className="text-2xl font-extrabold text-slate-900 mt-1">
-            Escolha sua Calculadora Especializada 2026
+          <h2 className="text-xl font-bold text-slate-900">
+            Calculadoras e consultas fiscais
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link
             href="/clt-vs-pj"
-            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-blue-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            className="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-700 transition-colors flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <Briefcase className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                <Briefcase className="w-4 h-4" />
               </div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-600">
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700">
                 Comparador CLT vs PJ
               </h3>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Compare salário líquido, FGTS, 13º, férias e benefícios contra Simples Nacional e descubra quanto pedir como PJ.
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Comparação entre salário líquido, FGTS, provisões trabalhistas e lucro líquido no Simples Nacional.
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-blue-600">
-              Acessar Simulador <ArrowRight className="w-3.5 h-3.5" />
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
+              Abrir comparador <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 
           <Link
             href="/cnae"
-            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-emerald-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            className="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-700 transition-colors flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <FileSpreadsheet className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                <FileSpreadsheet className="w-4 h-4" />
               </div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-emerald-600">
-                Tabela CNAE & Reforma 2026
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700">
+                Tabela CNAE 2026
               </h3>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Consulte se o seu CNAE pode ser MEI, qual o Anexo do Simples (I, III, IV ou V) e simule o desconto do IVA Dual.
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Consulta de enquadramento MEI, Anexo do Simples (I, III, IV ou V), Fator R e redução no IVA Dual.
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-emerald-600">
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
               Consultar CNAEs <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 
           <Link
             href="/calculadora-fator-r"
-            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-teal-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            className="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-700 transition-colors flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mb-4 group-hover:bg-teal-600 group-hover:text-white transition-colors">
-                <Gauge className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                <Gauge className="w-4 h-4" />
               </div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-teal-600">
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700">
                 Calculadora de Fator R (28%)
               </h3>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Descubra o pró-labore exato para tirar sua empresa do Anexo V (15,5%) e pagar apenas 6% no Anexo III sem IRPF até R$ 5 mil.
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Apuração de folha e pró-labore (RBT12 x FS12) para tributação pelo Anexo III em vez do Anexo V.
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-teal-600">
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
               Calcular Fator R <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 
           <Link
             href="/calculadora-salario-liquido"
-            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-indigo-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            className="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-700 transition-colors flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                <TrendingUp className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                <TrendingUp className="w-4 h-4" />
               </div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-indigo-600">
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700">
                 Salário Líquido 2026
               </h3>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Cálculo atualizado com a nova isenção de Imposto de Renda até R$ 5.000, redutor até R$ 7.000 e INSS progressivo.
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Cálculo com INSS progressivo, nova isenção de IRPF até R$ 5.000 e redutor gradual até R$ 7.000.
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-indigo-600">
-              Calcular Líquido <ArrowRight className="w-3.5 h-3.5" />
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
+              Calcular salário líquido <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 
           <Link
             href="/custo-funcionario-clt"
-            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-purple-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            className="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-700 transition-colors flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <Building2 className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                <Building2 className="w-4 h-4" />
               </div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-purple-600">
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700">
                 Custo de Funcionário CLT
               </h3>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Simulador para empresas (Simples Nacional, MEI e Lucro Presumido): veja o custo real com FGTS, 13º, férias e INSS Patronal.
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Orçamento de folha para Simples Nacional, MEI e Lucro Presumido com FGTS, INSS patronal e provisões.
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-purple-600">
-              Simular Contratação <ArrowRight className="w-3.5 h-3.5" />
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
+              Simular custo empresa <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
 
           <Link
             href="/calculadora-rescisao"
-            className="group bg-white rounded-2xl p-6 border border-slate-200 hover:border-amber-500 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+            className="group bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-700 transition-colors flex flex-col justify-between"
           >
             <div>
-              <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ShieldCheck className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                <ShieldCheck className="w-4 h-4" />
               </div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-amber-600">
-                Rescisão & Férias CLT
+              <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700">
+                Rescisão e Férias CLT
               </h3>
-              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                Vai sair da CLT para virar PJ? Calcule exatamente seu acerto rescisório, multa de 40% do FGTS, aviso prévio e férias.
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Estimativa de verbas rescisórias, aviso prévio proporcional, férias com 1/3 e multa do FGTS.
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-amber-600">
-              Calcular Acerto <ArrowRight className="w-3.5 h-3.5" />
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
+              Calcular verbas <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </Link>
         </div>
       </section>
 
-      {/* Diretório Programático 1: Simulações Prontas por Salário */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-        <h2 className="text-xl font-extrabold text-slate-900 mb-2">
-          Tabelas Prontas: Quanto um Salário CLT equivale como PJ em 2026?
+      {/* Tabelas por Faixa Salarial */}
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7">
+        <h2 className="text-lg font-bold text-slate-900 mb-1.5">
+          Simulações por faixa salarial CLT
         </h2>
-        <p className="text-xs sm:text-sm text-slate-600 mb-6">
-          Clique no valor do seu salário atual (ou proposta recebida) para abrir o estudo completo de viabilidade, impostos e ponto de equilíbrio:
+        <p className="text-xs sm:text-sm text-slate-600 mb-5">
+          Selecione uma faixa salarial para consultar o valor líquido na carteira e o faturamento mínimo equivalente no Simples Nacional:
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
           {FAIXAS_SALARIAIS_SEO.map((valor) => (
             <Link
               key={valor}
               href={`/clt-vs-pj/salario/${valor}`}
-              className="p-3 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50/50 transition-all text-center group"
+              className="px-3 py-2.5 rounded-lg border border-slate-200 hover:border-blue-700 hover:bg-slate-50 transition-colors text-center"
             >
-              <span className="block text-[11px] text-slate-500">Salário CLT</span>
-              <span className="block text-sm font-extrabold text-slate-900 group-hover:text-blue-700">
+              <span className="block text-[11px] text-slate-500">CLT</span>
+              <span className="block text-sm font-mono font-bold text-slate-900">
                 R$ {valor.toLocaleString("pt-BR")}
-              </span>
-              <span className="block text-[10px] font-semibold text-blue-600 mt-0.5">
-                Ver equivalente PJ →
               </span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Diretório Programático 2: CLT vs PJ por Profissão e CNAEs */}
+      {/* Profissões e CNAEs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <h2 className="text-lg font-extrabold text-slate-900 mb-1">
-            Simuladores CLT vs PJ por Profissão
+        <section className="bg-white rounded-xl border border-slate-200 p-6">
+          <h2 className="text-lg font-bold text-slate-900 mb-1">
+            CLT vs PJ por profissão
           </h2>
           <p className="text-xs text-slate-500 mb-4">
-            Com CNAE específico, Anexo do Simples Nacional e Fator R configurados:
+            Cenários com média salarial, CNAE usual e regra de Fator R aplicada:
           </p>
           <div className="divide-y divide-slate-100">
             {PROFISSOES_SEO.map((prof) => (
               <Link
                 key={prof.slug}
                 href={`/clt-vs-pj/profissao/${prof.slug}`}
-                className="py-2.5 flex items-center justify-between text-xs sm:text-sm hover:text-blue-600 transition-colors"
+                className="py-2.5 flex items-center justify-between text-xs sm:text-sm hover:text-blue-700 transition-colors"
               >
                 <div>
-                  <span className="font-bold text-slate-800 block">
+                  <span className="font-semibold text-slate-900 block">
                     {prof.nome}
                   </span>
                   <span className="text-[11px] text-slate-500">
-                    CNAE {prof.cnaeRecomendadoCodigo} • Anexo {prof.anexoPadrao}
-                    {prof.sujeitoFatorR ? " (6% c/ Fator R)" : ""}
+                    CNAE {prof.cnaeRecomendadoCodigo} · Anexo {prof.anexoPadrao}
+                    {prof.sujeitoFatorR ? " (6% com Fator R)" : ""}
                   </span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
               </Link>
             ))}
           </div>
         </section>
 
-        <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <h2 className="text-lg font-extrabold text-slate-900 mb-1">
-            CNAEs Mais Buscados no Simples Nacional 2026
+        <section className="bg-white rounded-xl border border-slate-200 p-6">
+          <h2 className="text-lg font-bold text-slate-900 mb-1">
+            CNAEs mais consultados
           </h2>
           <p className="text-xs text-slate-500 mb-4">
-            Verifique alíquota inicial, permissão MEI e redução do IVA Dual:
+            Enquadramento no Simples Nacional, possibilidade de MEI e desconto setorial:
           </p>
           <div className="divide-y divide-slate-100">
             {CNAES_DATA.slice(0, 10).map((cnae) => (
               <Link
                 key={cnae.codigoLimpo}
                 href={`/cnae/${cnae.slug}`}
-                className="py-2.5 flex items-center justify-between text-xs sm:text-sm hover:text-emerald-700 transition-colors"
+                className="py-2.5 flex items-center justify-between text-xs sm:text-sm hover:text-blue-700 transition-colors"
               >
                 <div className="pr-3">
-                  <span className="font-bold text-slate-800 block">
-                    CNAE {cnae.codigo} — {cnae.nomePopular}
+                  <span className="font-semibold text-slate-900 block">
+                    {cnae.codigo} · {cnae.nomePopular}
                   </span>
                   <span className="text-[11px] text-slate-500">
-                    Anexo {cnae.anexo} •{" "}
-                    {cnae.fatorR ? "Cai p/ 6% com Fator R" : `Inicia em ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`} •{" "}
-                    {cnae.permiteMEI ? "✅ Permite MEI" : "❌ Não pode MEI"}
+                    Anexo {cnae.anexo} ·{" "}
+                    {cnae.fatorR
+                      ? "Sujeito ao Fator R"
+                      : `Inicial ${(cnae.aliquotaInicialNominal * 100).toFixed(1)}%`}{" "}
+                    · {cnae.permiteMEI ? "Aceita MEI" : "Não aceita MEI"}
                   </span>
                 </div>
                 <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />

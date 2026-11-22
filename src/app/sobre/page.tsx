@@ -21,27 +21,26 @@ export const metadata: Metadata = {
 
 export default function SobreMetodologiaPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-5">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">
-          <ShieldCheck className="w-4 h-4" />
-          Transparência Editorial & Metodologia Técnica
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-5">
+        <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+          Metodologia técnica e fontes legislativas
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-          Sobre o CalculaFiscal e Nossa Metodologia de Cálculo (2026)
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
+          Sobre o CalculaFiscal e critérios de cálculo (2026)
         </h1>
 
         <p className="text-slate-700 leading-relaxed text-sm sm:text-base">
-          O <strong>CalculaFiscal</strong> é uma plataforma brasileira independente de tecnologia e educação financeira, criada para traduzir a complexa legislação trabalhista (CLT) e tributária empresarial (Simples Nacional, MEI e Reforma Tributária) em simuladores interativos gratuitos, transparentes e auditáveis.
+          O <strong>CalculaFiscal</strong> é um portal independente voltado à simulação de encargos trabalhistas (CLT) e tributários (Simples Nacional, MEI e transição da Reforma Tributária) com foco em transparência metodológica e processamento local no navegador.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs font-bold uppercase text-slate-500">
-              Ano-Calendário Vigente
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-xs font-semibold uppercase text-slate-500">
+              Ano-calendário
             </span>
-            <p className="text-xl font-black text-blue-700 mt-1">
+            <p className="text-xl font-extrabold font-mono text-slate-900 mt-1">
               {PARAMETROS_FISCAIS.anoVigencia}
             </p>
             <span className="text-[11px] text-slate-500">
@@ -49,27 +48,27 @@ export default function SobreMetodologiaPage() {
             </span>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs font-bold uppercase text-slate-500">
-              Salário Mínimo / Teto INSS
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-xs font-semibold uppercase text-slate-500">
+              Salário mínimo / Teto INSS
             </span>
-            <p className="text-lg font-black text-slate-900 mt-1">
+            <p className="text-lg font-extrabold font-mono text-slate-900 mt-1">
               {formatBRL(SALARIO_MINIMO_2026)} / {formatBRL(TETO_INSS_2026)}
             </p>
             <span className="text-[11px] text-slate-500">
-              Tabela Progressiva Oficial
+              Tabela progressiva vigente
             </span>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs font-bold uppercase text-slate-500">
-              Privacidade dos Cálculos
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-xs font-semibold uppercase text-slate-500">
+              Privacidade dos cálculos
             </span>
-            <p className="text-lg font-black text-emerald-700 mt-1">
-              100% no Navegador
+            <p className="text-lg font-extrabold text-emerald-700 mt-1">
+              Processamento local
             </p>
             <span className="text-[11px] text-slate-500">
-              Nenhum salário é salvo em banco de dados
+              Valores não gravados em servidor
             </span>
           </div>
         </div>

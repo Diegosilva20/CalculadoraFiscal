@@ -9,7 +9,7 @@ import {
 } from "@/lib/calculators";
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
-import { CheckCircle2, Sparkles, ShieldAlert, Zap } from "lucide-react";
+import { CheckCircle2, Info } from "lucide-react";
 
 interface CNAECalculatorProps {
   codigoCNAE: string;
@@ -21,10 +21,10 @@ interface CNAECalculatorProps {
 }
 
 const FATURAMENTO_PRESETS = [
-  { label: "Até Teto MEI", valor: 6500 },
-  { label: "NF R$ 10.000", valor: 10000 },
-  { label: "NF R$ 20.000", valor: 20000 },
-  { label: "NF R$ 35.000", valor: 35000 },
+  { label: "Faixa MEI", valor: 6500 },
+  { label: "R$ 10.000", valor: 10000 },
+  { label: "R$ 20.000", valor: 20000 },
+  { label: "R$ 35.000", valor: 35000 },
 ];
 
 export default function CNAECalculator({
@@ -50,47 +50,42 @@ export default function CNAECalculator({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
+      <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-mono">
-            Simulador Oficial Simples Nacional + Reforma 2026 • CNAE {codigoCNAE}
+          <span className="text-xs font-mono font-semibold text-slate-600">
+            Simulador Simples Nacional · CNAE {codigoCNAE}
           </span>
           {sujeitoFatorR && (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800">
-              ⚡ Elegível ao Fator R (Redução para 6% no Anexo III)
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800">
+              Elegível ao Fator R (Anexo III a partir de 6%)
             </span>
           )}
         </div>
 
-        {/* Botões Rápidos de Faturamento */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 mr-1">
-            <Zap className="w-3.5 h-3.5 text-amber-500" />
-            Testar Faturamento:
+          <span className="text-xs font-medium text-slate-500 mr-1">
+            Exemplos de faturamento:
           </span>
           {FATURAMENTO_PRESETS.map((p) => (
             <button
               key={p.valor}
               type="button"
               onClick={() => setFaturamentoMensal(p.valor)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-colors ${
                 faturamentoMensal === p.valor
                   ? "bg-slate-900 text-white border-slate-900"
-                  : "bg-slate-50 hover:bg-blue-50 text-slate-700 border-slate-200"
+                  : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
               }`}
             >
-              {p.label}:{" "}
-              <span className="font-mono">
-                R$ {p.valor.toLocaleString("pt-BR")}
-              </span>
+              {p.label}
             </button>
           ))}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
           <div className="md:col-span-2">
-            <label className="block text-sm font-bold text-slate-800 mb-1">
-              Quanto você planeja faturar por mês neste CNAE? (R$)
+            <label className="block text-sm font-semibold text-slate-800 mb-1.5">
+              Faturamento bruto mensal previsto (R$)
             </label>
             <input
               type="number"
@@ -98,7 +93,7 @@ export default function CNAECalculator({
               min={1000}
               value={faturamentoMensal}
               onChange={(e) => setFaturamentoMensal(Number(e.target.value) || 0)}
-              className="w-full px-4 py-3 text-xl font-mono font-extrabold tabular-nums text-slate-900 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none shadow-inner"
+              className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:bg-white focus:outline-none"
             />
             <input
               type="range"
@@ -107,145 +102,138 @@ export default function CNAECalculator({
               step={500}
               value={Math.min(60000, faturamentoMensal)}
               onChange={(e) => setFaturamentoMensal(Number(e.target.value))}
-              className="w-full mt-3 accent-blue-600 cursor-pointer"
+              className="w-full mt-2.5 accent-blue-700 cursor-pointer"
             />
           </div>
 
           <div>
             {sujeitoFatorR ? (
-              <label className="flex items-center gap-3 p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/70 cursor-pointer">
+              <label className="flex items-start gap-3 p-3.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={otimizarFatorR}
                   onChange={(e) => setOtimizarFatorR(e.target.checked)}
-                  className="w-5 h-5 accent-emerald-600 rounded"
+                  className="w-4 h-4 mt-0.5 accent-emerald-700 rounded"
                 />
                 <div className="text-xs">
-                  <span className="font-bold text-emerald-950 block">
-                    Ativar Fator R (28%)
+                  <span className="font-bold text-slate-900 block">
+                    Aplicar Fator R (28%)
                   </span>
-                  <span className="text-emerald-700">
-                    Cai do Anexo V (15,5%) para Anexo III (6%)
+                  <span className="text-slate-600">
+                    Migra do Anexo V (15,5%) para o Anexo III (6%)
                   </span>
                 </div>
               </label>
             ) : (
-              <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600">
+              <div className="p-3.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-600">
                 <strong className="text-slate-900 block">
-                  Tributação Direta no Anexo {anexoPadrao}
+                  Enquadramento direto no Anexo {anexoPadrao}
                 </strong>
-                Não exige folha de 28% (Fator R) para manter a menor alíquota!
+                Este código não depende da regra de 28% de folha para a menor alíquota.
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Slot AdSense de Alta Intenção B2B */}
       <AdSlot
         slotId="cnae-calculator-mid"
         format="in-result"
-        label={`Abra seu CNPJ com o CNAE ${codigoCNAE} sem pagar taxa de abertura e enquadrado no Anexo ${resultado.anexoEfetivo}`}
+        label={`Abertura de CNPJ no CNAE ${codigoCNAE} e contabilidade no Anexo ${resultado.anexoEfetivo}`}
         estimatedCpc="CPC Médio: R$ 4,90 (Abertura de CNPJ / Contabilidade Digital)"
       />
 
-      {/* Resultados do Cálculo do CNAE */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-950 bg-fintech-grid text-white rounded-2xl p-5 shadow-md border border-slate-800">
-          <span className="text-xs text-slate-400 uppercase font-semibold">
+        <div className="bg-white border border-slate-200 border-t-4 border-t-slate-900 rounded-xl p-5">
+          <span className="text-xs text-slate-500 uppercase font-semibold">
             Guia DAS (Simples Nacional)
           </span>
-          <p className="text-2xl font-mono font-bold tabular-nums text-emerald-400 mt-1">
+          <p className="text-2xl font-mono font-bold tabular-nums text-slate-900 mt-1">
             {formatBRL(resultado.valorDAS)}/mês
           </p>
-          <p className="text-xs text-slate-300 mt-1">
-            Anexo {resultado.anexoEfetivo} • Alíquota Efetiva:{" "}
-            <strong className="font-mono">
+          <p className="text-xs text-slate-600 mt-1">
+            Anexo {resultado.anexoEfetivo} · Alíquota efetiva:{" "}
+            <strong className="font-mono text-slate-900">
               {formatPercent(resultado.aliquotaEfetivaDAS)}
             </strong>
           </p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl p-5">
           <span className="text-xs text-slate-500 uppercase font-semibold">
-            Pró-Labore + INSS + IRPF (2026)
+            INSS e IRRF sobre pró-labore
           </span>
           <p className="text-2xl font-mono font-bold tabular-nums text-slate-900 mt-1">
             {formatBRL(resultado.inssProLabore + resultado.irpfProLabore)}/mês
           </p>
           <p className="text-xs text-slate-500 mt-1">
-            Sobre pró-labore de{" "}
-            <span className="font-mono">
+            Pró-labore base:{" "}
+            <span className="font-mono text-slate-700">
               {formatBRL(resultado.proLaboreSugerido)}
             </span>
           </p>
         </div>
 
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 shadow-sm">
-          <span className="text-xs text-emerald-800 uppercase font-bold">
-            Lucro Líquido Livre (Isento de IR)
+        <div className="bg-white border border-slate-200 border-t-4 border-t-emerald-700 rounded-xl p-5">
+          <span className="text-xs text-slate-500 uppercase font-semibold">
+            Lucro líquido após impostos
           </span>
           <p className="text-2xl font-mono font-bold tabular-nums text-emerald-700 mt-1">
             {formatBRL(resultado.lucroLiquidoIsento)}/mês
           </p>
-          <p className="text-xs text-emerald-800 mt-1">
-            Carga total:{" "}
-            <strong className="font-mono">
+          <p className="text-xs text-slate-600 mt-1">
+            Carga tributária total:{" "}
+            <strong className="font-mono text-slate-900">
               {formatPercent(resultado.cargaTributariaTotalPercentual)}
             </strong>
           </p>
         </div>
       </div>
 
-      {/* Alertas Inteligentes (MEI, Fator R e Reforma Tributária 2026) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-5 text-xs space-y-2">
           <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
-            {sujeitoFatorR ? (
-              <Sparkles className="w-4 h-4 text-emerald-600" />
-            ) : (
-              <CheckCircle2 className="w-4 h-4 text-blue-600" />
-            )}
-            Diagnóstico Fator R e MEI (2026)
+            <CheckCircle2 className="w-4 h-4 text-slate-700" />
+            Enquadramento MEI e Fator R
           </div>
           {cabeNoMEI ? (
-            <p className="text-emerald-700 font-medium">
-              ✅ Com faturamento anual de {formatBRL(faturamentoMensal * 12)}, este CNAE permite ser <strong>MEI</strong> pagando apenas a guia fixa mensal (~R$ 86/mês)!
+            <p className="text-emerald-800">
+              Com faturamento anual de {formatBRL(faturamentoMensal * 12)}, esta atividade é aceita no <strong>MEI</strong>, com recolhimento fixo mensal em torno de R$ 86.
             </p>
           ) : permiteMEI ? (
-            <p className="text-amber-700">
-              ⚠️ Este CNAE aceita MEI, mas seu faturamento anual ({formatBRL(faturamentoMensal * 12)}) ultrapassa o teto de R$ 81.000/ano, exigindo Microempresa (ME) no Simples Nacional.
+            <p className="text-amber-800">
+              Embora o CNAE conste na lista do MEI, a receita anual de {formatBRL(faturamentoMensal * 12)} excede o teto de R$ 81.000/ano, exigindo Microempresa (ME) no Simples Nacional.
             </p>
           ) : (
             <p className="text-slate-600">
-              ℹ️ A atividade <strong>{tituloCNAE}</strong> é considerada intelectual/regulamentada e não pode ser MEI, devendo abrir como Microempresa (SLU/LTDA) no Simples Nacional.
+              A atividade <strong>{tituloCNAE}</strong> é classificada como intelectual ou regulamentada e não permite inscrição como MEI, exigindo abertura de Microempresa (SLU ou LTDA).
             </p>
           )}
           {sujeitoFatorR && resultado.economiaMensalComFatorR > 0 && (
-            <p className="text-emerald-700 font-semibold pt-1">
-              💰 Economia com Fator R ativado: você economiza{" "}
+            <p className="text-emerald-800 font-medium pt-1">
+              Economia com o Fator R aplicado:{" "}
               <strong className="font-mono">
                 {formatBRL(resultado.economiaMensalComFatorR)}/mês
               </strong>{" "}
-              (<span className="font-mono">{formatBRL(resultado.economiaMensalComFatorR * 12)}/ano</span>) em relação ao Anexo V!
+              (<span className="font-mono">{formatBRL(resultado.economiaMensalComFatorR * 12)}</span> ao ano) em comparação ao Anexo V.
             </p>
           )}
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-5 text-xs space-y-2">
           <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
-            <ShieldAlert className="w-4 h-4 text-blue-600" />
-            Impacto da Reforma Tributária (CBS e IBS 2026)
+            <Info className="w-4 h-4 text-slate-700" />
+            Transição da Reforma Tributária (CBS e IBS)
           </div>
           <p className="text-slate-600">
-            Em 2026 (ano-teste do IVA Dual), empresas no Simples Nacional continuam recolhendo via guia única (DAS), sem aumento de carga.
+            No ano-teste de 2026 do IVA Dual, empresas optantes pelo Simples Nacional mantêm o recolhimento via guia DAS sem elevação da carga efetiva.
           </p>
-          <p className="text-slate-700 font-medium">
-            • Redução setorial aprovada na Lei Complementar para este CNAE:{" "}
-            <strong className="text-blue-700 font-mono">
-              {formatPercent(reducaoIVA2026, 0)} de desconto na alíquota padrão do IVA
+          <p className="text-slate-700">
+            Redução setorial prevista na legislação complementar para este código:{" "}
+            <strong className="text-slate-900 font-mono">
+              {formatPercent(reducaoIVA2026, 0)} de redução sobre a alíquota de referência
             </strong>{" "}
-            (Alíquota estimada fora do Simples: {formatPercent(resultado.reformaTributaria.aliquotaEstimadaIVADual2027)}).
+            (estimativa fora do Simples: {formatPercent(resultado.reformaTributaria.aliquotaEstimadaIVADual2027)}).
           </p>
         </div>
       </div>

@@ -10,14 +10,9 @@ import {
 import AdSlot from "./AdSlot";
 import LegalDisclaimerBox from "./LegalDisclaimerBox";
 import {
-  CheckCircle2,
-  AlertTriangle,
-  HelpCircle,
   ArrowRight,
   Copy,
   Check,
-  BarChart3,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -31,12 +26,12 @@ interface Props {
 }
 
 const PRESETS_CENARIOS = [
-  { label: "Salário R$ 3.500", clt: 3500, pj: 5100, ben: 650 },
-  { label: "Salário R$ 5.000 (Isento IR)", clt: 5000, pj: 7300, ben: 800 },
-  { label: "Salário R$ 8.000", clt: 8000, pj: 11600, ben: 950 },
-  { label: "Salário R$ 12.000", clt: 12000, pj: 17400, ben: 1100 },
-  { label: "Salário R$ 18.000", clt: 18000, pj: 26000, ben: 1300 },
-  { label: "Salário R$ 25.000", clt: 25000, pj: 36000, ben: 1500 },
+  { label: "R$ 3.500", clt: 3500, pj: 5100, ben: 650 },
+  { label: "R$ 5.000", clt: 5000, pj: 7300, ben: 800 },
+  { label: "R$ 8.000", clt: 8000, pj: 11600, ben: 950 },
+  { label: "R$ 12.000", clt: 12000, pj: 17400, ben: 1100 },
+  { label: "R$ 18.000", clt: 18000, pj: 26000, ben: 1300 },
+  { label: "R$ 25.000", clt: 25000, pj: 36000, ben: 1500 },
 ];
 
 export default function CLTvsPJCalculator({
@@ -67,7 +62,6 @@ export default function CLTvsPJCalculator({
     custoContabilidade,
   });
 
-  // Proporções visuais para o Gráfico Comparativo de Barras (Termômetro Patrimonial)
   const impostosCLT = resultado.clt.inss + resultado.clt.irpf;
   const indiretosCLT =
     resultado.clt.fgtsMensal +
@@ -90,17 +84,17 @@ export default function CLTvsPJCalculator({
     (resultado.pj.totalImpostosECustos / totalBrutoPJ) * 100;
 
   const copiarResumoSimulacao = () => {
-    const texto = `📊 *Simulação CLT vs PJ 2026 (CalculaFiscal)*\n• Salário CLT: ${formatBRL(
+    const texto = `Simulação CLT vs PJ 2026 (CalculaFiscal)\n- Salário CLT: ${formatBRL(
       salarioCLT
     )} (Líquido: ${formatBRL(
       resultado.clt.salarioLiquidoMensal
-    )} | Pacote Total c/ FGTS+13º+Benefícios: ${formatBRL(
+    )} | Pacote com FGTS, 13º e benefícios: ${formatBRL(
       resultado.clt.pacoteTotalMensalReal
-    )})\n• Proposta PJ: ${formatBRL(faturamentoPJ)} (Lucro Líquido Livre: ${formatBRL(
+    )})\n- Proposta PJ: ${formatBRL(faturamentoPJ)} (Líquido isento estimado: ${formatBRL(
       resultado.pj.lucroLiquidoIsento
-    )})\n• Mínimo Ideal PJ p/ Empatar: ${formatBRL(
+    )})\n- Equivalente mínimo no PJ: ${formatBRL(
       resultado.faturamentoPJEquivalente
-    )}\n• Diferença Real no Bolso: ${
+    )}\n- Diferença mensal estimada: ${
       resultado.diferencaRealPatrimonial >= 0 ? "+" : ""
     }${formatBRL(resultado.diferencaRealPatrimonial)}/mês`;
 
@@ -110,16 +104,15 @@ export default function CLTvsPJCalculator({
   };
 
   return (
-    <div className="space-y-7">
-      {/* Barra de Cenários Rápidos 1-Toque (Micro-interação Fintech) */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-4 sm:p-5">
+    <div className="space-y-6">
+      {/* Faixas salariais rápidas */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
-            <Zap className="w-3.5 h-3.5 text-amber-500" />
-            Atalhos Rápidos por Faixa Salarial (Para Qualquer Profissão):
+          <span className="text-xs font-semibold text-slate-600">
+            Referências rápidas de salário bruto CLT:
           </span>
           <span className="text-[11px] text-slate-400">
-            Escolha um atalho ou digite qualquer valor abaixo
+            Ou informe os valores exatos nos campos abaixo
           </span>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -134,38 +127,38 @@ export default function CLTvsPJCalculator({
                   setFaturamentoPJ(preset.pj);
                   setBeneficiosCLT(preset.ben);
                 }}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 border ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors border ${
                   ativo
-                    ? "bg-slate-900 text-white border-slate-900 shadow-sm -translate-y-0.5"
-                    : "bg-slate-50 hover:bg-blue-50/70 text-slate-700 border-slate-200 hover:border-blue-300"
+                    ? "bg-slate-900 text-white border-slate-900"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
                 }`}
               >
-                <span className="font-mono">{preset.label}</span>
+                {preset.label}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Painel de Entradas Interativas */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8">
+      {/* Entradas CLT e PJ */}
+      <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Lado CLT */}
-          <div className="space-y-4 p-5 rounded-2xl bg-gradient-to-b from-blue-50/70 to-slate-50/40 border border-blue-200/70">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-blue-800 bg-blue-100/90 px-2.5 py-1 rounded-lg">
-                1. Carteira Assinada (CLT)
+          {/* Bloco CLT */}
+          <div className="space-y-4 p-4 sm:p-5 rounded-lg bg-slate-50 border border-slate-200">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Regime CLT
               </span>
               {resultado.clt.isentoNovaRegra5k && (
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
-                  ✨ Isento de IRPF (Regra 2026 ≤ R$ 5k)
+                <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                  Isento de IRRF (regra até R$ 5 mil)
                 </span>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                Salário Bruto Mensal CLT (R$)
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Salário bruto mensal CLT (R$)
               </label>
               <input
                 type="number"
@@ -173,7 +166,7 @@ export default function CLTvsPJCalculator({
                 min={1621}
                 value={salarioCLT}
                 onChange={(e) => setSalarioCLT(Number(e.target.value) || 0)}
-                className="w-full px-4 py-3 text-xl font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none shadow-inner"
+                className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:outline-none"
               />
               <input
                 type="range"
@@ -182,14 +175,14 @@ export default function CLTvsPJCalculator({
                 step={250}
                 value={Math.min(35000, salarioCLT)}
                 onChange={(e) => setSalarioCLT(Number(e.target.value))}
-                className="w-full mt-3 accent-blue-600 cursor-pointer"
+                className="w-full mt-2.5 accent-blue-700 cursor-pointer"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Benefícios (VR/VA + Saúde)
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Benefícios (VR, VA, saúde)
                 </label>
                 <input
                   type="number"
@@ -201,7 +194,7 @@ export default function CLTvsPJCalculator({
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                   Dependentes IRPF
                 </label>
                 <input
@@ -216,26 +209,26 @@ export default function CLTvsPJCalculator({
             </div>
           </div>
 
-          {/* Lado PJ */}
-          <div className="space-y-4 p-5 rounded-2xl bg-gradient-to-b from-emerald-50/70 to-slate-50/40 border border-emerald-200/70">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-900 bg-emerald-100/90 px-2.5 py-1 rounded-lg">
-                2. Pessoa Jurídica (CNPJ)
+          {/* Bloco PJ */}
+          <div className="space-y-4 p-4 sm:p-5 rounded-lg bg-slate-50 border border-slate-200">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Pessoa Jurídica (CNPJ)
               </span>
               <button
                 type="button"
                 onClick={() =>
                   setFaturamentoPJ(Math.round(resultado.faturamentoPJEquivalente))
                 }
-                className="text-[11px] font-bold text-blue-700 hover:text-blue-900 bg-white px-2.5 py-1 rounded-lg border border-blue-200 shadow-sm transition-colors"
+                className="text-[11px] font-semibold text-blue-700 hover:text-blue-900 bg-white px-2.5 py-1 rounded border border-slate-300 transition-colors"
               >
-                Igualar ao Ponto de Equilíbrio ({formatBRL(resultado.faturamentoPJEquivalente)})
+                Igualar ao equilíbrio ({formatBRL(resultado.faturamentoPJEquivalente)})
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                Faturamento Bruto Mensal PJ (Nota Fiscal R$)
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                Faturamento bruto mensal PJ (R$)
               </label>
               <input
                 type="number"
@@ -243,7 +236,7 @@ export default function CLTvsPJCalculator({
                 min={1621}
                 value={faturamentoPJ}
                 onChange={(e) => setFaturamentoPJ(Number(e.target.value) || 0)}
-                className="w-full px-4 py-3 text-xl font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none shadow-inner"
+                className="w-full px-3.5 py-2.5 text-lg font-mono font-bold tabular-nums text-slate-900 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:outline-none"
               />
               <input
                 type="range"
@@ -252,29 +245,29 @@ export default function CLTvsPJCalculator({
                 step={250}
                 value={Math.min(50000, faturamentoPJ)}
                 onChange={(e) => setFaturamentoPJ(Number(e.target.value))}
-                className="w-full mt-3 accent-emerald-600 cursor-pointer"
+                className="w-full mt-2.5 accent-emerald-700 cursor-pointer"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                   Anexo Simples Nacional
                 </label>
                 <select
                   value={anexoPJ}
                   onChange={(e) => setAnexoPJ(e.target.value as AnexoSimples)}
-                  className="w-full px-3 py-2 text-xs font-semibold text-slate-900 bg-white border border-slate-300 rounded-lg"
+                  className="w-full px-3 py-2 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg"
                 >
                   <option value="III">Anexo III (6% inicial / Fator R)</option>
-                  <option value="IV">Anexo IV (4,5% Advocacia/Eng)</option>
+                  <option value="IV">Anexo IV (4,5% inicial)</option>
                   <option value="V">Anexo V sem Fator R (15,5%)</option>
                   <option value="I">Anexo I Comércio (4%)</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Contador Online (R$/mês)
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Contabilidade (R$/mês)
                 </label>
                 <input
                   type="number"
@@ -292,123 +285,120 @@ export default function CLTvsPJCalculator({
         </div>
       </div>
 
-      {/* Slot de AdSense #1: Posicionado exatamente acima do Veredito (CTR Altíssimo) */}
+      {/* Slot de AdSense acima do resultado */}
       <AdSlot
         slotId="clt-pj-before-result"
         format="in-result"
-        label="Anúncio Patrocinado • Abra seu CNPJ Gratuitamente com Contabilidade Digital Especializada em Fator R"
+        label="Abertura de CNPJ, Conta Digital PJ e Contabilidade para Anexo III"
         estimatedCpc="CPC Médio: R$ 4,20 (Contabilidade Online / Conta PJ)"
       />
 
-      {/* Card de Veredito Final e Ponto de Equilíbrio (Swiss Fintech Dark Terminal) */}
+      {/* Resumo Comparativo Principal */}
       <div
-        className={`rounded-3xl p-6 sm:p-8 border-2 shadow-xl bg-fintech-grid transition-colors ${
+        className={`bg-white rounded-xl p-6 border border-slate-200 border-t-4 ${
           resultado.veredito === "PJ_VANTAJOSO"
-            ? "bg-slate-950 text-white border-emerald-500/80"
+            ? "border-t-emerald-700"
             : resultado.veredito === "CLT_VANTAJOSO"
-            ? "bg-slate-950 text-white border-blue-500/80"
-            : "bg-slate-900 text-white border-amber-400/80"
+            ? "border-t-blue-700"
+            : "border-t-amber-600"
         }`}
       >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 border border-white/15">
-                {resultado.veredito === "PJ_VANTAJOSO" ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    Veredito 2026: Proposta PJ é mais vantajosa!
-                  </>
-                ) : resultado.veredito === "CLT_VANTAJOSO" ? (
-                  <>
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
-                    Veredito 2026: CLT entrega maior patrimônio total
-                  </>
-                ) : (
-                  <>
-                    <HelpCircle className="w-4 h-4 text-blue-300" />
-                    Veredito 2026: Empate Técnico entre CLT e PJ
-                  </>
-                )}
-              </div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span
+                className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded ${
+                  resultado.veredito === "PJ_VANTAJOSO"
+                    ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                    : resultado.veredito === "CLT_VANTAJOSO"
+                    ? "bg-blue-50 text-blue-800 border border-blue-200"
+                    : "bg-amber-50 text-amber-800 border border-amber-200"
+                }`}
+              >
+                {resultado.veredito === "PJ_VANTAJOSO"
+                  ? "Resultado: PJ entrega maior retorno líquido"
+                  : resultado.veredito === "CLT_VANTAJOSO"
+                  ? "Resultado: CLT entrega maior patrimônio total"
+                  : "Resultado: equivalência técnica"}
+              </span>
 
               <button
                 type="button"
                 onClick={copiarResumoSimulacao}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/30 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
                 {copiado ? (
                   <>
-                    <Check className="w-3.5 h-3.5" />
-                    Resumo Copiado!
+                    <Check className="w-3.5 h-3.5 text-emerald-700" />
+                    Resumo copiado
                   </>
                 ) : (
                   <>
                     <Copy className="w-3.5 h-3.5" />
-                    Copiar Resumo p/ WhatsApp
+                    Copiar resumo
                   </>
                 )}
               </button>
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
               {resultado.diferencaRealPatrimonial >= 0 ? (
                 <>
-                  O PJ gera{" "}
-                  <span className="font-mono tabular-nums text-emerald-400">
+                  Diferença de{" "}
+                  <span className="font-mono tabular-nums text-emerald-700">
                     +{formatBRL(resultado.diferencaRealPatrimonial)}/mês
                   </span>{" "}
-                  acima de todo o pacote CLT
+                  a favor do PJ
                 </>
               ) : (
                 <>
                   Faltam{" "}
-                  <span className="font-mono tabular-nums text-amber-400">
+                  <span className="font-mono tabular-nums text-blue-700">
                     {formatBRL(Math.abs(resultado.diferencaRealPatrimonial))}/mês
                   </span>{" "}
-                  no PJ para empatar com os direitos da CLT
+                  no PJ para empatar com o pacote CLT
                 </>
               )}
             </h3>
 
-            <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Um salário CLT de{" "}
-              <strong className="font-mono text-white">
+            <p className="text-sm text-slate-600 max-w-2xl leading-relaxed">
+              O salário bruto de{" "}
+              <strong className="font-mono text-slate-900">
                 {formatBRL(salarioCLT)}
               </strong>{" "}
-              deixa{" "}
-              <strong className="font-mono text-white">
+              na CLT resulta em{" "}
+              <strong className="font-mono text-slate-900">
                 {formatBRL(resultado.clt.salarioLiquidoMensal)}
               </strong>{" "}
-              líquidos na conta, mas vale{" "}
-              <strong className="font-mono text-white">
+              líquidos por mês, mas soma{" "}
+              <strong className="font-mono text-slate-900">
                 {formatBRL(resultado.clt.pacoteTotalMensalReal)}/mês
               </strong>{" "}
-              somando FGTS, 13º, férias e benefícios. Por isso, o{" "}
-              <strong className="text-amber-300 font-mono">
-                Ponto de Equilíbrio PJ é {formatBRL(resultado.faturamentoPJEquivalente)}
+              quando incluídos FGTS, 13º, férias e benefícios. Para empatar nesse patamar como PJ, o faturamento mínimo estimado é de{" "}
+              <strong className="font-mono text-slate-900">
+                {formatBRL(resultado.faturamentoPJEquivalente)}
               </strong>{" "}
               (<span className="font-mono">{resultado.multiplicadorIdeal}x</span> o bruto CLT).
             </p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur rounded-2xl p-5 min-w-[260px] border border-white/15 shrink-0">
-            <p className="text-[11px] text-slate-300 uppercase font-bold tracking-wider">
-              Ganho / Perda Acumulada em 1 Ano
+          <div className="bg-slate-50 rounded-lg p-5 min-w-[250px] border border-slate-200 shrink-0">
+            <p className="text-[11px] text-slate-500 uppercase font-bold tracking-wider">
+              Saldo acumulado em 12 meses
             </p>
             <p
               className={`text-2xl sm:text-3xl font-mono font-bold tabular-nums mt-1 ${
                 resultado.diferencaRealPatrimonial >= 0
-                  ? "text-emerald-400"
-                  : "text-amber-400"
+                  ? "text-emerald-700"
+                  : "text-blue-700"
               }`}
             >
               {resultado.diferencaRealPatrimonial >= 0 ? "+" : ""}
               {formatBRL(resultado.diferencaRealPatrimonial * 12)}
             </p>
-            <div className="mt-2 pt-2 border-t border-white/10 flex justify-between text-xs text-slate-300">
-              <span>Dinheiro livre/mês:</span>
-              <strong className="font-mono tabular-nums text-white">
+            <div className="mt-3 pt-2.5 border-t border-slate-200 flex justify-between text-xs text-slate-600">
+              <span>Saldo mensal em conta:</span>
+              <strong className="font-mono tabular-nums text-slate-900">
                 {resultado.diferencaNoBolsoMensal >= 0 ? "+" : ""}
                 {formatBRL(resultado.diferencaNoBolsoMensal)}
               </strong>
@@ -417,107 +407,102 @@ export default function CLTvsPJCalculator({
         </div>
 
         {cnaeRecomendado && (
-          <div className="mt-5 pt-4 border-t border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
             <span>
-              💡 CNAE recomendado para {profissaoNome || "esta atividade"}:{" "}
-              <strong className="font-mono text-emerald-300">
+              CNAE usual para {profissaoNome || "esta atividade"}:{" "}
+              <strong className="font-mono text-slate-900">
                 {cnaeRecomendado.codigo}
               </strong>
             </span>
             <Link
               href={`/cnae/${cnaeRecomendado.slug}`}
-              className="inline-flex items-center gap-1 font-bold text-emerald-300 hover:underline"
+              className="inline-flex items-center gap-1 font-semibold text-blue-700 hover:underline"
             >
-              Abrir calculadora exclusiva deste CNAE
+              Simular guia DAS deste CNAE
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         )}
       </div>
 
-      {/* Termômetro Visual de Retenção Líquida vs Impostos (Data Visualization Fintech) */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm space-y-5">
+      {/* Distribuição proporcional da remuneração */}
+      <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
-            <h4 className="font-extrabold text-base text-slate-900">
-              Termômetro Visual: Para onde vai o seu dinheiro em cada regime?
-            </h4>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 text-xs font-semibold">
+          <h4 className="font-bold text-sm sm:text-base text-slate-900">
+            Composição da remuneração e descontos
+          </h4>
+          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600">
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-emerald-500 inline-block" />
-              Líquido na Conta
+              <span className="w-2.5 h-2.5 rounded-sm bg-emerald-600 inline-block" />
+              Líquido mensal
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-blue-500 inline-block" />
-              FGTS + 13º + Férias + VR
+              <span className="w-2.5 h-2.5 rounded-sm bg-blue-600 inline-block" />
+              FGTS, 13º, férias e benefícios
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-rose-500 inline-block" />
-              Impostos & Descontos
+              <span className="w-2.5 h-2.5 rounded-sm bg-rose-600 inline-block" />
+              Impostos e custos
             </span>
           </div>
         </div>
 
         <div className="space-y-4">
-          {/* Barra CLT */}
           <div className="space-y-1.5">
-            <div className="flex justify-between text-xs font-bold text-slate-700">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>
-                Composição CLT (Pacote Total:{" "}
-                <strong className="font-mono">
+                CLT (Pacote{" "}
+                <strong className="font-mono text-slate-900">
                   {formatBRL(resultado.clt.pacoteTotalMensalReal)}
                 </strong>
                 )
               </span>
-              <span className="font-mono text-rose-600">
-                Impostos: {formatBRL(impostosCLT)} ({pctImpostosCLT.toFixed(1)}%)
+              <span className="font-mono text-rose-700">
+                INSS + IRRF: {formatBRL(impostosCLT)} ({pctImpostosCLT.toFixed(1)}%)
               </span>
             </div>
-            <div className="w-full h-5 rounded-xl bg-slate-100 overflow-hidden flex shadow-inner">
+            <div className="w-full h-4 rounded bg-slate-100 overflow-hidden flex">
               <div
                 style={{ width: `${pctLiquidoCLT}%` }}
-                className="bg-emerald-500 h-full transition-all duration-300"
+                className="bg-emerald-600 h-full transition-all duration-300"
                 title={`Salário Líquido: ${formatBRL(resultado.clt.salarioLiquidoMensal)}`}
               />
               <div
                 style={{ width: `${pctIndiretosCLT}%` }}
-                className="bg-blue-500 h-full transition-all duration-300"
+                className="bg-blue-600 h-full transition-all duration-300"
                 title={`FGTS + 13º + Férias + Benefícios: ${formatBRL(indiretosCLT)}`}
               />
               <div
                 style={{ width: `${pctImpostosCLT}%` }}
-                className="bg-rose-500 h-full transition-all duration-300"
+                className="bg-rose-600 h-full transition-all duration-300"
                 title={`INSS + IRPF: ${formatBRL(impostosCLT)}`}
               />
             </div>
           </div>
 
-          {/* Barra PJ */}
           <div className="space-y-1.5">
-            <div className="flex justify-between text-xs font-bold text-slate-700">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>
-                Composição PJ (Líquido no Bolso:{" "}
+                PJ (Líquido{" "}
                 <strong className="font-mono text-emerald-700">
                   {formatBRL(resultado.pj.lucroLiquidoIsento)}
                 </strong>{" "}
-                • {pctLiquidoPJ.toFixed(1)}% da Nota)
+                · {pctLiquidoPJ.toFixed(1)}% do faturamento)
               </span>
-              <span className="font-mono text-rose-600">
-                DAS + INSS + Contador: {formatBRL(resultado.pj.totalImpostosECustos)} (
+              <span className="font-mono text-rose-700">
+                Impostos e contabilidade: {formatBRL(resultado.pj.totalImpostosECustos)} (
                 {pctImpostosPJ.toFixed(1)}%)
               </span>
             </div>
-            <div className="w-full h-5 rounded-xl bg-slate-100 overflow-hidden flex shadow-inner">
+            <div className="w-full h-4 rounded bg-slate-100 overflow-hidden flex">
               <div
                 style={{ width: `${pctLiquidoPJ}%` }}
-                className="bg-emerald-500 h-full transition-all duration-300"
+                className="bg-emerald-600 h-full transition-all duration-300"
                 title={`Lucro Líquido PJ: ${formatBRL(resultado.pj.lucroLiquidoIsento)}`}
               />
               <div
                 style={{ width: `${pctImpostosPJ}%` }}
-                className="bg-rose-500 h-full transition-all duration-300"
+                className="bg-rose-600 h-full transition-all duration-300"
                 title={`Impostos PJ + Contador: ${formatBRL(resultado.pj.totalImpostosECustos)}`}
               />
             </div>
@@ -525,66 +510,65 @@ export default function CLTvsPJCalculator({
         </div>
       </div>
 
-      {/* Tabela Comparativa Lado a Lado */}
+      {/* Tabelas Analíticas Lado a Lado */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Detalhamento CLT */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
-          <h4 className="font-extrabold text-lg text-slate-900 border-b border-slate-100 pb-3 mb-4 flex items-center justify-between">
-            <span>Raio-X na CLT (2026)</span>
-            <span className="text-sm font-mono font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <h4 className="font-bold text-base text-slate-900 border-b border-slate-200 pb-3 mb-4 flex items-center justify-between">
+            <span>Detalhamento CLT</span>
+            <span className="text-xs font-mono font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded">
               Bruto: {formatBRL(salarioCLT)}
             </span>
           </h4>
           <dl className="space-y-2.5 text-sm">
             <div className="flex justify-between">
-              <dt className="text-slate-600">(-) Desconto INSS Progressivo</dt>
-              <dd className="font-mono font-semibold tabular-nums text-rose-600">
+              <dt className="text-slate-600">INSS progressivo</dt>
+              <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.clt.inss)}
               </dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-slate-600">
-                (-) Imposto de Renda (IRRF 2026 • {resultado.clt.metodoIR})
+                IRRF ({resultado.clt.metodoIR})
               </dt>
-              <dd className="font-mono font-semibold tabular-nums text-rose-600">
+              <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.clt.irpf)}
               </dd>
             </div>
-            <div className="flex justify-between pt-2 border-t border-slate-100 font-bold text-base text-slate-900">
-              <dt>= Salário Líquido na Conta (Mensal)</dt>
+            <div className="flex justify-between pt-2 border-t border-slate-100 font-bold text-slate-900">
+              <dt>Salário líquido mensal</dt>
               <dd className="font-mono tabular-nums text-blue-700">
                 {formatBRL(resultado.clt.salarioLiquidoMensal)}
               </dd>
             </div>
-            <div className="pt-3 mt-3 border-t border-dashed border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Benefícios Indiretos e Patrimônio Anual (Média Mensal)
+            <div className="pt-3 mt-3 border-t border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Benefícios e provisões mensais
             </div>
             <div className="flex justify-between text-xs">
-              <dt className="text-slate-600">(+) Depósito FGTS (8% ao mês)</dt>
-              <dd className="font-mono font-semibold tabular-nums text-emerald-700">
+              <dt className="text-slate-600">FGTS mensal (8%)</dt>
+              <dd className="font-mono font-medium tabular-nums text-emerald-700">
                 + {formatBRL(resultado.clt.fgtsMensal)}
               </dd>
             </div>
             <div className="flex justify-between text-xs">
-              <dt className="text-slate-600">(+) 13º Salário Líquido Proporcional (1/12)</dt>
-              <dd className="font-mono font-semibold tabular-nums text-emerald-700">
+              <dt className="text-slate-600">13º proporcional (1/12)</dt>
+              <dd className="font-mono font-medium tabular-nums text-emerald-700">
                 + {formatBRL(resultado.clt.provisao13LiquidoMensal)}
               </dd>
             </div>
             <div className="flex justify-between text-xs">
-              <dt className="text-slate-600">(+) Terço de Férias Líquido Proporcional</dt>
-              <dd className="font-mono font-semibold tabular-nums text-emerald-700">
+              <dt className="text-slate-600">Adicional 1/3 de férias</dt>
+              <dd className="font-mono font-medium tabular-nums text-emerald-700">
                 + {formatBRL(resultado.clt.provisaoFeriasLiquidoMensal)}
               </dd>
             </div>
             <div className="flex justify-between text-xs">
-              <dt className="text-slate-600">(+) Vale-Refeição / Plano de Saúde</dt>
-              <dd className="font-mono font-semibold tabular-nums text-emerald-700">
+              <dt className="text-slate-600">Vale-refeição e plano de saúde</dt>
+              <dd className="font-mono font-medium tabular-nums text-emerald-700">
                 + {formatBRL(resultado.clt.beneficiosLiquidos)}
               </dd>
             </div>
-            <div className="flex justify-between pt-3 border-t-2 border-slate-200 font-extrabold text-base text-slate-900">
-              <dt>Pacote Total Real CLT (Mensal)</dt>
+            <div className="flex justify-between pt-3 border-t border-slate-200 font-bold text-base text-slate-900">
+              <dt>Pacote mensal equivalente</dt>
               <dd className="font-mono tabular-nums text-blue-700">
                 {formatBRL(resultado.clt.pacoteTotalMensalReal)}
               </dd>
@@ -592,74 +576,73 @@ export default function CLTvsPJCalculator({
           </dl>
         </div>
 
-        {/* Detalhamento PJ */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
-          <h4 className="font-extrabold text-lg text-slate-900 border-b border-slate-100 pb-3 mb-4 flex items-center justify-between">
-            <span>Raio-X no PJ • Simples Nacional</span>
-            <span className="text-sm font-mono font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg">
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <h4 className="font-bold text-base text-slate-900 border-b border-slate-200 pb-3 mb-4 flex items-center justify-between">
+            <span>Detalhamento Simples Nacional</span>
+            <span className="text-xs font-mono font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded">
               NF: {formatBRL(faturamentoPJ)}
             </span>
           </h4>
           <dl className="space-y-2.5 text-sm">
             <div className="flex justify-between">
               <dt className="text-slate-600">
-                (-) Guia DAS Simples (Anexo {resultado.pj.anexoEfetivo} •{" "}
+                Guia DAS (Anexo {resultado.pj.anexoEfetivo} ·{" "}
                 <strong className="font-mono">
                   {formatPercent(resultado.pj.aliquotaEfetivaDAS)}
                 </strong>
                 )
               </dt>
-              <dd className="font-mono font-semibold tabular-nums text-rose-600">
+              <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.pj.valorDAS)}
               </dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-slate-600">
-                (-) INSS sobre Pró-Labore ({formatBRL(resultado.pj.proLaboreSugerido)})
+                INSS sobre pró-labore ({formatBRL(resultado.pj.proLaboreSugerido)})
               </dt>
-              <dd className="font-mono font-semibold tabular-nums text-rose-600">
+              <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.pj.inssProLabore)}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-600">(-) IRRF sobre Pró-Labore (Tabela 2026)</dt>
-              <dd className="font-mono font-semibold tabular-nums text-rose-600">
+              <dt className="text-slate-600">IRRF sobre pró-labore</dt>
+              <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.pj.irpfProLabore)}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-600">(-) Mensalidade Contabilidade Digital</dt>
-              <dd className="font-mono font-semibold tabular-nums text-rose-600">
+              <dt className="text-slate-600">Contabilidade mensal</dt>
+              <dd className="font-mono font-medium tabular-nums text-rose-700">
                 - {formatBRL(resultado.pj.custoContabilidade)}
               </dd>
             </div>
-            <div className="pt-3 mt-3 border-t border-dashed border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Indicadores Fiscais & Reforma Tributária 2026
+            <div className="pt-3 mt-3 border-t border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Indicadores fiscais (2026)
             </div>
             <div className="flex justify-between text-xs">
-              <dt className="text-slate-600">Carga Tributária Efetiva Total no CNPJ</dt>
-              <dd className="font-mono font-bold tabular-nums text-slate-800">
+              <dt className="text-slate-600">Carga tributária efetiva no CNPJ</dt>
+              <dd className="font-mono font-semibold tabular-nums text-slate-800">
                 {formatPercent(resultado.pj.cargaTributariaTotalPercentual)}
               </dd>
             </div>
             <div className="flex justify-between text-xs">
               <dt className="text-slate-600">
-                Economia obtida usando Fator R (28%)
+                Economia mensal com Fator R (28%)
               </dt>
-              <dd className="font-mono font-bold tabular-nums text-emerald-700">
+              <dd className="font-mono font-semibold tabular-nums text-emerald-700">
                 + {formatBRL(resultado.pj.economiaMensalComFatorR)}/mês
               </dd>
             </div>
             <div className="flex justify-between text-xs">
               <dt className="text-slate-600">
-                Destaque Reforma Tributária 2026 (CBS 0,9% + IBS 0,1%)
+                Destaque teste CBS/IBS (0,9% + 0,1%)
               </dt>
               <dd className="font-mono font-medium tabular-nums text-slate-600">
-                {formatBRL(resultado.pj.reformaTributaria.valorDestaqueNota2026)} (Compensável)
+                {formatBRL(resultado.pj.reformaTributaria.valorDestaqueNota2026)} (compensável)
               </dd>
             </div>
-            <div className="flex justify-between pt-3 border-t-2 border-slate-200 font-extrabold text-base text-slate-900">
-              <dt>Lucro Líquido Livre no Bolso (PJ)</dt>
+            <div className="flex justify-between pt-3 border-t border-slate-200 font-bold text-base text-slate-900">
+              <dt>Resultado líquido disponível (PJ)</dt>
               <dd className="font-mono tabular-nums text-emerald-700">
                 {formatBRL(resultado.pj.lucroLiquidoIsento)}
               </dd>

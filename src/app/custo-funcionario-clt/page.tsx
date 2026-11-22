@@ -40,59 +40,57 @@ export default function CustoFuncionarioPage() {
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
-      <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-          Simulador Empresarial de Folha & RH • Vigência 2026
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-          Calculadora de Custo de Funcionário CLT 2026 (Simples, MEI e Lucro Presumido)
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+          Orçamento de folha e encargos · 2026
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
+          Calculadora de Custo de Funcionário CLT (Simples, MEI e Lucro Presumido)
         </h1>
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          Descubra o custo real de uma contratação CLT para o caixa da sua empresa em 2026. Compare instantaneamente a diferença de encargos entre empresas do{" "}
-          <strong>Simples Nacional</strong> (isentas dos 20% de INSS Patronal),{" "}
-          <strong>MEI</strong> e <strong>Lucro Presumido / Real</strong>.
+          Apure o desembolso mensal completo de uma contratação CLT considerando FGTS, INSS patronal, RAT, Sistema S, provisões mensais de 13º salário e férias com um terço, reserva de multa rescisória e benefícios.
         </p>
       </div>
 
       <CustoFuncionarioCalculator />
 
-      {/* Guia Prático Humanizado para Empresários + Palavras-Chave B2B de Alto CPC */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-        <h2 className="text-xl font-extrabold text-slate-900">
-          Como reduzir o custo da folha de pagamento legalmente em 2026
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-5 text-sm text-slate-700 leading-relaxed">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+          Pontos de planejamento na folha de pagamento empresarial
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              1. Cartão de Benefícios Flexíveis (PAT)
-            </h3>
-            <p>
-              Dar aumento salarial direto na carteira gera efeito cascata sobre FGTS, INSS, 13º e férias. Ao oferecer valores através de um <strong>cartão de benefícios flexíveis (Vale-Refeição, Alimentação e Auxílio Home Office)</strong> enquadrado nas regras da CLT e do PAT, o valor chega 100% líquido para o colaborador sem incidência de INSS nem FGTS para a empresa.
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Benefícios pelo PAT versus aumento salarial direto
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Reajustes no salário-base incidem em cascata sobre FGTS, 13º salário, adicional de férias e eventual INSS patronal. Conceder auxílio-alimentação ou cartão de benefícios flexíveis enquadrado no PAT evita essa base de encargos enquanto entrega valor integral ao colaborador.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Impacto da folha no Fator R (Anexo III)
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Para prestadoras de serviço do Simples Nacional enquadradas originalmente no Anexo V (15,5%), os salários de empregados CLT e os respectivos encargos entram na composição dos 28% do Fator R, podendo reduzir a tributação sobre o faturamento para a tabela do Anexo III (a partir de 6%).
+              </p>
+            </div>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              2. A Folha ajuda a bater o Fator R (28%)
+          <div>
+            <h3 className="font-bold text-slate-900 mb-1">
+              Provisionamento mensal em conta jurídica remunerada
             </h3>
-            <p>
-              Se a sua empresa presta serviços no <strong>Anexo V do Simples Nacional</strong> (como agências, clínicas, consultorias e empresas de software), o salário pago ao seu funcionário CLT e o FGTS dele <strong>somam no cálculo dos 28% do Fator R</strong>. Ou seja: contratar um funcionário pode derrubar o imposto sobre todo o faturamento da empresa de 15,5% para 6%!
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              3. Reserva de Provisão em Conta PJ Remunerada
-            </h3>
-            <p>
-              Nunca deixe para tirar o 13º salário e o terço de férias do caixa de novembro e dezembro. Transfira todo mês o valor exato da provisão calculada acima para um subconta separada na sua <strong>Conta Digital PJ com rendimento de 100% do CDI</strong>: os próprios juros compostos ajudam a pagar os encargos de fim de ano.
+            <p className="text-xs sm:text-sm">
+              Separar mensalmente em uma subconta ou aplicação de liquidez diária (100% do CDI) o equivalente às provisões de 13º salário, terço de férias e reserva de multa do FGTS dilui o impacto no fluxo de caixa da empresa nos meses de novembro, dezembro e períodos de férias.
             </p>
           </div>
         </div>
@@ -101,7 +99,7 @@ export default function CustoFuncionarioPage() {
       <AdSlot
         slotId="custo-funcionario-bottom"
         format="leaderboard"
-        label="Reduza Custos da sua Empresa: Contabilidade B2B, Folha Digital e Benefícios Corporativos sem Taxa"
+        label="Contabilidade empresarial, gestão de folha digital e benefícios corporativos"
       />
 
       <SnowballLinks currentSalary={6000} />

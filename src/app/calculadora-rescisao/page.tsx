@@ -40,56 +40,58 @@ export default function RescisaoPage() {
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
-      <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-amber-600">
-          Direitos Trabalhistas CLT 2026
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
+
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+          Legislação trabalhista · CLT e FGTS
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
           Calculadora de Rescisão Trabalhista e Férias CLT 2026
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 max-w-3xl">
-          Vai mudar de emprego ou migrar da CLT para PJ? Calcule em segundos seu saldo de salário, aviso prévio proporcional (até 90 dias), férias + 1/3, 13º proporcional e o valor liberado do FGTS com multa de 40% ou 20% (acordo).
+        <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          Estime o valor líquido do acerto contratual, saldo de salário, aviso prévio proporcional (até 90 dias), 13º proporcional, férias mais um terço constitucional, abono pecuniário e saque de FGTS com multa.
         </p>
       </div>
 
       <RescisaoFeriasCalculator />
 
-      {/* Guia Prático Humanizado + Termos de Alto CPC (FGTS, Investimento CDB/Selic, Acordo Trabalhista) */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-        <h2 className="text-xl font-extrabold text-slate-900">
-          Regras práticas de pagamento da rescisão, saque do FGTS e venda de férias
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-5 text-sm text-slate-700 leading-relaxed">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+          Prazos e regras da rescisão contratual e do FGTS
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              1. Prazo de 10 dias corridos (Art. 477 da CLT)
-            </h3>
-            <p>
-              Independentemente de o aviso prévio ter sido trabalhado ou indenizado, a empresa tem no máximo <strong>10 dias corridos</strong> a contar do término do contrato para depositar as verbas rescisórias na sua conta e entregar as guias do TRCT e chave de conectividade do FGTS. O atraso gera multa de 1 salário bruto inteiro a favor do trabalhador.
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Prazo de pagamento de 10 dias corridos (Art. 477 da CLT)
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Independentemente de o aviso prévio ser trabalhado ou indenizado, a quitação das verbas rescisórias e a entrega dos documentos para saque do FGTS devem ocorrer em até <strong>10 dias corridos</strong> contados do término do contrato. O descumprimento sujeita o empregador à multa de um salário do empregado.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Saque-Aniversário e multa rescisória de 40%
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Na demissão sem justa causa, quem optou pelo Saque-Aniversário (ou possui contrato de antecipação do saque-aniversário) recebe normalmente a <strong>multa de 40%</strong> sobre o FGTS, enquanto o saldo remanescente permanece sujeito ao calendário anual de saques, salvo adesão às regras de liberação vigentes.
+              </p>
+            </div>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              2. Saque-Aniversário vs. Multa de 40% na Demissão
+          <div>
+            <h3 className="font-bold text-slate-900 mb-1">
+              Alocação do acerto rescisório em liquidez diária
             </h3>
-            <p>
-              Quem aderiu à modalidade <strong>Saque-Aniversário do FGTS</strong> (ou contratou empréstimo de <strong>antecipação do saque-aniversário</strong> em bancos) e é demitido sem justa causa recebe normalmente a <strong>multa rescisória de 40%</strong> na conta, enquanto o saldo principal continua disponível nas parcelas anuais do mês de aniversário.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              3. Onde investir o dinheiro da rescisão e FGTS
-            </h3>
-            <p>
-              O saldo parado no FGTS rende apenas 3% ao ano + TR (ou a reposição do IPCA). Ao sacar o acerto rescisório, aplicar o montante em um <strong>CDB de liquidez diária que pague 100% a 110% do CDI</strong> ou no <strong>Tesouro Selic</strong> entrega rendimento diário com segurança do FGC (Fundo Garantidor de Créditos até R$ 250 mil) e resgate imediato caso você decida abrir seu próprio CNPJ.
+            <p className="text-xs sm:text-sm">
+              Valores sacados da rescisão ou do FGTS destinados à reserva de transição profissional costumam ser alocados em CDBs de liquidez diária atrelados ao CDI (com cobertura do FGC até R$ 250 mil por instituição) ou no Tesouro Selic, permitindo resgate imediato em caso de transição para outro emprego ou abertura de CNPJ.
             </p>
           </div>
         </div>
@@ -98,7 +100,7 @@ export default function RescisaoPage() {
       <AdSlot
         slotId="rescisao-bottom-banner"
         format="leaderboard"
-        label="Invista o valor da sua Rescisão em CDB Liquidez Diária 110% CDI com Garantia do FGC"
+        label="CDB de liquidez diária e Tesouro Selic para reserva financeira"
       />
 
       <SnowballLinks currentSalary={5000} />

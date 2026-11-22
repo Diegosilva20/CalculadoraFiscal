@@ -34,7 +34,7 @@ export async function generateMetadata({
 
   return {
     title: prof.tituloSEO,
-    description: `Para ${prof.nome}, salário CLT de ${formatBRL(prof.salarioMedioCLT)} deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos (pacote real ${formatBRL(sim.clt.pacoteTotalMensalReal)}). Veja quanto pedir como PJ no CNAE ${prof.cnaeRecomendadoCodigo}.`,
+    description: `Para ${prof.nome}, salário CLT de ${formatBRL(prof.salarioMedioCLT)} deixa ${formatBRL(sim.clt.salarioLiquidoMensal)} líquidos (pacote total ${formatBRL(sim.clt.pacoteTotalMensalReal)}). Veja quanto faturar como PJ no CNAE ${prof.cnaeRecomendadoCodigo}.`,
     alternates: {
       canonical: `/clt-vs-pj/profissao/${prof.slug}`,
     },
@@ -89,71 +89,68 @@ export default async function ProfissaoProgrammaticPage({
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
       <nav className="text-xs text-slate-500 flex items-center gap-2">
-        <Link href="/" className="hover:text-blue-600">
+        <Link href="/" className="hover:text-blue-700">
           Início
         </Link>
         <span>/</span>
-        <Link href="/clt-vs-pj" className="hover:text-blue-600">
-          CLT vs PJ 2026
+        <Link href="/clt-vs-pj" className="hover:text-blue-700">
+          CLT vs PJ
         </Link>
         <span>/</span>
-        <span className="font-semibold text-slate-800">{prof.nome}</span>
+        <span className="font-medium text-slate-800">{prof.nome}</span>
       </nav>
 
-      {/* Cabeçalho com Passagem Direta Citável (GEO 40-60 palavras) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-4">
         <div className="flex flex-wrap gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-blue-100 text-blue-800">
-            Guia da Profissão 2026
-          </span>
           <Link
             href={`/cnae/${prof.cnaeRecomendadoSlug}`}
-            className="text-xs font-bold px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition-colors"
+            className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-800 border border-slate-200 hover:border-blue-700 transition-colors"
           >
-            CNAE Recomendado: {prof.cnaeRecomendadoCodigo} (Anexo {prof.anexoPadrao}) →
+            CNAE {prof.cnaeRecomendadoCodigo} · Anexo {prof.anexoPadrao}
           </Link>
           {prof.sujeitoFatorR && (
             <Link
               href="/calculadora-fator-r"
-              className="text-xs font-bold px-2.5 py-1 rounded bg-amber-100 text-amber-900 hover:bg-amber-200 transition-colors"
+              className="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors"
             >
-              ⚡ Sujeito ao Fator R (Cai para 6% no Anexo III)
+              Sujeito ao Fator R (Anexo III a partir de 6%)
             </Link>
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-black text-slate-900">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
           {prof.tituloSEO}
         </h1>
-        <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
-          {prof.resumoMercado2026} Na média nacional de 2026, uma vaga CLT de{" "}
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+          {prof.resumoMercado2026} Tomando como referência um salário CLT de{" "}
           <strong>{formatBRL(prof.salarioMedioCLT)}</strong> para{" "}
-          <strong>{prof.nome}</strong> deixa{" "}
-          <strong className="text-blue-700">
-            {formatBRL(sim.clt.salarioLiquidoMensal)} líquidos no holerite
+          <strong>{prof.nome}</strong>, o valor líquido mensal em carteira é de{" "}
+          <strong className="text-slate-900">
+            {formatBRL(sim.clt.salarioLiquidoMensal)}
           </strong>{" "}
-          e soma um pacote real de{" "}
-          <strong>{formatBRL(sim.clt.pacoteTotalMensalReal)}/mês</strong> (contando FGTS, 13º, férias e {formatBRL(prof.beneficiosMediosCLT)} de benefícios). Já uma proposta PJ de{" "}
-          <strong>{formatBRL(prof.propostaMediaPJ)}</strong> gera{" "}
+          e o pacote total chega a{" "}
+          <strong className="text-slate-900">{formatBRL(sim.clt.pacoteTotalMensalReal)}/mês</strong>{" "}
+          com FGTS, 13º, férias e {formatBRL(prof.beneficiosMediosCLT)} em benefícios. Em uma contratação PJ de{" "}
+          <strong>{formatBRL(prof.propostaMediaPJ)}</strong>, a retirada mensal livre estimada fica em{" "}
           <strong className="text-emerald-700">
-            {formatBRL(sim.pj.lucroLiquidoIsento)} livres por mês
-          </strong>{" "}
-          — um ganho líquido extra de{" "}
-          <strong>{formatBRL(sim.diferencaNoBolsoMensal * 12)} por ano</strong>.
+            {formatBRL(sim.pj.lucroLiquidoIsento)}
+          </strong>
+          , diferença anual de{" "}
+          <strong>{formatBRL(sim.diferencaNoBolsoMensal * 12)}</strong>.
         </p>
       </div>
 
       <AdSlot
         slotId="profissao-seo-top"
         format="leaderboard"
-        label={`Contabilidade Especializada para ${prof.nome} (CNAE ${prof.cnaeRecomendadoCodigo}) — Reduza seu imposto para 6%`}
+        label={`Contabilidade para ${prof.nome} (CNAE ${prof.cnaeRecomendadoCodigo}) e monitoramento do Anexo III`}
       />
 
       <CLTvsPJCalculator
@@ -168,68 +165,67 @@ export default async function ProfissaoProgrammaticPage({
         }}
       />
 
-      {/* Tabela Comparativa SSR & Diagnóstico Contábil Exclusivo da Profissão (Padrão Programmatic SEO + GEO) */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-6">
         <div className="space-y-2">
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-            Quanto sobra no bolso de {prof.nome}: CLT ({formatBRL(prof.salarioMedioCLT)}) vs PJ ({formatBRL(prof.propostaMediaPJ)})?
+          <h2 className="text-xl font-bold text-slate-900">
+            Comparativo CLT ({formatBRL(prof.salarioMedioCLT)}) vs PJ ({formatBRL(prof.propostaMediaPJ)}) para {prof.nome}
           </h2>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Para atuar como <strong>{prof.nome}</strong> na modalidade Pessoa Jurídica em 2026, o ponto de equilíbrio financeiro frente a um salário CLT de {formatBRL(prof.salarioMedioCLT)} ocorre a partir da nota fiscal de{" "}
-            <strong className="text-slate-900">{formatBRL(sim.faturamentoPJEquivalente)}/mês</strong>. Confira na tabela abaixo a auditoria linha a linha do cenário padrão de mercado:
+            Para igualar o pacote total da faixa CLT de {formatBRL(prof.salarioMedioCLT)}, o faturamento mínimo de equilíbrio como Pessoa Jurídica parte de{" "}
+            <strong className="text-slate-900">{formatBRL(sim.faturamentoPJEquivalente)}/mês</strong>. A tabela abaixo detalha a simulação de referência:
           </p>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-slate-200">
+        <div className="overflow-x-auto rounded-lg border border-slate-200">
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-slate-900 text-white">
-                <th className="p-3.5 font-bold">Indicador Financeiro (2026)</th>
-                <th className="p-3.5 font-bold text-right">Regime CLT ({formatBRL(prof.salarioMedioCLT)})</th>
-                <th className="p-3.5 font-bold text-right bg-emerald-950 text-emerald-300">
-                  Regime PJ ({formatBRL(prof.propostaMediaPJ)})
+                <th className="p-3.5 font-semibold">Indicador (2026)</th>
+                <th className="p-3.5 font-semibold text-right">CLT ({formatBRL(prof.salarioMedioCLT)})</th>
+                <th className="p-3.5 font-semibold text-right">
+                  PJ ({formatBRL(prof.propostaMediaPJ)})
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 text-slate-700">
               <tr>
-                <td className="p-3.5 font-medium">Remuneração Bruta / Nota Fiscal</td>
+                <td className="p-3.5 font-medium">Remuneração bruta / Nota Fiscal</td>
                 <td className="p-3.5 text-right font-mono">{formatBRL(prof.salarioMedioCLT)}</td>
-                <td className="p-3.5 text-right font-mono font-semibold bg-emerald-50/40">
+                <td className="p-3.5 text-right font-mono font-semibold">
                   {formatBRL(prof.propostaMediaPJ)}
                 </td>
               </tr>
               <tr>
-                <td className="p-3.5 font-medium">Impostos, Retenções e Contabilidade (INSS + IRPF + DAS)</td>
+                <td className="p-3.5 font-medium">Tributos, INSS, IRRF e contabilidade</td>
                 <td className="p-3.5 text-right font-mono text-rose-700">
                   - {formatBRL(sim.clt.inss + sim.clt.irpf)} ({formatPercent(aliquotaEfetivaCLT)})
                 </td>
-                <td className="p-3.5 text-right font-mono text-rose-700 bg-emerald-50/40">
+                <td className="p-3.5 text-right font-mono text-rose-700">
                   - {formatBRL(sim.pj.totalImpostosECustos)} ({formatPercent(sim.pj.cargaTributariaTotalPercentual)})
                 </td>
               </tr>
               <tr>
-                <td className="p-3.5 font-medium">Dinheiro Líquido Imediato na Conta</td>
-                <td className="p-3.5 text-right font-mono font-bold text-slate-900">
+                <td className="p-3.5 font-medium">Valor líquido mensal em conta</td>
+                <td className="p-3.5 text-right font-mono font-semibold text-slate-900">
                   {formatBRL(sim.clt.salarioLiquidoMensal)}
                 </td>
-                <td className="p-3.5 text-right font-mono font-bold text-emerald-800 bg-emerald-50/40">
+                <td className="p-3.5 text-right font-mono font-semibold text-emerald-700">
                   {formatBRL(sim.pj.lucroLiquidoIsento)}
                 </td>
               </tr>
               <tr>
-                <td className="p-3.5 font-medium">Direitos Indiretos Diluídos (FGTS + 13º + Férias + Benefícios)</td>
+                <td className="p-3.5 font-medium">Direitos e benefícios diluídos (FGTS, 13º, férias)</td>
                 <td className="p-3.5 text-right font-mono text-blue-700">
                   + {formatBRL(sim.clt.pacoteTotalMensalReal - sim.clt.salarioLiquidoMensal)}
                 </td>
-                <td className="p-3.5 text-right font-mono text-slate-500 bg-emerald-50/40">
-                  Incluso no faturamento
+                <td className="p-3.5 text-right font-mono text-slate-500">
+                  Não se aplica
                 </td>
               </tr>
               <tr className="bg-slate-50 font-bold text-slate-900">
-                <td className="p-3.5">Patrimônio Mensal Efetivo (Líquido + Provisões)</td>
+                <td className="p-3.5">Pacote mensal efetivo</td>
                 <td className="p-3.5 text-right font-mono">{formatBRL(sim.clt.pacoteTotalMensalReal)}</td>
-                <td className="p-3.5 text-right font-mono text-emerald-700 bg-emerald-100/60">
+                <td className="p-3.5 text-right font-mono text-emerald-700">
                   {formatBRL(sim.pj.lucroLiquidoIsento)}
                 </td>
               </tr>
@@ -237,43 +233,45 @@ export default async function ProfissaoProgrammaticPage({
           </table>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed pt-2">
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              1. Enquadramento no CNAE {prof.cnaeRecomendadoCodigo}
+        <div className="space-y-4 text-sm text-slate-700 leading-relaxed pt-2">
+          <div>
+            <h3 className="font-bold text-slate-900 mb-1">
+              Enquadramento tributário pelo CNAE {prof.cnaeRecomendadoCodigo}
             </h3>
             <p>
-              Para emitir notas fiscais como <strong>{prof.nome}</strong> sem risco de autuação municipal ou federal, utilize o{" "}
+              Para prestação de serviços como <strong>{prof.nome}</strong>, o código mais adotado na abertura de Sociedade Limitada Unipessoal (SLU) é o{" "}
               <Link
                 href={`/cnae/${prof.cnaeRecomendadoSlug}`}
-                className="text-blue-700 font-semibold underline hover:text-blue-900"
+                className="text-blue-700 font-semibold underline"
               >
                 CNAE {prof.cnaeRecomendadoCodigo}
-              </Link>{" "}
-              em uma Sociedade Limitada Unipessoal (SLU).{" "}
+              </Link>
+              .{" "}
               {prof.sujeitoFatorR
-                ? `Como ele pertence originalmente ao Anexo V (15,5%), configure o Fator R de 28% com sua contabilidade digital para derrubar a guia DAS inicial para 6,0% no Anexo III.`
-                : `A grande vantagem deste código é entrar diretamente no Anexo ${prof.anexoPadrao}, pagando a menor alíquota inicial do Simples Nacional desde o primeiro mês.`}
+                ? "Por se tratar de atividade originalmente no Anexo V (15,5%), manter o pró-labore em 28% do faturamento via contabilidade digital enquadra a empresa no Anexo III a partir de 6,0%."
+                : `Este código ingressa diretamente no Anexo ${prof.anexoPadrao}, dispensando a exigência de folha de 28%.`}
             </p>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              2. Conta Digital PJ e Separação Contábil
-            </h3>
-            <p>
-              Receba o pagamento das notas fiscais exclusivamente em uma <strong>conta digital PJ gratuita</strong> (como BTG Empresas, Cora ou Inter Empresas). Após quitar o DAS e o pró-labore, transfira os{" "}
-              <strong>{formatBRL(sim.pj.lucroLiquidoIsento)} de distribuição de lucros</strong> para sua pessoa física com isenção de Imposto de Renda.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              3. Plano de Saúde PME e Reserva de Férias
-            </h3>
-            <p>
-              Substitua os {formatBRL(prof.beneficiosMediosCLT)} de benefícios da CLT contratando um <strong>plano de saúde empresarial pelo CNPJ</strong> (até 35% mais barato que planos individuais PF) e alocando mensalmente {formatBRL(sim.clt.fgtsMensal + sim.clt.provisaoFeriasLiquidoMensal)} em um CDB 100% CDI de liquidez diária para cobrir suas férias remuneradas.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-100">
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Conta PJ e distribuição de lucros
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Centralize o recebimento das notas em uma conta digital PJ separada das despesas pessoais. Após o recolhimento do DAS e do pró-labore, a parcela restante de{" "}
+                <strong>{formatBRL(sim.pj.lucroLiquidoIsento)}</strong> segue como distribuição de lucros isenta de IRPF para a pessoa física.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Cobertura de saúde e reserva financeira
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Ao abrir mão dos {formatBRL(prof.beneficiosMediosCLT)} em benefícios da carteira, considere a contratação de um plano de saúde empresarial pelo CNPJ (tabelas PME) e a formação de reserva mensal de{" "}
+                {formatBRL(sim.clt.fgtsMensal + sim.clt.provisaoFeriasLiquidoMensal)} em CDB de liquidez diária para cobrir períodos de recesso.
+              </p>
+            </div>
           </div>
         </div>
       </section>

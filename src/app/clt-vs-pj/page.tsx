@@ -37,51 +37,49 @@ export default function CLTvsPJHubPage() {
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
-      <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-          Simulador Trabalhista & Tributário • Atualizado 2026
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-          Calculadora CLT vs PJ 2026: Qual compensa mais no seu caso?
+
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+          Simulador trabalhista e tributário · 2026
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
+          Calculadora CLT vs PJ 2026: comparativo de rendimento líquido
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 max-w-3xl">
-          Não olhe apenas para o valor bruto da Nota Fiscal. Nossa calculadora compara o{" "}
-          <strong>Salário Líquido na conta</strong> e também o{" "}
-          <strong>Patrimônio Real Anual</strong> (somando FGTS de 8%, 13º salário, terço de férias e benefícios) contra os impostos reais do CNPJ no Simples Nacional.
+        <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          Confronte o <strong>salário líquido mensal e o pacote anual da CLT</strong> (incluindo FGTS de 8%, 13º salário, terço de férias e benefícios) com a retirada líquida obtida atuando via <strong>CNPJ no Simples Nacional</strong>.
         </p>
       </div>
 
       <AdSlot
         slotId="clt-pj-hub-top"
         format="leaderboard"
-        label="Vai mudar de CLT para PJ? Abra sua empresa gratuitamente com assessoria tributária no Anexo III"
+        label="Abertura de CNPJ e assessoria contábil para enquadramento no Anexo III"
       />
 
       <CLTvsPJCalculator initialSalarioCLT={8500} initialFaturamentoPJ={12500} />
 
-      {/* Tabela Rápida de Equivalência CLT vs PJ 2026 (Rica em palavras-chave para o Google) */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-        <h2 className="text-xl font-extrabold text-slate-900 mb-2">
-          Tabela de Equivalência CLT vs PJ 2026 (Ponto de Equilíbrio)
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7">
+        <h2 className="text-lg font-bold text-slate-900 mb-1.5">
+          Tabela de equivalência CLT vs PJ 2026
         </h2>
-        <p className="text-xs sm:text-sm text-slate-600 mb-6">
-          Veja quanto você precisa cobrar como PJ (no Anexo III do Simples Nacional) para empatar 100% com todos os direitos e benefícios da CLT:
+        <p className="text-xs sm:text-sm text-slate-600 mb-5">
+          Estimativa de faturamento bruto mínimo no Anexo III do Simples Nacional (com Fator R) para igualar o pacote total da CLT considerando R$ 900/mês em benefícios:
         </p>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="border-b-2 border-slate-200 text-slate-500 uppercase text-[11px]">
-                <th className="py-3 px-3">Salário Bruto CLT</th>
-                <th className="py-3 px-3">Líquido Mensal CLT</th>
-                <th className="py-3 px-3">Pacote Total CLT (c/ FGTS+13º+VR)</th>
-                <th className="py-3 px-3 text-emerald-700">Mínimo Ideal PJ (Nota Fiscal)</th>
-                <th className="py-3 px-3">Simulação Detalhada</th>
+                <th className="py-3 px-3">Salário bruto CLT</th>
+                <th className="py-3 px-3">Líquido mensal CLT</th>
+                <th className="py-3 px-3">Pacote CLT (FGTS + 13º + benef.)</th>
+                <th className="py-3 px-3 text-emerald-800">Mínimo equivalente PJ</th>
+                <th className="py-3 px-3">Detalhe</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -93,24 +91,24 @@ export default function CLTvsPJHubPage() {
                 });
                 return (
                   <tr key={sal} className="hover:bg-slate-50">
-                    <td className="py-3 px-3 font-bold text-slate-900">
+                    <td className="py-2.5 px-3 font-mono font-semibold text-slate-900">
                       {formatBRL(sal)}
                     </td>
-                    <td className="py-3 px-3 text-slate-700">
+                    <td className="py-2.5 px-3 font-mono text-slate-700">
                       {formatBRL(sim.clt.salarioLiquidoMensal)}
                     </td>
-                    <td className="py-3 px-3 font-medium text-blue-700">
+                    <td className="py-2.5 px-3 font-mono text-slate-700">
                       {formatBRL(sim.clt.pacoteTotalMensalReal)}
                     </td>
-                    <td className="py-3 px-3 font-extrabold text-emerald-700">
+                    <td className="py-2.5 px-3 font-mono font-bold text-emerald-700">
                       {formatBRL(sim.faturamentoPJEquivalente)}
                     </td>
-                    <td className="py-3 px-3">
+                    <td className="py-2.5 px-3">
                       <Link
                         href={`/clt-vs-pj/salario/${sal}`}
-                        className="text-xs font-bold text-blue-600 hover:underline"
+                        className="text-xs font-semibold text-blue-700 hover:underline"
                       >
-                        Abrir cálculo de R$ {sal.toLocaleString("pt-BR")} →
+                        Simular R$ {sal.toLocaleString("pt-BR")} →
                       </Link>
                     </td>
                   </tr>
@@ -121,24 +119,23 @@ export default function CLTvsPJHubPage() {
         </div>
       </section>
 
-      {/* Lista de Profissões */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-        <h2 className="text-xl font-extrabold text-slate-900 mb-4">
-          Calculadora CLT vs PJ por Profissão (2026)
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7">
+        <h2 className="text-lg font-bold text-slate-900 mb-4">
+          Comparativo CLT vs PJ por profissão
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {PROFISSOES_SEO.map((p) => (
             <Link
               key={p.slug}
               href={`/clt-vs-pj/profissao/${p.slug}`}
-              className="p-4 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 transition-all"
+              className="p-4 rounded-lg border border-slate-200 hover:border-blue-700 hover:bg-slate-50 transition-colors"
             >
-              <h3 className="font-bold text-sm text-slate-900">{p.nome}</h3>
+              <h3 className="font-semibold text-sm text-slate-900">{p.nome}</h3>
               <p className="text-xs text-slate-500 mt-1">
-                CNAE {p.cnaeRecomendadoCodigo} • Anexo {p.anexoPadrao}
+                CNAE {p.cnaeRecomendadoCodigo} · Anexo {p.anexoPadrao}
               </p>
-              <span className="inline-block mt-2 text-xs font-bold text-blue-600">
-                Simular profissão →
+              <span className="inline-block mt-2 text-xs font-semibold text-blue-700">
+                Abrir cenário →
               </span>
             </Link>
           ))}

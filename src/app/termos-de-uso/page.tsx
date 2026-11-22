@@ -14,13 +14,12 @@ export const metadata: Metadata = {
 
 export default function TermosDeUsoPage() {
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8 text-sm text-slate-700 leading-relaxed">
-      <div className="border-b border-slate-200 pb-6 space-y-3">
-        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full">
-          <Scale className="w-3.5 h-3.5" />
-          Termos Legais & Limitação de Responsabilidade
-        </span>
-        <h1 className="text-3xl font-black text-slate-900">
+    <div className="max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-8 text-sm text-slate-700 leading-relaxed">
+      <div className="border-b border-slate-200 pb-6 space-y-2.5">
+        <div className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
+          Termos legais e limitação de responsabilidade
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
           Termos e Condições de Uso
         </h1>
         <p className="text-xs text-slate-500">

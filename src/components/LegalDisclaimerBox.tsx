@@ -3,21 +3,19 @@ import Link from "next/link";
 import { Scale } from "lucide-react";
 
 /**
- * Aviso Legal Visível Junto ao Resultado (Blindagem Jurídica contra Responsabilidade Civil)
- * Garante que o usuário seja informado no exato momento da visualização do cálculo
- * de que os valores são estimativas educativas sujeitas a variações municipais/sindicais.
+ * Nota legal exibida junto aos resultados das simulações para transparência metodológica.
  */
 export default function LegalDisclaimerBox() {
   return (
-    <div className="rounded-xl bg-amber-50/80 border border-amber-200/90 p-3.5 text-[11px] sm:text-xs text-amber-950 leading-relaxed flex items-start gap-2.5">
-      <Scale className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+    <div className="rounded-lg bg-slate-50 border border-slate-200 p-3.5 text-[11px] sm:text-xs text-slate-600 leading-relaxed flex items-start gap-2.5">
+      <Scale className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
       <div>
-        <strong>Aviso Legal Importante (Simulação Estimativa):</strong> Os valores calculados acima são <strong>estimativas matemáticas de caráter exclusivamente educativo e informativo</strong> baseadas nas tabelas federais padrão. Alíquotas municipais de ISS (2% a 5%), legislações estaduais, convenções coletivas sindicais (CCT) e regimes fiscais específicos podem alterar os valores reais. Este simulador <strong>não emite guias oficiais e não substitui a conferência por um Contador habilitado (CRC)</strong> ou advogado antes de assinar contratos, pedir demissão ou recolher tributos. Ao utilizar esta ferramenta, você concorda integralmente com os nossos{" "}
+        <strong className="text-slate-800">Nota sobre a estimativa:</strong> os valores exibidos acima têm caráter informativo e se baseiam nas tabelas federais padrão vigentes em 2026. Alíquotas municipais de ISS (2% a 5%), regras estaduais, convenções coletivas (CCT) e particularidades societárias podem alterar o cálculo final. Antes de firmar contratos, pedir desligamento ou recolher guias, valide os números com um contador habilitado no CRC ou advogado. Ao utilizar o simulador, você concorda com os{" "}
         <Link
           href="/termos-de-uso"
-          className="font-bold underline hover:text-amber-800"
+          className="font-semibold text-slate-800 underline hover:text-blue-700"
         >
-          Termos de Uso e Isenção de Responsabilidade
+          Termos de Uso
         </Link>
         .
       </div>

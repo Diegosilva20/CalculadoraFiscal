@@ -5,7 +5,7 @@ import FatorRCalculator from "@/components/FatorRCalculator";
 import AdSlot from "@/components/AdSlot";
 import SnowballLinks from "@/components/SnowballLinks";
 import { CNAES_DATA } from "@/data/cnaes";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 
 export const metadata: Metadata = {
@@ -45,79 +45,77 @@ export default function CalculadoraFatorRPage() {
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
 
-      <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-          Otimização Tributária PJ • Lei Complementar 123/2006 (Art. 18, § 5º-J)
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-          Calculadora de Fator R 2026: Pague 6% (Anexo III) em vez de 15,5% (Anexo V)
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+          Simples Nacional · Lei Complementar nº 123/2006 (Art. 18, § 5º-J)
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
+          Calculadora de Fator R 2026: Anexo III (6%) ou Anexo V (15,5%)
         </h1>
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          Em 2026, a combinação do <strong>Fator R (28%)</strong> com a{" "}
-          <strong>nova isenção de IRPF até R$ 5.000</strong> criou a maior oportunidade legal de redução de impostos para médicos, desenvolvedores, engenheiros, psicólogos, consultores e agências: quem fatura até R$ 17.850/mês consegue atingir os 28% de pró-labore <strong>sem pagar nada de Imposto de Renda Retido na Fonte</strong>.
+          Com a isenção de IRPF até R$ 5.000 mensais em 2026, prestadores de serviços que faturam até cerca de R$ 17.850 por mês conseguem fixar o pró-labore em 28% da receita sem retenção de Imposto de Renda na fonte, pagando apenas INSS (11%) sobre a retirada para enquadrar o CNPJ no Anexo III.
         </p>
       </div>
 
       <FatorRCalculator />
 
-      {/* Guia Prático Humanizado + Alto CPC Contábil/B2B */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-        <h2 className="text-xl font-extrabold text-slate-900">
-          O que entra na conta dos 28% do Fator R e como evitar cair no Anexo V por erro de cálculo
+      <section className="bg-white rounded-xl border border-slate-200 p-6 sm:p-7 space-y-6 text-sm text-slate-700 leading-relaxed">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+          Composição da folha de salários (FS12) e critérios de conferência mensal
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              1. O que soma na Folha (FS12)
-            </h3>
-            <p>
-              Para a Receita Federal (PGDAS-D), entram no numerador do Fator R: o valor bruto do <strong>pró-labore dos sócios</strong>, salários de empregados CLT, 13º salário, férias, valores pagos a autônomos (RPA) com retenção previdenciária, além do FGTS e do CPP (INSS Patronal). <strong>Distribuir lucros isentos não conta como folha!</strong>
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Itens aceitos no cálculo dos 28%
+              </h3>
+              <p className="text-xs sm:text-sm">
+                No PGDAS-D da Receita Federal, entram no numerador dos 12 meses: valor bruto do <strong>pró-labore dos sócios</strong>, salários de funcionários registrados em CLT, 13º salário, férias, pagamentos a autônomos (RPA) com retenção previdenciária e depósitos de FGTS. Distribuição de lucros isenta não compõe a folha para fins do Fator R.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">
+                Regra no mês de abertura do CNPJ
+              </h3>
+              <p className="text-xs sm:text-sm">
+                Em empresas recém-abertas que ainda não acumularam 12 competências anteriores, a verificação da proporção de 28% considera apenas a folha e o faturamento do próprio mês de início das atividades.
+              </p>
+            </div>
           </div>
 
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              2. O perigo do faturamento variável no mês
+          <div>
+            <h3 className="font-bold text-slate-900 mb-1">
+              Risco de oscilação de faturamento
             </h3>
-            <p>
-              Se você emitir uma nota fiscal maior em um determinado mês e mantiver o pró-labore fixo antigo, o seu índice acumulado pode cair para <strong>27,9%</strong>. Por causa de 0,1%, o sistema da Receita Federal cobra <strong>15,5% sobre toda a nota fiscal do mês seguinte</strong>. Por isso, uma <strong>contabilidade digital especializada em PJ</strong> recalcula a guia do eSocial antes do fechamento de cada mês.
-            </p>
-          </div>
-
-          <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-            <h3 className="font-bold text-slate-900 text-base">
-              3. Como funciona no primeiro mês do CNPJ?
-            </h3>
-            <p>
-              Quando você abre seu CNPJ (SLU ou LTDA), ainda não existem 12 meses anteriores. Na primeira competência, a Receita Federal calcula a proporção <strong>dentro do próprio mês de abertura</strong>: basta que a guia de pró-labore gerada pela sua contabilidade represente pelo menos 28% das notas fiscais emitidas naquele primeiro mês.
+            <p className="text-xs sm:text-sm">
+              Quando a empresa emite notas fiscais de valores diferentes ao longo do ano e mantém um pró-labore fixo antigo, o acumulado pode cair para 27,9%. Uma diferença de um décimo percentual transfere toda a receita do período para o Anexo V (15,5% nominais), razão pela qual o acompanhamento mensal pela contabilidade digital evita distorções no fechamento do eSocial.
             </p>
           </div>
         </div>
 
-        {/* Lista de CNAEs que se beneficiam do Fator R */}
         <div className="pt-4 border-t border-slate-100">
           <h3 className="font-bold text-sm text-slate-900 mb-3">
-            Principais CNAEs que caem de 15,5% para 6% usando esta calculadora:
+            CNAEs elegíveis ao Fator R:
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
             {cnaesComFatorR.map((c) => (
               <Link
                 key={c.codigoLimpo}
                 href={`/cnae/${c.slug}`}
-                className="p-3 rounded-xl border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs"
+                className="p-3 rounded-lg border border-slate-200 hover:border-blue-700 hover:bg-slate-50 transition-colors flex items-center justify-between text-xs"
               >
                 <div className="truncate pr-2">
-                  <span className="font-mono font-bold text-emerald-700 block">
-                    CNAE {c.codigo}
+                  <span className="font-mono font-bold text-slate-900 block">
+                    {c.codigo}
                   </span>
-                  <span className="text-slate-700 font-medium truncate block">
+                  <span className="text-slate-600 truncate block">
                     {c.nomePopular}
                   </span>
                 </div>
@@ -131,7 +129,7 @@ export default function CalculadoraFatorRPage() {
       <AdSlot
         slotId="fator-r-bottom"
         format="leaderboard"
-        label="Abra seu CNPJ ou Troque de Contador Grátis — Especialistas no Anexo III e Fator R para Médicos, Devs e Engenheiros"
+        label="Abertura e migração de contabilidade PJ para acompanhamento mensal de Anexo III e Fator R"
       />
 
       <SnowballLinks currentSalary={12000} />

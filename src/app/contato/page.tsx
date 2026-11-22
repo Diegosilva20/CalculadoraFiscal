@@ -17,12 +17,11 @@ export default function ContatoPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-4">
-        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full">
-          <Mail className="w-3.5 h-3.5" />
-          Atendimento Editorial & Parcerias B2B
-        </span>
-        <h1 className="text-3xl font-black text-slate-900">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 sm:p-9 space-y-4">
+        <div className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
+          Atendimento editorial e comercial
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
           Fale Conosco — CalculaFiscal
         </h1>
         <p className="text-sm text-slate-600 leading-relaxed">

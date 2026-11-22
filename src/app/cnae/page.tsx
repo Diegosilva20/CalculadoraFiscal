@@ -9,7 +9,7 @@ import { buildCalculatorSchemaGraph } from "@/lib/seo-schema";
 export const metadata: Metadata = {
   title: "Tabela CNAE Simples Nacional 2026 — Anexo III, V, Fator R, MEI e Reforma Tributária",
   description:
-    "Consulte a tabela completa de CNAEs 2026 com busca inteligente: veja se pode ser MEI, qual o Anexo do Simples Nacional (I, III, IV ou V), se tem Fator R (6%) e redução do IVA Dual (CBS/IBS).",
+    "Consulte a tabela completa de CNAEs 2026 com busca por código ou atividade: veja permissão MEI, Anexo do Simples Nacional (I, III, IV ou V), Fator R e redução do IVA Dual (CBS/IBS).",
   alternates: {
     canonical: "/cnae",
   },
@@ -35,28 +35,28 @@ export default function CNAEDirectoryPage() {
   });
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaGraph) }}
       />
-      <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-          Motor de Consulta Fiscal 2026 • Simples Nacional, MEI e Reforma Tributária
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-          Tabela CNAE 2026: Anexo do Simples Nacional, Fator R e Alíquota do IVA
+
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <div className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-wider">
+          Consulta fiscal · Simples Nacional, MEI e Reforma Tributária
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
+          Tabela CNAE 2026: Anexos, Fator R e enquadramento MEI
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 max-w-3xl">
-          Pesquise o código ou nome da sua profissão abaixo para abrir a{" "}
-          <strong>calculadora de impostos ao vivo</strong>, descobrir como cair do Anexo V (15,5%) para o Anexo III (6%) usando o Fator R e conferir a redução setorial aprovada na Reforma Tributária (CBS/IBS).
+        <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          Pesquise pelo código CNAE ou pelo nome da atividade para abrir a calculadora do Simples Nacional, verificar a possibilidade de redução para 6% via Fator R e checar os percentuais de redução setorial no IVA Dual (CBS/IBS).
         </p>
       </div>
 
       <AdSlot
         slotId="cnae-hub-top"
         format="leaderboard"
-        label="Não sabe qual CNAE escolher para pagar o menor imposto legal? Fale grátis com um especialista contábil"
+        label="Abertura de CNPJ com escolha correta de CNAEs e enquadramento tributário"
       />
 
       <CNAEDirectoryClient cnaes={CNAES_DATA} />

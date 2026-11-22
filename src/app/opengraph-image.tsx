@@ -18,16 +18,12 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#0b1120",
-          backgroundImage:
-            "radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.12) 2%, transparent 0%)",
-          backgroundSize: "40px 40px",
+          backgroundColor: "#0f172a",
           padding: "64px 72px",
           color: "#ffffff",
           fontFamily: "sans-serif",
         }}
       >
-        {/* Topo: Marca + Selo 2026 */}
         <div
           style={{
             display: "flex",
@@ -39,14 +35,14 @@ export default async function Image() {
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <div
               style={{
-                width: "56px",
-                height: "56px",
-                borderRadius: "16px",
-                backgroundColor: "#2563eb",
+                width: "52px",
+                height: "52px",
+                borderRadius: "12px",
+                backgroundColor: "#1d4ed8",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "26px",
+                fontSize: "24px",
                 fontWeight: 900,
                 color: "#ffffff",
               }}
@@ -56,35 +52,34 @@ export default async function Image() {
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span
                 style={{
-                  fontSize: "32px",
+                  fontSize: "30px",
                   fontWeight: 900,
-                  letterSpacing: "-0.03em",
+                  letterSpacing: "-0.02em",
                 }}
               >
-                CalculaFiscal 2026
+                CalculaFiscal
               </span>
               <span style={{ fontSize: "16px", color: "#94a3b8" }}>
-                Inteligência Tributária, Trabalhista e Financeira
+                Simuladores Trabalhistas e Tributários · 2026
               </span>
             </div>
           </div>
 
           <div
             style={{
-              backgroundColor: "rgba(16, 185, 129, 0.18)",
-              border: "1px solid rgba(52, 211, 153, 0.4)",
-              color: "#34d399",
-              padding: "10px 20px",
-              borderRadius: "999px",
-              fontSize: "18px",
-              fontWeight: 700,
+              backgroundColor: "rgba(255, 255, 255, 0.08)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              color: "#e2e8f0",
+              padding: "10px 18px",
+              borderRadius: "8px",
+              fontSize: "17px",
+              fontWeight: 600,
             }}
           >
-            Isenção IRPF R$ 5k • Fator R 6% • Reforma CBS/IBS
+            IRPF 2026 · Fator R 28% · CBS e IBS
           </div>
         </div>
 
-        {/* Centro: Headline de Alto Impacto */}
         <div
           style={{
             display: "flex",
@@ -95,73 +90,71 @@ export default async function Image() {
         >
           <div
             style={{
-              fontSize: "62px",
+              fontSize: "58px",
               fontWeight: 900,
-              lineHeight: 1.08,
-              letterSpacing: "-0.03em",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
               color: "#ffffff",
             }}
           >
-            Descubra quanto sobra no seu bolso em 2026: CLT ou PJ?
+            Calculadora CLT vs PJ, Tabela CNAE e Salário Líquido 2026
           </div>
           <div
             style={{
-              fontSize: "26px",
+              fontSize: "25px",
               color: "#cbd5e1",
               lineHeight: 1.4,
             }}
           >
-            Compare Salário Líquido vs CNPJ até o último centavo, consulte todos
-            os CNAEs do Simples Nacional e simule o Fator R (28%).
+            Compare holerite CLT e lucro líquido no Simples Nacional com cálculo de INSS, IRRF, FGTS e alíquota efetiva.
           </div>
         </div>
 
-        {/* Rodapé: Pílulas das Ferramentas */}
         <div
           style={{
             display: "flex",
-            gap: "20px",
+            gap: "16px",
             width: "100%",
           }}
         >
           <div
             style={{
-              backgroundColor: "rgba(37, 99, 235, 0.25)",
-              border: "1px solid rgba(96, 165, 250, 0.35)",
-              padding: "16px 24px",
-              borderRadius: "16px",
-              fontSize: "20px",
+              backgroundColor: "#1e293b",
+              border: "1px solid #334155",
+              padding: "14px 22px",
+              borderRadius: "10px",
+              fontSize: "19px",
               fontWeight: 700,
-              color: "#93c5fd",
+              color: "#f8fafc",
             }}
           >
-            ⚡ Simulador CLT vs PJ
+            Comparador CLT vs PJ
           </div>
           <div
             style={{
-              backgroundColor: "rgba(16, 185, 129, 0.2)",
-              border: "1px solid rgba(52, 211, 153, 0.35)",
-              padding: "16px 24px",
-              borderRadius: "16px",
-              fontSize: "20px",
+              backgroundColor: "#1e293b",
+              border: "1px solid #334155",
+              padding: "14px 22px",
+              borderRadius: "10px",
+              fontSize: "19px",
               fontWeight: 700,
-              color: "#6ee7b7",
+              color: "#34d399",
             }}
           >
-            📊 Tabela CNAE & Fator R (6%)
+            Tabela CNAE e Fator R
           </div>
           <div
             style={{
-              backgroundColor: "rgba(245, 158, 11, 0.2)",
-              border: "1px solid rgba(251, 191, 36, 0.35)",
-              padding: "16px 24px",
-              borderRadius: "16px",
-              fontSize: "20px",
+              backgroundColor: "#1e293b",
+              border: "1px solid #334155",
+              padding: "14px 22px",
+              borderRadius: "10px",
+              fontSize: "19px",
               fontWeight: 700,
-              color: "#fcd34d",
+              color: "#f8fafc",
             }}
           >
-            🏢 Custo de Funcionário & Rescisão
+            Custo CLT e Rescisão
           </div>
         </div>
       </div>
